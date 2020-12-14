@@ -1,0 +1,11 @@
+要做的事：
+
+PBC-展示影片，10分鐘（12/29 9:00）
+Cod101-作品短片(3mins)、作品說明、成員資料、競賽切結書（12/30）
+PBC-口頭報告（1/4 9:10）
+PBC-書面報告（1/7 21:00）
+PBC-家庭錄影（1/17 21:00）
+
+Coding101帳密
+account/ PBC_Coding101
+password/ welovecoding
