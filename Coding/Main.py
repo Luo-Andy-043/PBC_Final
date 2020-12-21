@@ -4,7 +4,7 @@ import pygame
 pygame.init()
 
 # 建立視窗
-screen_size = (1280, 720)
+screen_size = (960, 540)
 screen = pygame.display.set_mode(screen_size)
 pygame.display.set_caption('管管大冒險')
 
