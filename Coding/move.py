@@ -1,6 +1,6 @@
 import pygame
 pygame.init()
-screen = pygame.display.set_mode((640, 320))
+screen = pygame.display.set_mode((960, 540))
 pygame.display.set_caption('Animation')
 
 x = 50
@@ -30,10 +30,10 @@ while run:
     
     if x < 0:
         x = 0
-    if x > 600:
-        x = 600
-    if y > 260:
-        y = 260
+    if x > 910:
+        x = 910
+    if y > 480:
+        y = 480
     if y < 0:
         y = 0
     screen.fill((0, 0, 0))
