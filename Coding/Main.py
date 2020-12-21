@@ -9,16 +9,15 @@ screen = pygame.display.set_mode(screen_size)
 pygame.display.set_caption('管管大冒險')
 
 # 載入「開始遊戲」圖片
-bg_1 = pygame.image.load('C:\\Users\\元G\\Desktop\\商管程式設計\\Final_Project\\素材\\畫作\\遊戲開始_tmp_工作區域 1.png')
-bg_2 = pygame.image.load('C:\\Users\\元G\\Desktop\\商管程式設計\\Final_Project\\素材\\畫作\\遊戲開始_tmp_2_工作區域 1.png')
-start_img = bg_1
+bg = pygame.image.load('C:\\Users\\元G\\Desktop\\GitHub_PBC\\PBC_Final\\Coding\\素材\\畫作\\遊戲開始_tmp_工作區域 1.png')
+start_img = bg
 start_img.convert_alpha()
 start_img = pygame.transform.smoothscale(start_img, screen_size)
 screen.blit(start_img,(0,0))
 
 # 載入「START」按鈕
-light_button = pygame.image.load('C:\\Users\\元G\\Desktop\\商管程式設計\\Final_Project\\素材\\畫作\\button_light.png')
-dark_button = pygame.image.load('C:\\Users\\元G\\Desktop\\商管程式設計\\Final_Project\\素材\\畫作\\button_dark.png')
+light_button = pygame.image.load('C:\\Users\\元G\\Desktop\\GitHub_PBC\\PBC_Final\\Coding\\素材\\畫作\\button_light.png')
+dark_button = pygame.image.load('C:\\Users\\元G\\Desktop\\GitHub_PBC\\PBC_Final\\Coding\\素材\\畫作\\button_dark.png')
 
 start_button = dark_button  # 預設為正常顏色的按鈕
 start_button.convert_alpha()
