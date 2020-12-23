@@ -4,21 +4,21 @@ screen = pygame.display.set_mode((960, 540))
 pygame.display.set_caption('Mock test')
 screen.fill((255,255,255))
 
-pic0 = pygame.image.load('C:\\Users\\chloe\\OneDrive\\桌面\\PBC_Final\\Coding\\素材\\考卷\\0.png')
-pic1 = pygame.image.load('C:\\Users\\chloe\\OneDrive\\桌面\\PBC_Final\\Coding\\素材\\考卷\\1.png')
-pic2 = pygame.image.load('C:\\Users\\chloe\\OneDrive\\桌面\\PBC_Final\\Coding\\素材\\考卷\\2.png')
-pic3 = pygame.image.load('C:\\Users\\chloe\\OneDrive\\桌面\\PBC_Final\\Coding\\素材\\考卷\\3.png')
-pic4 = pygame.image.load('C:\\Users\\chloe\\OneDrive\\桌面\\PBC_Final\\Coding\\素材\\考卷\\4.png')
-pic5 = pygame.image.load('C:\\Users\\chloe\\OneDrive\\桌面\\PBC_Final\\Coding\\素材\\考卷\\5.png')
-end = pygame.image.load('C:\\Users\\chloe\\OneDrive\\桌面\\PBC_Final\\Coding\\素材\\考卷\\gameover.png')
-win = pygame.image.load('C:\\Users\\chloe\\OneDrive\\桌面\\PBC_Final\\Coding\\素材\\考卷\\win.png')
+pic0 = pygame.image.load('./素材/考卷/0.png')
+pic1 = pygame.image.load('./素材/考卷/1.png')
+pic2 = pygame.image.load('./素材/考卷/2.png')
+pic3 = pygame.image.load('./素材/考卷/3.png')
+pic4 = pygame.image.load('./素材/考卷/4.png')
+pic5 = pygame.image.load('./素材/考卷/5.png')
+end = pygame.image.load('./素材/考卷/gameover.png')
+win = pygame.image.load('./素材/考卷/win.png')
 
 
 test = [pic0, pic1, pic2, pic3, pic4, pic5]
 
 run = True
 hit = 0
-i = 3
+i = 3  # 開始的時候是三層
 add = 0
 while run:
     pygame.time.delay(100)
@@ -27,8 +27,8 @@ while run:
         if event.type == pygame.QUIT:
             run = False
     
-    # 每隔一段時間增加一層
     if 1 <= i <= 5:
+        # 每隔一段時間增加一層
         add += 1
         if add == 10:
             i += 1
