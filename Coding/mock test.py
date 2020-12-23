@@ -49,12 +49,12 @@ while run:
             test[i] = pygame.transform.smoothscale(test[i], (960, 540))
             screen.blit(test[i], (0,0))
             pygame.display.update()
-        # 到頂ㄌ就掰掰
+    # 到頂ㄌ就掰掰
     elif i > 5:
         end = pygame.transform.smoothscale(end, (960,540))
         screen.blit(end, (0,0))
         pygame.display.update()
-    # 寫完就贏ㄌ
+    # 寫完就贏ㄌ 耶
     else:
         win = pygame.transform.smoothscale(win, (960,540))
         screen.blit(win, (0,0))
