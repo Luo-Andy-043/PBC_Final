@@ -9,8 +9,7 @@ screen = pygame.display.set_mode(screen_size)
 pygame.display.set_caption('管管大冒險')
 
 # 載入「開始遊戲」圖片
-bg = pygame.image.load('./素材/畫作/遊戲開始_tmp_工作區域 1.png')
-start_img = bg
+start_img = pygame.image.load('./素材/畫作/遊戲開始_tmp_工作區域 1.png')
 start_img.convert_alpha()
 start_img = pygame.transform.smoothscale(start_img, screen_size)
 screen.blit(start_img,(0,0))
@@ -52,7 +51,7 @@ while running:
     pygame.display.update()
 
     # 按下按鈕會發生什麼事（目前先用關閉視窗取代）
-    if hover and pygame.mouse.get_pressed()[0] is True:
+    if hover and pygame.mouse.get_pressed()[0]:
         running = False
 
 pygame.quit()
