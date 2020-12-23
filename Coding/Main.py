@@ -5,8 +5,10 @@ game_path = os.path.dirname(__file__)
 start_img_path = os.path.join(game_path, '遊戲開始_tmp_工作區域 1.png')
 light_button_path = os.path.join(game_path, 'button_light.png')
 dark_button_path = os.path.join(game_path, 'button_dark.png')
+duck_path = os.path.join(game_path, '鴨子騎車.PNG')
 
 # 變數
+WHITE = (255,255,255)
 screen_size = (960, 540)
 start_button_length, start_button_height = 196, 115
 start_button_x, start_button_y = 640, 270
@@ -14,9 +16,11 @@ start_button_x, start_button_y = 640, 270
 # 啟動pygame
 pygame.init()
 
-# 建立視窗
+# 建立視窗、畫布
 screen = pygame.display.set_mode(screen_size)
 pygame.display.set_caption('管管大冒險')
+bg = pygame.Surface(screen.get_size()).convert()
+bg.fill(WHITE)
 
 # 載入「開始遊戲」圖片
 start_img = pygame.image.load(start_img_path)
@@ -36,10 +40,10 @@ screen.blit(start_button, (start_button_x, start_button_y))
 # 更新
 pygame.display.update()
 
+'''遊戲開始'''
 # MainLoop
 clock = pygame.time.Clock()
 running = True
-
 while running:
     clock.tick(60)
 
@@ -62,8 +66,99 @@ while running:
     screen.blit(start_button, (start_button_x, start_button_y))
     pygame.display.update()
 
-    # 按下按鈕會發生什麼事（目前先用關閉視窗取代）
+    # 按下按鈕，結束開啟頁面
     if hover and pygame.mouse.get_pressed()[0] is True:
         running = False
+
+'''進入地圖'''
+
+class Player(pygame.sprite.Sprite):
+    '''角色 Sprite'''
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(duck_path).convert_alpha()
+        self.image = pygame.transform.smoothscale(self.image, (80,80))
+        # self.image.set_colorkey(WHITE)
+        self.rect = self.image.get_rect()
+        self.rect.center = (480, 350)
+        self.speedx = 0
+        self.speedy = 0
+
+    def update(self):
+        '''鍵盤操作'''
+        accer = 0.08
+        keystate = pygame.key.get_pressed()
+
+        # 左鍵
+        if keystate[pygame.K_LEFT]:
+            self.speedx -= accer
+            if self.speedx <= -6.5:
+                self.speedx = -6.5
+        if not keystate[pygame.K_LEFT] and self.speedx < 0:
+            self.speedx += accer
+            if self.speedx >= 0:
+                self.speedx = 0
+
+        # 右鍵
+        if keystate[pygame.K_RIGHT]:
+            self.speedx += accer
+            if self.speedx >= 6.5:
+                self.speedx = 6.5
+        if not keystate[pygame.K_RIGHT] and self.speedx > 0:
+            self.speedx -= accer
+            if self.speedx <= 0:
+                self.speedx = 0
+
+        # 上鍵
+        if keystate[pygame.K_UP]:
+            self.speedy -= accer
+            if self.speedy <= -6.5:
+                self.speedy = -6.5
+        if not keystate[pygame.K_UP] and self.speedy < 0:
+            self.speedy += accer
+            if self.speedy >= 0:
+                self.speedy = 0
+
+        # 下鍵
+        if keystate[pygame.K_DOWN]:
+            self.speedy += accer
+            if self.speedy >= 6.5:
+                self.speedy = 6.5
+        if not keystate[pygame.K_DOWN] and self.speedy > 0:
+            self.speedy -= accer
+            if self.speedy <= 0:
+                self.speedy = 0
+
+        self.rect.x += self.speedx
+        self.rect.y += self.speedy
+
+
+# 精靈設定
+all_sprites = pygame.sprite.Group()
+player = Player()
+all_sprites.add(player)
+
+# MainLoop
+running = True
+while running:
+    clock.tick(60)
+
+    for event in pygame.event.get():
+        # 使用者關閉視窗
+        if event.type == pygame.QUIT:
+            running = False
+
+    # 載入地圖
+    screen.blit(bg, (0,0))
+
+    # Sprites
+    # Update
+    all_sprites.update()
+
+    # Draw
+    all_sprites.draw(screen)
+
+    # 畫布更新
+    pygame.display.update()
 
 pygame.quit()
