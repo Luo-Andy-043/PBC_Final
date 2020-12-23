@@ -73,9 +73,6 @@ class DialogBox:
         for aSentence in self.text:
             sentence = self.font.render(aSentence, True, (131,31,40))
             screen.blit(sentence, (260,400))
-
-
-        while True:
             if pygame.mouse.get_pressed()[0]:
                 break
 
@@ -100,6 +97,7 @@ class DialogBox:
 guanguan_start = DialogBox("guanguan", "管管", ["原來...", "你就是台大生嗎...."])
 
 guanguan_start.show_box()
+guanguan_start.show_text()
 
 
 
