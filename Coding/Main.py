@@ -1,11 +1,14 @@
 import pygame, os
 
+# 更正程式工作位置
+working_path = os.path.dirname(__file__)
+os.chdir(working_path)
+
 # 路徑
-game_path = os.path.dirname(__file__)
-start_img_path = os.path.join(game_path, '遊戲開始_tmp_工作區域 1.png')
-light_button_path = os.path.join(game_path, 'button_light.png')
-dark_button_path = os.path.join(game_path, 'button_dark.png')
-duck_path = os.path.join(game_path, '鴨子騎車.PNG')
+start_img_path = './素材/start_game/遊戲開始_tmp_工作區域 1.png'
+light_button_path = './素材/start_game/button_light.png'
+dark_button_path = './素材/start_game/button_dark.png'
+duck_path = './素材/start_game/鴨子騎車.png'
 
 # 變數
 WHITE = (255,255,255)
