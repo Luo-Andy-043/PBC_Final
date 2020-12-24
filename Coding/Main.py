@@ -8,7 +8,7 @@ os.chdir(working_path)
 start_img_path = './素材/start_game/遊戲開始.png'
 light_button_path = './素材/start_game/button_light.png'
 dark_button_path = './素材/start_game/button_dark.png'
-duck_path = './素材/start_game/鴨子騎車.png'
+start_guan_path = './素材/start_game/管管和腳踏車.png'
 
 # 變數
 WHITE = (255,255,255)
@@ -25,11 +25,14 @@ pygame.display.set_caption('管管大冒險')
 bg = pygame.Surface(screen.get_size()).convert()
 bg.fill(WHITE)
 
-# 載入「開始遊戲」圖片
+# 載入「開始遊戲」圖片、管管
 start_img = pygame.image.load(start_img_path)
 start_img.convert_alpha()
 start_img = pygame.transform.smoothscale(start_img, screen_size)
+GUAN = pygame.image.load(start_guan_path).convert_alpha()
+GUAN = pygame.transform.smoothscale(GUAN, (414,234))
 screen.blit(start_img,(0,0))
+screen.blit(GUAN, (250, 300))
 
 # 載入「START」按鈕
 light_button = pygame.image.load(light_button_path)
@@ -53,7 +56,6 @@ while running:
     for event in pygame.event.get():
         # 使用者關閉視窗
         if event.type == pygame.QUIT:
-            quit_game = True
             running = False
 
     # 游標在按鈕上時變色
@@ -79,8 +81,8 @@ class Player(pygame.sprite.Sprite):
     '''角色 Sprite'''
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(duck_path).convert_alpha()
-        self.image = pygame.transform.smoothscale(self.image, (80,80))
+        self.image = pygame.image.load(start_guan_path).convert_alpha()
+        self.image = pygame.transform.smoothscale(self.image, (192,108))
         # self.image.set_colorkey(WHITE)
         self.rect = self.image.get_rect()
         self.rect.center = (480, 350)
@@ -143,7 +145,7 @@ all_sprites.add(player)
 
 # MainLoop
 running = True
-while running and not quit_game:
+while running:
     clock.tick(60)
 
     for event in pygame.event.get():
