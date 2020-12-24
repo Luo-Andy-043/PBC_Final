@@ -1,17 +1,20 @@
 import pygame, os
 
+# 更正程式工作位置
+working_path = os.path.dirname(__file__)
+os.chdir(working_path)
+
 # 路徑
-game_path = os.path.dirname(__file__)
-start_img_path = os.path.join(game_path, '遊戲開始_tmp_工作區域 1.png')
-light_button_path = os.path.join(game_path, 'button_light.png')
-dark_button_path = os.path.join(game_path, 'button_dark.png')
-duck_path = os.path.join(game_path, '鴨子騎車.PNG')
+start_img_path = './素材/start_game/遊戲開始.png'
+light_button_path = './素材/start_game/button_light.png'
+dark_button_path = './素材/start_game/button_dark.png'
+duck_path = './素材/start_game/鴨子騎車.png'
 
 # 變數
 WHITE = (255,255,255)
 screen_size = (960, 540)
-start_button_length, start_button_height = 196, 115
-start_button_x, start_button_y = 640, 270
+start_button_length, start_button_height = 159, 92
+start_button_x, start_button_y = 550, 270
 
 # 啟動pygame
 pygame.init()
@@ -50,7 +53,9 @@ while running:
     for event in pygame.event.get():
         # 使用者關閉視窗
         if event.type == pygame.QUIT:
+            quit_game = True
             running = False
+
     # 游標在按鈕上時變色
     mouse = pygame.mouse.get_pos()
     hover = start_button_x <= mouse[0] <= start_button_x+start_button_length and \
@@ -138,7 +143,7 @@ all_sprites.add(player)
 
 # MainLoop
 running = True
-while running:
+while running and not quit_game:
     clock.tick(60)
 
     for event in pygame.event.get():
