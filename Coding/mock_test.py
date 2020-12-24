@@ -1,10 +1,10 @@
+import pygame, os
+
+# 修正程式作業位置
+working_path = os.path.dirname(__file__)
+os.chdir(working_path)
+
 if __name__ == '__main__':
-    import pygame, os
-
-    # 修正程式作業位置
-    working_path = os.path.dirname(__file__)
-    os.chdir(working_path)
-
     # 啟動pygame
     pygame.init()
 
@@ -14,7 +14,7 @@ if __name__ == '__main__':
     screen.fill((255,255,255))
 
 class little_game:
-    
+
     def mock_test(self):
         # 載入寫考卷圖片
         pic0 = pygame.image.load('./素材/考卷/0.png')
@@ -75,6 +75,7 @@ class little_game:
 
 play = little_game()
 play.mock_test()
-if __name__ == '__maun__':
+
+if __name__ == '__main__':
     pygame.quit()
     

@@ -8,6 +8,10 @@ os.chdir(working_path)
 # 啟動pygame
 pygame.init()
 
+# 變數
+WHITE = (255,255,255)
+BLACK = (0,0,0)
+
 # 建立視窗
 screen_size = (960, 540)
 screen = pygame.display.set_mode(screen_size)
@@ -19,33 +23,34 @@ background.convert()
 background.fill((0,0,0,128))  # 最後的值：透明度
 screen.blit(background,(0,0))
 
-# 建立 Class 對話框
-class DialogBox:
+# 載入圖片
+box_img = pygame.image.load('./素材/dialog_box/box.png').convert_alpha()
+box_img = pygame.transform.smoothscale(box_img, (500,160))
+head_background = pygame.image.load('./素材/dialog_box/head_background.png').convert_alpha()
+head_background = pygame.transform.smoothscale(head_background, (157, 200))
+select_button_A = pygame.image.load('./素材/dialog_box/select_button_A.png').convert_alpha()
+select_button_A = pygame.transform.smoothscale(select_button_A, (110, 160))
+select_button_B = pygame.image.load('./素材/dialog_box/select_button_B.png').convert_alpha()
+select_button_B = pygame.transform.smoothscale(select_button_B, (110, 160))
 
-    # 載入對話框
-    box_img = pygame.image.load('./素材/dialog_box/box.png')
-    box_img = pygame.transform.smoothscale(box_img, (500,160))
-    box_img.convert_alpha()
+# 載入字體
+font = pygame.font.Font("./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf", 28)
 
-    # 載入頭像背景
-    head_background = pygame.image.load('./素材/dialog_box/head_background.png')
-    head_background = pygame.transform.smoothscale(head_background, (157, 200))
-    head_background.convert_alpha()
+class DialogBox():
+    '''建立對話框class'''
 
-    # 載入字體
-    font = pygame.font.Font("./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf", 28)
-
-
-    # 初始化屬性
-    def __init__(self, person_head, person_name, text):
+    def __init__(self, person_head, person_name, text_path):
+        '''初始化屬性'''
         self.person_head = './素材/dialog_box/head/' + person_head + '.png' # 頭像路徑
         self.person_name = person_name  # 名稱
-        self.text = text                # 要顯示的話，應該要是一個list
+        # 講話內容
+        with open(text_path, 'r', encoding = 'utf-8') as text:
+            self.text_file = text.readlines()
+        self.box_img = box_img
+        self.head_background = head_background
 
-
-    # 顯示對話框的method
     def show_box(self):
-
+        '''顯示對話框的method'''
         # 擷取螢幕，準備變暗
         # screen_transparent = screen.convert_alpha()
 
@@ -56,11 +61,9 @@ class DialogBox:
         screen.blit(self.head_background, (20,290))
         screen.blit(self.person_head, (40,340))
 
-
         # 把XX說貼上去
-
         self.person_name = self.person_name + "說："
-        self.person_name = self.font.render(self.person_name, True, (255,255,255))
+        self.person_name = font.render(self.person_name, True, WHITE)
         screen.blit(self.person_name, (70,490))
 
         # 把box貼上去
@@ -68,51 +71,55 @@ class DialogBox:
 
     # 顯示文字
     def show_text(self):
+        '''字數上限：16字'''
         # 將一句話拆分成list，顯示一個一個字的效果
-        for i in range(len(self.text)):
-            self.text[i] = self.text[i].split()
+        for aline in self.text_file:       # 每一句話
+            '''以覆蓋方式刪除上一句'''
+            screen.blit(self.box_img, (210,365))
+            for j in range(len(aline)):    # 每句話的每個字
+                sentence = font.render(aline[:j+1], True, BLACK)
+                screen.blit(sentence, (250,425))
+                pygame.display.update()
+                pygame.time.delay(200)
 
-        # 開始用每一句話做render
-        for i in self.text:
-
-            # 每一句話的每一個字
-            for j in range(len(i)):
-
-                if j != len(i) - 1:  # 如果一句話還沒render完
-                    sentence = self.font.render(i[:j+1], True, (131,31,40))
-                    screen.blit(sentence, (260,400))
-                    pygame.display.update()
-                    pygame.time.delay(500)
-
-                else:                # 如果render完了
-                    dialog_clock = pygame.time.Clock()
+                # 如果一句render完了
+                if j == len(aline)-1:
                     waiting = True
+                    last_line = self.text_file[-1]
                     while waiting:
-                        dialog_clock.tick(60)
                         for event in pygame.event.get():
                             if event.type == pygame.MOUSEBUTTONDOWN:
-                                if event.button == 1:
+                                if event.button == 1:  # 按下左鍵
                                     waiting = False
+                        if aline == self.text_file[-1]:
+                            waiting = False
+
+    # 顯示整個對話框
+    def show_dialog(self, select_mode = False):
+        '''整合「畫出框框」跟「畫出文字」'''
+        # 預設沒有選項按鈕
+        self.select_mode = select_mode
+
+        # 如果有選項按鈕
+        if select_mode is True:
+            screen.blit(select_button_A, (720, 365))  # 左按鈕
+            screen.blit(select_button_B, (840, 365))  # 右按鈕
+
+        self.show_box()
+        self.show_text()
 
 
 # 建立開始的「管管對話框」物件實驗看看
-guanguan_start = DialogBox("guanguan", "管管", ["原來...", "你就是台大生嗎...."])
-
-guanguan_start.show_box()
-guanguan_start.show_text()
-
+# guanguan_start = DialogBox("guanguan", "管管", 'C:\\Users\\元G\\Desktop\\guan_say.txt')
+# guanguan_start.show_dialog()
 
 # 設定計時器、刷新螢幕的迴圈
-clock = pygame.time.Clock()
-running = True
-
-
-while running:
-    clock.tick(60)
-    pygame.display.update()
-    for event in pygame.event.get():
+# running = True
+# while running:
+    # pygame.display.update()
+    # for event in pygame.event.get():
         # 使用者關閉視窗
-        if event.type == pygame.QUIT:
-            running = False
+        # if event.type == pygame.QUIT:
+            # running = False
 
-pygame.quit()
+# pygame.quit()
