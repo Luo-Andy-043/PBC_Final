@@ -10,7 +10,7 @@ if __name__ == '__main__':
 
     # 建立視窗
     screen = pygame.display.set_mode((1120,630))
-    pygame.display.set_caption('Mock test')
+    pygame.display.set_caption('Game')
     screen.fill((255,255,255))
 
 class little_game:
@@ -34,9 +34,10 @@ class little_game:
         while run:
             pygame.time.delay(100)
             # clock.tick(30)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    run = False
+            if __name__ == '__main__':
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        run = False
 
             if 1 <= i <= 5:
                 # 每隔一段時間增加一層
@@ -57,24 +58,44 @@ class little_game:
 
                 # 如果還沒到頂就再往上
                 if 0 < i <= 5:
-                    test[i] = pygame.transform.smoothscale(test[i], (960, 540))
+                    test[i] = pygame.transform.smoothscale(test[i], (1120,630))
                     screen.blit(test[i], (0,0))
                     pygame.display.update()
 
             # 到頂ㄌ就掰掰
             elif i > 5:
-                end = pygame.transform.smoothscale(end, (960,540))
+                end = pygame.transform.smoothscale(end, (1120,630))
                 screen.blit(end, (0,0))
                 pygame.display.update()
 
             # 寫完就贏ㄌ 耶
             else:
-                win = pygame.transform.smoothscale(win, (960,540))
+                win = pygame.transform.smoothscale(win, (1120,630))
                 screen.blit(win, (0,0))
                 pygame.display.update()
+    
+    def math(self):
+        run = True
+        while run:
+            if __name__ == '__main__':
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        run = False
+            
+            kitchen = pygame.image.load('./素材/煎蛋/廚房背景.png')
+            egg = pygame.image.load('./素材/煎蛋/生蛋.png')
+            kitchen = pygame.transform.smoothscale(kitchen, (1120, 630))
+            egg = pygame.transform.smoothscale(egg, (135, 100))
+            screen.blit(kitchen, (0,0))
+            screen.blit(egg, (700,350))
+            pygame.display.update()
+            
 
+
+# 玩遊戲
 play = little_game()
-play.mock_test()
-if __name__ == '__maun__':
-    pygame.quit()
+play.math()
+
+
+pygame.quit()
     
