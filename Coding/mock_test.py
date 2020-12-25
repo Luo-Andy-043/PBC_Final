@@ -108,7 +108,6 @@ class little_game:
                             egg_pos = position[0]-67.5, position[1]-50
                 # 按住蛋可以拖曳
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    print('c')
                     if event.button == 1 and egg_pos[0]-67.5 <= position[0] <= egg_pos[0]+67.5 and egg_pos[1]-50 <= position[1] <= egg_pos[1]+50:
                         move_egg = True
                 if event.type == pygame.MOUSEBUTTONUP:
@@ -140,7 +139,6 @@ class little_game:
                 for event in pygame.event.get():
                     position = pygame.mouse.get_pos()
                     if event.type == pygame.MOUSEBUTTONDOWN:
-                        print('b')
                         if event.button == 1 and okegg_pos[0]-67.5 <= position[0] <= okegg_pos[0]+67.5 and okegg_pos[1]-50 <= position[1] <= okegg_pos[1]+50:
                             move_ok_egg = True
                     if event.type == pygame.MOUSEBUTTONUP:
@@ -148,13 +146,12 @@ class little_game:
                             move_ok_egg = False
                         
             if move_ok_egg:
-                print('hi')
                 okegg_pos = pygame.mouse.get_pos()
             
             if ok_egg_appear:
                 ok_egg = pygame.transform.smoothscale(ok_egg, (135, 100))
                 screen.blit(ok_egg, (okegg_pos[0]-67.5, okegg_pos[1]-50))
-                pygame.draw.rect(screen, (0,0,255),(okegg_pos[0]-67.5,okegg_pos[1]-50,135,100),0)
+                # pygame.draw.rect(screen, (0,0,255),(okegg_pos[0]-67.5,okegg_pos[1]-50,135,100),0)
  
             pygame.display.update()
             
