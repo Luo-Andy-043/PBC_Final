@@ -9,7 +9,10 @@ os.chdir(working_path)
 start_img_path = './素材/start_game/遊戲開始.png'
 light_button_path = './素材/start_game/button_light.png'
 dark_button_path = './素材/start_game/button_dark.png'
-start_guan_path = './素材/start_game/管管和腳踏車.png'
+start_guan_path_l = './素材/start_game/管管腳踏車（去背）_左.png'
+start_guan_path_r = './素材/start_game/管管腳踏車（去背）_右.png'
+menu_music_path = './素材/music/menu_music.wav'
+game_music_path = './素材/music/game_music.mp3'
 
 # 變數
 WHITE = (255, 255, 255)
@@ -20,6 +23,7 @@ start_button_x, start_button_y = 550, 270
 
 # 啟動pygame
 pygame.init()
+pygame.mixer.init()
 
 # 建立視窗、畫布
 screen = pygame.display.set_mode(screen_size)
@@ -31,10 +35,11 @@ bg.fill(WHITE)
 start_img = pygame.image.load(start_img_path)
 start_img.convert_alpha()
 start_img = pygame.transform.smoothscale(start_img, screen_size)
-GUAN = pygame.image.load(start_guan_path).convert_alpha()
-GUAN = pygame.transform.smoothscale(GUAN, (414,234))
+GUAN_l = pygame.image.load(start_guan_path_l).convert_alpha()
+GUAN_l = pygame.transform.smoothscale(GUAN_l, (414,234))
+GUAN_r = pygame.image.load(start_guan_path_r).convert_alpha()
 screen.blit(start_img,(0,0))
-screen.blit(GUAN, (250, 300))
+screen.blit(GUAN_l, (250, 300))
 
 # 載入「START」按鈕
 light_button = pygame.image.load(light_button_path)
@@ -48,7 +53,7 @@ def fadeout(color = BLACK):
     '''淡出成全黑'''
     fadeout = pygame.Surface(screen_size).convert()
     fadeout.fill(color)
-    for i in range(200):
+    for i in range(150):
         fadeout.set_alpha(i)
         screen.blit(fadeout, (0,0))
         pygame.display.update()
@@ -62,6 +67,12 @@ pygame.display.update()
 clock = pygame.time.Clock()
 running = True
 quit_game = False
+
+# 音樂
+menu_music = pygame.mixer.music.load(menu_music_path)
+# menu_music.pygame.mixer.music.set_volumn(0.5)
+pygame.mixer.music.play(-1)
+
 while running:
     clock.tick(60)
 
@@ -95,7 +106,7 @@ class Player(pygame.sprite.Sprite):
     '''角色 Sprite'''
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(start_guan_path).convert_alpha()
+        self.image = pygame.image.load(start_guan_path_l).convert_alpha()
         self.image = pygame.transform.smoothscale(self.image, (192,108))
         # self.image.set_colorkey(WHITE)
         self.rect = self.image.get_rect()
@@ -110,6 +121,9 @@ class Player(pygame.sprite.Sprite):
 
         # 左鍵
         if keystate[pygame.K_LEFT]:
+            # 姿勢向左
+            self.image = GUAN_l
+
             self.speedx -= accer
             if self.speedx <= -6.5:
                 self.speedx = -6.5
@@ -120,6 +134,9 @@ class Player(pygame.sprite.Sprite):
 
         # 右鍵
         if keystate[pygame.K_RIGHT]:
+            # 姿勢向右
+            self.image = GUAN_r
+
             self.speedx += accer
             if self.speedx >= 6.5:
                 self.speedx = 6.5
@@ -152,26 +169,26 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.speedy
 
 # Opening
-running = True
 opening.opening()
-while running:
-    for event in pygame.event.get():
-        # 使用者關閉視窗
-        if event.type == pygame.QUIT:
-            running = False
-            quit_game = True
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:  # 按左鍵
-                running = False
-                fadeout()
+fadeout()
+pygame.mixer.music.stop()
+pygame.mixer.music.unload()
 
 # 精靈設定
 all_sprites = pygame.sprite.Group()
 player = Player()
 all_sprites.add(player)
+GUAN_r = pygame.transform.smoothscale(GUAN_r, (192,108))
+GUAN_l = pygame.transform.smoothscale(GUAN_l, (192,108))
 
 # MainLoop
 running = True
+
+# 音樂
+game_music = pygame.mixer.music.load(game_music_path)
+# game_music.pygame.mixer.music.set_volumn(0.5)
+pygame.mixer.music.play(-1)
+
 while running and quit_game is False:
     clock.tick(60)
 
@@ -193,4 +210,6 @@ while running and quit_game is False:
     # 畫布更新
     pygame.display.update()
 
+pygame.mixer.music.stop()
+pygame.mixer.music.unload()
 pygame.quit()
