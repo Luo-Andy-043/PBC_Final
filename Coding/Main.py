@@ -11,7 +11,8 @@ dark_button_path = './素材/start_game/button_dark.png'
 start_guan_path = './素材/start_game/管管和腳踏車.png'
 
 # 變數
-WHITE = (255,255,255)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
 screen_size = (960, 540)
 start_button_length, start_button_height = 159, 92
 start_button_x, start_button_y = 550, 270
@@ -42,6 +43,16 @@ start_button.convert_alpha()
 start_button = pygame.transform.smoothscale(start_button, (start_button_length, start_button_height))
 screen.blit(start_button, (start_button_x, start_button_y))
 
+def fadeout(color = BLACK):
+    '''淡出成全黑'''
+    fadeout = pygame.Surface(screen_size).convert()
+    fadeout.fill(color)
+    for i in range(200):
+        fadeout.set_alpha(i)
+        screen.blit(fadeout, (0,0))
+        pygame.display.update()
+        pygame.time.delay(10)
+
 # 更新
 pygame.display.update()
 
@@ -49,7 +60,7 @@ pygame.display.update()
 # MainLoop
 clock = pygame.time.Clock()
 running = True
-
+quit_game = False
 while running:
     clock.tick(60)
 
@@ -57,6 +68,7 @@ while running:
         # 使用者關閉視窗
         if event.type == pygame.QUIT:
             running = False
+            quit_game = True
 
     # 游標在按鈕上時變色
     mouse = pygame.mouse.get_pos()
@@ -73,6 +85,7 @@ while running:
 
     # 按下按鈕，結束開啟頁面
     if hover and pygame.mouse.get_pressed()[0] is True:
+        fadeout()
         running = False
 
 '''進入地圖'''
@@ -145,7 +158,7 @@ all_sprites.add(player)
 
 # MainLoop
 running = True
-while running:
+while running and quit_game is False:
     clock.tick(60)
 
     for event in pygame.event.get():
