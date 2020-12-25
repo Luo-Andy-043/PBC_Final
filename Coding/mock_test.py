@@ -160,7 +160,7 @@ class little_game:
             
 
 
-# 玩遊戲
+# 玩遊戲!
 play = little_game()
 play.math()
 
