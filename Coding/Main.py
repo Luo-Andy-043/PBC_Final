@@ -48,7 +48,7 @@ def fadeout(color = BLACK):
     '''淡出成全黑'''
     fadeout = pygame.Surface(screen_size).convert()
     fadeout.fill(color)
-    for i in range(200):
+    for i in range(150):
         fadeout.set_alpha(i)
         screen.blit(fadeout, (0,0))
         pygame.display.update()
@@ -152,18 +152,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.speedy
 
 # Opening
-running = True
 opening.opening()
-while running:
-    for event in pygame.event.get():
-        # 使用者關閉視窗
-        if event.type == pygame.QUIT:
-            running = False
-            quit_game = True
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:  # 按左鍵
-                running = False
-                fadeout()
+fadeout()
 
 # 精靈設定
 all_sprites = pygame.sprite.Group()
