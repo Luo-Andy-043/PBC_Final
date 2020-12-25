@@ -74,7 +74,7 @@ class little_game:
                 screen.blit(win, (0,0))
                 pygame.display.update()
     
-    def math(self):
+    def egg_game(self):
         move_egg = False
         move_ok_egg = False
         egg_pos = 0, 0
@@ -106,13 +106,17 @@ class little_game:
                         if event.button == 1:
                             egg_appear = True
                             egg_pos = position[0]-67.5, position[1]-50
-                # 按住蛋可以拖曳
+                # 按住蛋/熟的蛋可以拖曳
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1 and egg_pos[0]-67.5 <= position[0] <= egg_pos[0]+67.5 and egg_pos[1]-50 <= position[1] <= egg_pos[1]+50:
-                        move_egg = True
+                    if event.button == 1:
+                        if egg_pos[0]-67.5 <= position[0] <= egg_pos[0]+67.5 and egg_pos[1]-50 <= position[1] <= egg_pos[1]+50:
+                            move_egg = True
+                        if ok_egg_appear == True and okegg_pos[0]-67.5 <= position[0] <= okegg_pos[0]+67.5 and okegg_pos[1]-50 <= position[1] <= okegg_pos[1]+50:
+                            move_ok_egg = True
                 if event.type == pygame.MOUSEBUTTONUP:
                     if event.button == 1:
                         move_egg = False
+                        move_ok_egg = False
             if move_egg:
                 egg_pos = pygame.mouse.get_pos()
 
@@ -135,16 +139,7 @@ class little_game:
             elif raw_egg_appear and cook > 40:
                 ok_egg_appear = True
                 
-                # 熟了之後蛋就可以動ㄌ
-                for event in pygame.event.get():
-                    position = pygame.mouse.get_pos()
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        if event.button == 1 and okegg_pos[0]-67.5 <= position[0] <= okegg_pos[0]+67.5 and okegg_pos[1]-50 <= position[1] <= okegg_pos[1]+50:
-                            move_ok_egg = True
-                    if event.type == pygame.MOUSEBUTTONUP:
-                        if event.button == 1:
-                            move_ok_egg = False
-                        
+            # 熟了之後動蛋     
             if move_ok_egg:
                 okegg_pos = pygame.mouse.get_pos()
             
@@ -159,7 +154,7 @@ class little_game:
 
 # 玩遊戲!
 play = little_game()
-play.math()
+play.egg_game()
 
 
 pygame.quit()
