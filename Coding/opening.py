@@ -20,19 +20,19 @@ screen_size = (960, 540)
 screen = pygame.display.set_mode(screen_size)
 pygame.display.set_caption('管管大冒險')
 
+# 載入圖片
+bg1 = pygame.image.load(bg1_path).convert_alpha()
+bg1 = pygame.transform.smoothscale(bg1, screen_size)
+bg2 = pygame.image.load(bg2_path).convert_alpha()
+bg2 = pygame.transform.smoothscale(bg2, screen_size)
+bg3 = pygame.image.load(bg3_path).convert_alpha()
+bg3 = pygame.transform.smoothscale(bg3, screen_size)
+bg4 = pygame.image.load(bg4_path).convert_alpha()
+bg4 = pygame.transform.smoothscale(bg4, screen_size)
+switcher = [bg1, bg2, bg3, bg4]
+
 def opening():
     '''描述故事情節'''
-    # 載入圖片
-    bg1 = pygame.image.load(bg1_path).convert_alpha()
-    bg1 = pygame.transform.smoothscale(bg1, screen_size)
-    bg2 = pygame.image.load(bg2_path).convert_alpha()
-    bg2 = pygame.transform.smoothscale(bg2, screen_size)
-    bg3 = pygame.image.load(bg3_path).convert_alpha()
-    bg3 = pygame.transform.smoothscale(bg3, screen_size)
-    bg4 = pygame.image.load(bg4_path).convert_alpha()
-    bg4 = pygame.transform.smoothscale(bg4, screen_size)
-    switcher = [bg1, bg2, bg3, bg4]
-
     # 畫上圖片
     screen.blit(bg1, (0,0))
     pygame.display.update()
