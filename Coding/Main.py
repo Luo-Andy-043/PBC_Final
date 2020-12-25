@@ -9,7 +9,8 @@ os.chdir(working_path)
 start_img_path = './素材/start_game/遊戲開始.png'
 light_button_path = './素材/start_game/button_light.png'
 dark_button_path = './素材/start_game/button_dark.png'
-start_guan_path = './素材/start_game/管管和腳踏車.png'
+start_guan_path_l = './素材/start_game/管管腳踏車（去背）_左.png'
+start_guan_path_r = './素材/start_game/管管腳踏車（去背）_右.png'
 
 # 變數
 WHITE = (255, 255, 255)
@@ -31,10 +32,11 @@ bg.fill(WHITE)
 start_img = pygame.image.load(start_img_path)
 start_img.convert_alpha()
 start_img = pygame.transform.smoothscale(start_img, screen_size)
-GUAN = pygame.image.load(start_guan_path).convert_alpha()
-GUAN = pygame.transform.smoothscale(GUAN, (414,234))
+GUAN_l = pygame.image.load(start_guan_path_l).convert_alpha()
+GUAN_l = pygame.transform.smoothscale(GUAN_l, (414,234))
+GUAN_r = pygame.image.load(start_guan_path_r).convert_alpha()
 screen.blit(start_img,(0,0))
-screen.blit(GUAN, (250, 300))
+screen.blit(GUAN_l, (250, 300))
 
 # 載入「START」按鈕
 light_button = pygame.image.load(light_button_path)
@@ -62,6 +64,7 @@ pygame.display.update()
 clock = pygame.time.Clock()
 running = True
 quit_game = False
+
 while running:
     clock.tick(60)
 
@@ -95,7 +98,7 @@ class Player(pygame.sprite.Sprite):
     '''角色 Sprite'''
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(start_guan_path).convert_alpha()
+        self.image = pygame.image.load(start_guan_path_l).convert_alpha()
         self.image = pygame.transform.smoothscale(self.image, (192,108))
         # self.image.set_colorkey(WHITE)
         self.rect = self.image.get_rect()
@@ -110,6 +113,9 @@ class Player(pygame.sprite.Sprite):
 
         # 左鍵
         if keystate[pygame.K_LEFT]:
+            # 姿勢向左
+            self.image = GUAN_l
+
             self.speedx -= accer
             if self.speedx <= -6.5:
                 self.speedx = -6.5
@@ -120,6 +126,9 @@ class Player(pygame.sprite.Sprite):
 
         # 右鍵
         if keystate[pygame.K_RIGHT]:
+            # 姿勢向右
+            self.image = GUAN_r
+
             self.speedx += accer
             if self.speedx >= 6.5:
                 self.speedx = 6.5
@@ -159,6 +168,8 @@ fadeout()
 all_sprites = pygame.sprite.Group()
 player = Player()
 all_sprites.add(player)
+GUAN_r = pygame.transform.smoothscale(GUAN_r, (192,108))
+GUAN_l = pygame.transform.smoothscale(GUAN_l, (192,108))
 
 # MainLoop
 running = True
