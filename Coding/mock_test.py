@@ -1,10 +1,10 @@
-import pygame, os
-
-# 修正程式作業位置
-working_path = os.path.dirname(__file__)
-os.chdir(working_path)
-
 if __name__ == '__main__':
+    import pygame, os
+
+    # 修正程式作業位置
+    working_path = os.path.dirname(__file__)
+    os.chdir(working_path)
+
     # 啟動pygame
     pygame.init()
 
@@ -14,7 +14,7 @@ if __name__ == '__main__':
     screen.fill((255,255,255))
 
 class little_game:
-
+    
     def mock_test(self):
         # 載入寫考卷圖片
         pic0 = pygame.image.load('./素材/考卷/0.png')
@@ -78,9 +78,10 @@ class little_game:
         move_egg = False
         move_ok_egg = False
         egg_pos = 0, 0
-        okegg_pos = 0, 0
+        okegg_pos = 290, 445
         egg_appear = False
         raw_egg_appear = False
+        ok_egg_appear = False
         cook = 0
         run = True
         while run:
@@ -99,14 +100,15 @@ class little_game:
             
             for event in pygame.event.get():
                 position = pygame.mouse.get_pos()
-                 # 如果在蛋區點一下就會出現一顆蛋
+                # 如果在蛋區點一下就會出現一顆蛋
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if 785 <= position[0] <= 974 and 327 <= position[1] <= 553:
                         if event.button == 1:
                             egg_appear = True
                             egg_pos = position[0]-67.5, position[1]-50
-            # 按住蛋可以拖曳
+                # 按住蛋可以拖曳
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    print('c')
                     if event.button == 1 and egg_pos[0]-67.5 <= position[0] <= egg_pos[0]+67.5 and egg_pos[1]-50 <= position[1] <= egg_pos[1]+50:
                         move_egg = True
                 if event.type == pygame.MOUSEBUTTONUP:
@@ -128,50 +130,40 @@ class little_game:
             if raw_egg_appear:
                 cook += 1
             # 煮一段時間之後生蛋就會變熟蛋
-            if raw_egg_appear and cook <= 80:
+            if raw_egg_appear and cook <= 40:
                 raw_egg = pygame.transform.smoothscale(raw_egg, (135, 100))
                 screen.blit(raw_egg, (230,400))
-            elif raw_egg_appear and 80 < cook:
-                ok_egg = pygame.transform.smoothscale(ok_egg, (135, 100))
-                screen.blit(ok_egg, (230,400))
+            elif raw_egg_appear and cook > 40:
+                ok_egg_appear = True
+                
+                # 熟了之後蛋就可以動ㄌ
+                for event in pygame.event.get():
+                    position = pygame.mouse.get_pos()
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        print('b')
+                        if event.button == 1 and okegg_pos[0]-67.5 <= position[0] <= okegg_pos[0]+67.5 and okegg_pos[1]-50 <= position[1] <= okegg_pos[1]+50:
+                            move_ok_egg = True
+                    if event.type == pygame.MOUSEBUTTONUP:
+                        if event.button == 1:
+                            move_ok_egg = False
+                        
+            if move_ok_egg:
+                print('hi')
+                okegg_pos = pygame.mouse.get_pos()
             
-            # 熟了之後蛋就可以動ㄌ
-            for event in pygame.event.get():
-                position = pygame.mouse.get_pos()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1 and okegg_pos[0] <= position[0] <= okegg_pos[0]+135 and okegg_pos[1] <= position[1] <= okegg_pos[1]+100:
-                        move_ok_egg = True
-                        okegg_pos = position[0]-67.5, position[1]-50
-                if event.type == pygame.MOUSEBUTTONUP:
-                    if event.button == 1:
-                        move_ok_egg = False
-            
-            if move_ok_egg and raw_egg_appear and 80 < cook:
+            if ok_egg_appear:
                 ok_egg = pygame.transform.smoothscale(ok_egg, (135, 100))
                 screen.blit(ok_egg, (okegg_pos[0]-67.5, okegg_pos[1]-50))
-            '''
-            position = pygame.mouse.get_pos()
-            print(position)
-            '''
-            '''
-            egg = pygame.transform.smoothscale(egg, (135, 100))
-            screen.blit(egg, (700,350))
-            '''
+                pygame.draw.rect(screen, (0,0,255),(okegg_pos[0]-67.5,okegg_pos[1]-50,135,100),0)
+ 
             pygame.display.update()
             
 
 
 # 玩遊戲
 play = little_game()
-<<<<<<< HEAD
 play.math()
 
 
 pygame.quit()
-=======
-play.mock_test()
-
-if __name__ == '__main__':
-    pygame.quit()
->>>>>>> 8b3acd3de3de5a74895416b38454ab6a2d372fef
     
