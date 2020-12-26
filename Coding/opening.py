@@ -3,7 +3,7 @@ from setting import *
 
 # 更正程式工作位置
 working_path = os.path.dirname(__file__)
-working_path="/Users/yichinhuang/Desktop/PBC_Final/PBC_Final/Coding"
+# working_path="/Users/yichinhuang/Desktop/PBC_Final/PBC_Final/Coding"
 os.chdir(working_path)
 
 # 啟動pygame

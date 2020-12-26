@@ -192,8 +192,6 @@ class GUAN(pygame.sprite.Sprite):
                 self.speedy = 0
 
         # 位移疊加速度
-        print(self.collide_with_walls(self.speedx, self.speedy))
-        print(self.rect.x + self.speedx)
         if not self.collide_with_walls(self.speedx, self.speedy):
             self.rect.x += self.speedx
             self.rect.y += self.speedy
