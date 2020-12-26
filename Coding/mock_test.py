@@ -255,6 +255,7 @@ class little_game:
             position = pygame.mouse.get_pos()
             win = pygame.image.load('./素材/考卷/win.png')
             
+            # 每一題點四個選項出現圈或叉
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
@@ -318,6 +319,7 @@ class little_game:
             if Q3 and played == False:
                 doggy.play()
                 played = True
+            
             # 畫選項格子
             # option1
             if 470 <= position[0] <= 720 and 230 <= position[1] <= 313:
@@ -377,6 +379,7 @@ class little_game:
                 answer14 = fontobj.render('哈巴狗', True, white)
                 screen.blit(answer14,(840,353))
             
+            # 點擊選項回應
             if correct1:
                 yes.play()
                 for i in range(waito):
@@ -405,7 +408,7 @@ class little_game:
                 correct3 = False
                 done = True
             
-            if done:
+            if done: # 三題都答玩ㄌ
                 win = pygame.transform.smoothscale(win, (1120,630))
                 screen.blit(win, (0,0))
             
@@ -436,17 +439,6 @@ class little_game:
                     screen.blit(wrong, (720,334))
                     pygame.display.update()
                 wrong4 = False
-            '''
-            if correct1:
-                screen.blit(right, (420,221))
-                one2two += 1
-            
-            if one2two == 30:
-                correct1 = False
-                Q1 = False
-                Q2 = True
-            '''
-
             
             pygame.display.update()
             
