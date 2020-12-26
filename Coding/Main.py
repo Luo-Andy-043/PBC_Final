@@ -121,9 +121,6 @@ class Player(pygame.sprite.Sprite):
 
         # 左鍵
         if keystate[pygame.K_LEFT]:
-            # 姿勢向左
-            self.image = GUAN_l
-
             self.speedx -= accer
             if self.speedx <= -6.5:
                 self.speedx = -6.5
@@ -134,9 +131,6 @@ class Player(pygame.sprite.Sprite):
 
         # 右鍵
         if keystate[pygame.K_RIGHT]:
-            # 姿勢向右
-            self.image = GUAN_r
-
             self.speedx += accer
             if self.speedx >= 6.5:
                 self.speedx = 6.5
@@ -165,8 +159,18 @@ class Player(pygame.sprite.Sprite):
             if self.speedy <= 0:
                 self.speedy = 0
 
+        # 位移疊加速度
         self.rect.x += self.speedx
         self.rect.y += self.speedy
+
+        # 方向向左/右，臉朝向左/右
+        if self.speedx < 0:
+            self.image = GUAN_l
+        elif self.speedx > 0:
+            self.image = GUAN_r
+        elif self.speedx == 0:
+            self.image = self.image
+
 
 # Opening
 opening.opening()
