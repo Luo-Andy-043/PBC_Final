@@ -1,6 +1,7 @@
 import pygame, os
 import opening
 from setting import *
+from map import *
 
 # 更正程式工作位置
 working_path = os.path.dirname(__file__)
@@ -16,9 +17,14 @@ class Game:
         pygame.mixer.init()
         self.screen = pygame.display.set_mode(screen_size)
         pygame.display.set_caption(TITLE)
-        self.all_sprites = pygame.sprite.Group()
         self.walls = pygame.sprite.Group()
         self.clock = pygame.time.Clock()
+        self.map = Map('./map.txt')
+        self.camera = Camera(self.map.width, self.map.height)
+        self.all_sprites = pygame.sprite.Group()
+        self.guan = GUAN(self)
+        self.all_sprites.add(self.guan)
+
 
         # all the paths
         self.start_img_path = './素材/start_game/遊戲開始.png'
@@ -41,8 +47,11 @@ class Game:
 
     def new(self):
         # start a new game
-        self.guan = GUAN(self)
-        self.all_sprites.add(self.guan)
+        for row, tiles in enumerate(self.map.data):
+            for col, tile in enumerate(tiles):
+                if tile == '1':
+                    Wall(self, col, row)
+        self.camera = Camera(self.map.width, self.map.height)
         self.run()
 
     def run(self):
@@ -64,7 +73,8 @@ class Game:
             self.screen.blit(self.bg_tmp, (0,0))
             self.draw_grid()
             self.events()
-            self.all_sprites.draw(self.screen)
+            for sprite in self.all_sprites:
+                self.screen.blit(sprite.image, self.camera.apply(sprite))
             self.update()
 
     def events(self):
@@ -82,6 +92,7 @@ class Game:
         # Game Loop - Update
         pygame.display.update()
         self.all_sprites.update()
+        self.camera.update(self.guan)
 
     def draw_grid(self):
         # draw the grids on the map
@@ -181,8 +192,8 @@ class GUAN(pygame.sprite.Sprite):
 
         # 位移疊加速度
         if not self.collide_with_walls(self.speedx, self.speedy):
-            self.rect.x += self.speedx * TILESIZE
-            self.rect.y += self.speedy * TILESIZE
+            self.rect.x += self.speedx
+            self.rect.y += self.speedy
         else:
             self.rect.x = self.rect.x + 1
             self.rect.y = self.rect.y + 1
@@ -197,7 +208,10 @@ class GUAN(pygame.sprite.Sprite):
 
     def collide_with_walls(self, speedx=0, speedy=0):
         for wall in self.game.walls:
-            if wall.rect.x >= self.rect.x + self.speedx*TILESIZE and wall.rect.y >= self.rect.y + self.speedy*TILESIZE:
+            print('wall.rect.x =', wall.rect.x)
+            print('self.rect.x + self.speedx =',self.rect.x + self.speedx )
+            if wall.rect.x == self.rect.x + self.speedx and wall.rect.y == self.rect.y + self.speedy:
+            # if wall.rect.x >= self.rect.x + self.speedx*TILESIZE and wall.rect.y >= self.rect.y + self.speedy*TILESIZE:
                 return True
         return False
 
@@ -213,6 +227,8 @@ class Wall(pygame.sprite.Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+
+
 
 Guans_friend = Game()
 Guans_friend.show_start_game()
