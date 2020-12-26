@@ -408,7 +408,7 @@ class little_game:
                 correct3 = False
                 done = True
             
-            if done: # 三題都答玩ㄌ
+            if done: # 三題都答完ㄌ
                 win = pygame.transform.smoothscale(win, (1120,630))
                 screen.blit(win, (0,0))
             
