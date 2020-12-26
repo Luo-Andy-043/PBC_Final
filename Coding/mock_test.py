@@ -195,10 +195,71 @@ class little_game:
                 screen.blit(win, (0,0))
             
             pygame.display.update()
-    # def guess_song(self):
+    
+    def guess_song(self):
         
+        # 載入圖片
+        machine = pygame.image.load('./素材/猜歌/機器.png')
+        
+        # 字型
+        fontobj = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 40)
+        
+        # 顏色
+        normal = (102,51,0)
+        light = (216,176,136)
+        white = (255,255,255)
+        
+        Q1 = False
+        Q2 = False
+        Q3 = False
+        run = True
+        while run:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+            
+            # 畫選項格子
+            position = pygame.mouse.get_pos()
+            # potion1
+            if 470 <= position[0] <= 720 and 230 <= position[1] <= 313:
+                pygame.draw.rect(screen, light, [470, 230, 250, 83], 0)
+            else:
+                pygame.draw.rect(screen, normal, [470, 230, 250, 83], 0)
+            # option2
+            if 770 <= position[0] <= 1020 and 230 <= position[1] <= 313:
+                pygame.draw.rect(screen, light, [770, 230, 250, 83], 0)
+            else:
+                pygame.draw.rect(screen, normal, [770, 230, 250, 83], 0)
+            # option3
+            if 470 <= position[0] <= 720 and 343 <= position[1] <= 426:
+                pygame.draw.rect(screen, light, [470, 343, 250, 83], 0)
+            else:
+                pygame.draw.rect(screen, normal, [470, 343, 250, 83], 0)
+            # option4
+            if 770 <= position[0] <= 1020 and 343 <= position[1] <= 426:
+                pygame.draw.rect(screen, light, [770, 343, 250, 83], 0)
+            else:
+                pygame.draw.rect(screen, normal, [770, 343, 250, 83], 0)
+            
+            # Q1
+            answer11 = fontobj.render('拔蘿蔔', True, white)
+            screen.blit(answer11,(540,240))
+            answer12 = fontobj.render('火車快飛', True, white)
+            screen.blit(answer12,(820,240))
+            answer13 = fontobj.render('小星星', True, white)
+            screen.blit(answer13,(540,353))
+            answer14 = fontobj.render('小蜜蜂', True, white)
+            screen.blit(answer14,(840,353))
+            
+            pygame.display.update()
+        
+            # 畫背景
+            screen.fill((252,245,216))
+            machine = pygame.transform.smoothscale(machine, (378,415))
+            screen.blit(machine, (75,140))
+            
 
 # 玩遊戲!
 play = little_game()
-play.egg_game()
+play.guess_song()
 pygame.quit()
