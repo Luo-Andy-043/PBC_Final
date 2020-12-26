@@ -83,6 +83,7 @@ class little_game:
         raw_egg_appear = False
         ok_egg_appear = False
         cook = 0
+        wait = 0
         eaten = 0
         run = True
         # 載入圖片
@@ -97,11 +98,20 @@ class little_game:
         swallow.set_volume(0.2)
         fry = pygame.mixer.Sound('./素材/煎蛋/煎蛋.mp3')
         fry.set_volume(0.2)
+        
+        # 載入字
+        fontobj = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 64)
 
         while run:
             # 畫廚房背景
             kitchen = pygame.transform.smoothscale(kitchen, (1120, 630))
             screen.blit(kitchen, (0,0))
+            
+            # 顯示已吃幾顆
+            textsurfaceobj = fontobj.render(str(eaten)+'/5', True, (0,0,0), (255,255,255))
+            textrectobj = textsurfaceobj.get_rect()
+            textrectobj.center = (970,100)
+            screen.blit(textsurfaceobj, textrectobj)
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -175,12 +185,18 @@ class little_game:
                 ok_egg = pygame.transform.smoothscale(ok_egg, (135, 100))
                 screen.blit(ok_egg, (okegg_pos[0]-67.5, okegg_pos[1]-50))
             
-            # 吃五顆蛋就過關
+            #延遲一下再顯示贏ㄉ畫面
             if eaten == 5:
+                wait += 1
+            
+            # 吃五顆蛋就過關
+            if wait > 10:
                 win = pygame.transform.smoothscale(win, (1120,630))
                 screen.blit(win, (0,0))
             
             pygame.display.update()
+    # def guess_song(self):
+        
 
 # 玩遊戲!
 play = little_game()
