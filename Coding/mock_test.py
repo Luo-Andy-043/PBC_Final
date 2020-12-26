@@ -3,7 +3,6 @@ if __name__ == '__main__':
 
     # 修正程式作業位置
     working_path = os.path.dirname(__file__)
-    working_path="/Users/yichinhuang/Desktop/PBC_Final/PBC_Final/Coding"
     os.chdir(working_path)
 
     # 啟動pygame
