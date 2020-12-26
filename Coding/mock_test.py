@@ -200,6 +200,22 @@ class little_game:
         
         # 載入圖片
         machine = pygame.image.load('./素材/猜歌/機器.png')
+        wrong = pygame.image.load('./素材/猜歌/叉.png')
+        wrong = pygame.transform.smoothscale(wrong, (100,100))
+        right = pygame.image.load('./素材/猜歌/圈.png')
+        right = pygame.transform.smoothscale(right, (100,100))
+        
+        # 載入音樂
+        lowbou = pygame.mixer.Sound('./素材/猜歌/拔蘿蔔前奏.mp3')
+        lowbou.set_volume(0.5)
+        three = pygame.mixer.Sound('./素材/猜歌/三輪車前奏.mp3')
+        three.set_volume(0.5)
+        doggy = pygame.mixer.Sound('./素材/猜歌/哈巴狗前奏.mp3')
+        doggy.set_volume(0.5)
+        yes = pygame.mixer.Sound('./素材/猜歌/正確.mp3')
+        yes.set_volume(0.5)
+        no = pygame.mixer.Sound('./素材/猜歌/答錯.mp3')
+        no.set_volume(1)
         
         # 字型
         fontobj = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 40)
@@ -209,54 +225,230 @@ class little_game:
         light = (216,176,136)
         white = (255,255,255)
         
-        Q1 = False
+        Q1 = True
         Q2 = False
         Q3 = False
+        option1 = False
+        option2 = False
+        option3 = False
+        option4 = False
+        # 以下編號為題號
+        correct1 = False
+        correct2 = False
+        correct3 = False
+        # 以下編號是位置
+        wrong1 = False
+        wrong2 = False
+        wrong3 = False
+        wrong4 = False
+        # one2two = 0
+        waito = 1500
+        waitx = 300
+        played = False
+        done = False
         run = True
         while run:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    run = False
-            
-            # 畫選項格子
-            position = pygame.mouse.get_pos()
-            # potion1
-            if 470 <= position[0] <= 720 and 230 <= position[1] <= 313:
-                pygame.draw.rect(screen, light, [470, 230, 250, 83], 0)
-            else:
-                pygame.draw.rect(screen, normal, [470, 230, 250, 83], 0)
-            # option2
-            if 770 <= position[0] <= 1020 and 230 <= position[1] <= 313:
-                pygame.draw.rect(screen, light, [770, 230, 250, 83], 0)
-            else:
-                pygame.draw.rect(screen, normal, [770, 230, 250, 83], 0)
-            # option3
-            if 470 <= position[0] <= 720 and 343 <= position[1] <= 426:
-                pygame.draw.rect(screen, light, [470, 343, 250, 83], 0)
-            else:
-                pygame.draw.rect(screen, normal, [470, 343, 250, 83], 0)
-            # option4
-            if 770 <= position[0] <= 1020 and 343 <= position[1] <= 426:
-                pygame.draw.rect(screen, light, [770, 343, 250, 83], 0)
-            else:
-                pygame.draw.rect(screen, normal, [770, 343, 250, 83], 0)
-            
-            # Q1
-            answer11 = fontobj.render('拔蘿蔔', True, white)
-            screen.blit(answer11,(540,240))
-            answer12 = fontobj.render('火車快飛', True, white)
-            screen.blit(answer12,(820,240))
-            answer13 = fontobj.render('小星星', True, white)
-            screen.blit(answer13,(540,353))
-            answer14 = fontobj.render('小蜜蜂', True, white)
-            screen.blit(answer14,(840,353))
-            
-            pygame.display.update()
-        
             # 畫背景
             screen.fill((252,245,216))
             machine = pygame.transform.smoothscale(machine, (378,415))
             screen.blit(machine, (75,140))
+            position = pygame.mouse.get_pos()
+            win = pygame.image.load('./素材/考卷/win.png')
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        if Q1:
+                            if 75 <= position[0] <= 453 and 140 <= position[1] <= 555:
+                                lowbou.stop()
+                                lowbou.play()
+                            if option1:
+                                correct1 = True
+                                lowbou.stop()
+                            elif option2:
+                                wrong2 = True
+                                lowbou.stop()
+                            elif option3:
+                                wrong3 = True
+                                lowbou.stop()
+                            elif option4:
+                                wrong4 = True
+                                lowbou.stop()
+                        if Q2:
+                            if 75 <= position[0] <= 453 and 140 <= position[1] <= 555:
+                                three.stop()
+                                three.play()
+                            if option1:
+                                wrong1 = True
+                                three.stop()
+                            elif option2:
+                                wrong2 = True
+                                three.stop()
+                            elif option3:
+                                correct2 = True
+                                three.stop()
+                            elif option4:
+                                wrong4 = True
+                                three.stop()
+                        if Q3:
+                            if 75 <= position[0] <= 453 and 140 <= position[1] <= 555:
+                                doggy.stop()
+                                doggy.play()
+                            if option1:
+                                wrong1 = True
+                                doggy.stop()
+                            elif option2:
+                                wrong2 = True
+                                doggy.stop()
+                            elif option3:
+                                wrong3 = True
+                                doggy.stop()
+                            elif option4:
+                                correct3 = True
+                                doggy.stop()
+            # 播音樂
+            if Q1 and played == False:
+                lowbou.play()
+                played = True
+            if Q2 and played == False:
+                three.play()
+                played = True
+            if Q3 and played == False:
+                doggy.play()
+                played = True
+            # 畫選項格子
+            # option1
+            if 470 <= position[0] <= 720 and 230 <= position[1] <= 313:
+                pygame.draw.rect(screen, light, [470, 230, 250, 83], 0)
+                option1 = True
+            else:
+                pygame.draw.rect(screen, normal, [470, 230, 250, 83], 0)
+                option1 = False
+            # option2
+            if 770 <= position[0] <= 1020 and 230 <= position[1] <= 313:
+                pygame.draw.rect(screen, light, [770, 230, 250, 83], 0)
+                option2 = True
+            else:
+                pygame.draw.rect(screen, normal, [770, 230, 250, 83], 0)
+                option2 = False
+            # option3
+            if 470 <= position[0] <= 720 and 343 <= position[1] <= 426:
+                pygame.draw.rect(screen, light, [470, 343, 250, 83], 0)
+                option3 = True
+            else:
+                pygame.draw.rect(screen, normal, [470, 343, 250, 83], 0)
+                option3 = False
+            # option4
+            if 770 <= position[0] <= 1020 and 343 <= position[1] <= 426:
+                pygame.draw.rect(screen, light, [770, 343, 250, 83], 0)
+                option4 = True
+            else:
+                pygame.draw.rect(screen, normal, [770, 343, 250, 83], 0)
+                option4 = False
+            
+            # 題目
+            if Q1:
+                answer11 = fontobj.render('拔蘿蔔', True, white)
+                screen.blit(answer11,(540,240))
+                answer12 = fontobj.render('火車快飛', True, white)
+                screen.blit(answer12,(820,240))
+                answer13 = fontobj.render('小星星', True, white)
+                screen.blit(answer13,(540,353))
+                answer14 = fontobj.render('小蜜蜂', True, white)
+                screen.blit(answer14,(840,353))
+            if Q2:
+                answer11 = fontobj.render('捕魚歌', True, white)
+                screen.blit(answer11,(540,240))
+                answer12 = fontobj.render('兩隻老虎', True, white)
+                screen.blit(answer12,(820,240))
+                answer13 = fontobj.render('三輪車', True, white)
+                screen.blit(answer13,(540,353))
+                answer14 = fontobj.render('潑水歌', True, white)
+                screen.blit(answer14,(840,353))
+            if Q3:
+                answer11 = fontobj.render('虎姑婆', True, white)
+                screen.blit(answer11,(540,240))
+                answer12 = fontobj.render('春神來了', True, white)
+                screen.blit(answer12,(820,240))
+                answer13 = fontobj.render('茉莉花', True, white)
+                screen.blit(answer13,(540,353))
+                answer14 = fontobj.render('哈巴狗', True, white)
+                screen.blit(answer14,(840,353))
+            
+            if correct1:
+                yes.play()
+                for i in range(waito):
+                    screen.blit(right, (420,221))
+                    pygame.display.update()
+                correct1 = False
+                Q1 = False
+                Q2 = True
+                played = False
+            
+            if correct2:
+                yes.play()
+                for i in range(waito):
+                    screen.blit(right, (420,334))
+                    pygame.display.update()
+                correct2 = False
+                Q2 = False
+                Q3 = True
+                played = False
+            
+            if correct3:
+                yes.play()
+                for i in range(waito):
+                    screen.blit(right, (720,334))
+                    pygame.display.update()
+                correct3 = False
+                done = True
+            
+            if done:
+                win = pygame.transform.smoothscale(win, (1120,630))
+                screen.blit(win, (0,0))
+            
+            if wrong1:
+                no.play()
+                for i in range(waitx):
+                    screen.blit(wrong, (420,221))
+                    pygame.display.update()
+                wrong1 = False
+            
+            if wrong2:
+                no.play()
+                for i in range(waitx):
+                    screen.blit(wrong, (720,221))
+                    pygame.display.update()
+                wrong2 = False
+            
+            if wrong3:
+                no.play()
+                for i in range(waitx):
+                    screen.blit(wrong, (420,334))
+                    pygame.display.update()
+                wrong3 = False
+            
+            if wrong4:
+                no.play()
+                for i in range(waitx):
+                    screen.blit(wrong, (720,334))
+                    pygame.display.update()
+                wrong4 = False
+            '''
+            if correct1:
+                screen.blit(right, (420,221))
+                one2two += 1
+            
+            if one2two == 30:
+                correct1 = False
+                Q1 = False
+                Q2 = True
+            '''
+
+            
+            pygame.display.update()
             
 
 # 玩遊戲!
