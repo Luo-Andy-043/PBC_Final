@@ -1,4 +1,5 @@
 import pygame, os
+from setting import *
 
 # 更正程式工作位置
 working_path = os.path.dirname(__file__)
@@ -13,12 +14,8 @@ bg2_path = './素材/opening/opening_bg_2.png'
 bg3_path = './素材/opening/opening_bg_3.png'
 bg4_path = './素材/opening/opening_bg_4.png'
 
-# 變數
-screen_size = (960, 540)
-
 # 建立視窗、畫布
 screen = pygame.display.set_mode(screen_size)
-pygame.display.set_caption('管管大冒險')
 
 # 載入圖片
 bg1 = pygame.image.load(bg1_path).convert_alpha()
