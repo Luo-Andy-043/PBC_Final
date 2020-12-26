@@ -5,6 +5,7 @@ from map import *
 
 # 更正程式工作位置
 working_path = os.path.dirname(__file__)
+#working_path="/Users/yichinhuang/Desktop/PBC_Final/PBC_Final/Coding"
 os.chdir(working_path)
 
 start_guan_path_l = './素材/start_game/管管腳踏車（去背）_左.png'
@@ -191,13 +192,22 @@ class GUAN(pygame.sprite.Sprite):
                 self.speedy = 0
 
         # 位移疊加速度
+        print(self.collide_with_walls(self.speedx, self.speedy))
+        print(self.rect.x + self.speedx)
         if not self.collide_with_walls(self.speedx, self.speedy):
             self.rect.x += self.speedx
             self.rect.y += self.speedy
         else:
-            self.rect.x = self.rect.x + 1
-            self.rect.y = self.rect.y + 1
-
+            if self.rect.x + self.speedx <=0:   
+                self.rect.x = self.rect.x + 1   
+            if self.rect.x + self.speedx >=940-3.5*TILESIZE:
+                self.rect.x = self.rect.x - 1
+            if self.rect.y + self.speedy <=0+TILESIZE:   
+                self.rect.y = self.rect.y + 1
+            if self.rect.y + self.speedy >=520-2.5*TILESIZE:
+                self.rect.y = self.rect.y - 1
+            #self.rect.y = self.rect.y + 1
+            
         # 方向向左/右，臉朝向左/右
         if self.speedx < 0:
             self.image = self.GUAN_l
@@ -207,12 +217,16 @@ class GUAN(pygame.sprite.Sprite):
             self.image = self.image
 
     def collide_with_walls(self, speedx=0, speedy=0):
-        for wall in self.game.walls:
-            print('wall.rect.x =', wall.rect.x)
-            print('self.rect.x + self.speedx =',self.rect.x + self.speedx )
-            if wall.rect.x == self.rect.x + self.speedx and wall.rect.y == self.rect.y + self.speedy:
+        #print(self.game.walls)
+        #for wall in self.game.walls:
+         #   print('wall.rect.x =', wall.rect.x)
+            #print('self.rect.x + self.speedx =',self.rect.x + self.speedx )
+         #   if wall.rect.x == self.rect.x + self.speedx and wall.rect.y == self.rect.y + self.speedy:
             # if wall.rect.x >= self.rect.x + self.speedx*TILESIZE and wall.rect.y >= self.rect.y + self.speedy*TILESIZE:
-                return True
+         #       return True
+        if self.rect.x + self.speedx <=0 or self.rect.x + self.speedx >= 940-3.5*TILESIZE \
+        or self.rect.y + self.speedy <=0+TILESIZE or self.rect.y + self.speedy >=520-2.5*TILESIZE:
+            return True
         return False
 
 class Wall(pygame.sprite.Sprite):
