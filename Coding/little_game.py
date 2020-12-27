@@ -556,21 +556,48 @@ class little_game:
         # 載入音效
         ring = pygame.mixer.Sound('./素材/傅鐘/鐘聲.mp3')
         laugh = pygame.mixer.Sound('./素材/傅鐘/笑聲.mp3')
-        laugh.set_volume(1)
         
+        # 載入圖片
+        bg = pygame.image.load('./素材/傅鐘/傅鐘.jpg')
+        bg = pygame.transform.smoothscale(bg, (320, 600))
+        end = pygame.image.load('./素材/考卷/gameover.png')
+        end = pygame.transform.smoothscale(end, (1120, 630))
+        
+        # 載入字
+        fontobj = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 64)
+        
+        count = 0
         bell = False
+        mock = False
         run = True
         while run:
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
             
             if bell == False:
-                for i in range(3):
+                for i in range(21):
                     ring.play()
+                    count += 1
+                    total = fontobj.render(str(count)+'/21', True, (0,0,0))
+                    # 畫背景
+                    screen.fill((255,255,255))
+                    screen.blit(bg, (400, 25))
+                    screen.blit(total, (900,75))
+                    pygame.display.update()
                     pygame.time.delay(1500)
-                laugh.play()
                 bell = True
+            
+            screen.blit(end, (0,0))
+            pygame.display.update()
+            pygame.time.delay(500)
+            
+            if mock == False:
+                for k in range(2):
+                    laugh.play()
+                    pygame.time.delay(190)
+                mock = True
         
             
 
