@@ -553,8 +553,28 @@ class little_game:
     
     def byebyebell(self):
         
+        # 載入音效
+        ring = pygame.mixer.Sound('./素材/傅鐘/鐘聲.mp3')
+        laugh = pygame.mixer.Sound('./素材/傅鐘/笑聲.mp3')
+        laugh.set_volume(1)
+        
+        bell = False
+        run = True
+        while run:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+            
+            if bell == False:
+                for i in range(3):
+                    ring.play()
+                    pygame.time.delay(1500)
+                laugh.play()
+                bell = True
+        
+            
 
 # 玩遊戲
 play = little_game()
-play.beatduck()
+play.byebyebell()
 pygame.quit()
