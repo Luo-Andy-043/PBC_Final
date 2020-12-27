@@ -16,3 +16,5 @@ accer = 1
 MAXspeed = 4
 
 TILESIZE = 20
+
+sprite_speed = 300
