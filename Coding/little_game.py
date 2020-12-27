@@ -1,19 +1,22 @@
 import random
-import pygame, os
 
-# 修正程式作業位置
-working_path = os.path.dirname(__file__)
-os.chdir(working_path)
+if __name__ == '__main__':
+    import pygame, os
 
-# 啟動pygame
-pygame.init()
+    # 修正程式作業位置
+    working_path = os.path.dirname(__file__)
+    os.chdir(working_path)
 
-# 建立視窗
-screen = pygame.display.set_mode((1120,630))
-screen.fill((255,255,255))
+    # 啟動pygame
+    pygame.init()
+
+    # 建立視窗
+    screen = pygame.display.set_mode((1120,630))
+    pygame.display.set_caption('Game')
+    screen.fill((255,255,255))
 
 class little_game:
-
+    
     def mock_test(self):
         # 載入寫考卷圖片
         pic0 = pygame.image.load('./素材/考卷/0.png')
@@ -186,10 +189,7 @@ class little_game:
             
             #延遲一下再顯示贏ㄉ畫面
             if eaten == 5:
-                wait += 1
-            
-            # 吃五顆蛋就過關
-            if wait > 10:
+                pygame.time.delay(1500)
                 win = pygame.transform.smoothscale(win, (1120,630))
                 screen.blit(win, (0,0))
             
@@ -453,11 +453,17 @@ class little_game:
         stone = pygame.image.load('./素材/猜拳/石頭.png')
         stone = pygame.transform.smoothscale(stone, size)
         alist = [paper, scissors, stone]
+        done = pygame.image.load('./素材/考卷/win.png')
         
         # 字型
         fontobj = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 150)
         smallfont = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 64)
 
+        # 音效
+        winsound = pygame.mixer.Sound('./素材/猜拳/勝利.mp3')
+        losesound = pygame.mixer.Sound('./素材/猜拳/輸ㄌ.mp3')
+        tiesound = pygame.mixer.Sound('./素材/猜拳/平手.mp3')
+        
         choose = False # 有沒有出拳
         i = 0
         result = False
@@ -465,22 +471,23 @@ class little_game:
         score = 0
         plus = False
         minus = False
+        finish = False
         run = True
         while run:
-            pygame.time.delay(100)
+
             # 畫背景
             screen.blit(bg, (0,0))
             
             # 顯示分數
             show_score = smallfont.render(str(score)+ '/3', True, (0,0,0))
             screen.blit(show_score, (530,20))
-
+                 
             position = pygame.mouse.get_pos()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1 and choose == False and result == False:
+                    if event.button == 1 and choose == False and result == False and score < 3:
                         if 388 <= position[1] <= 586:
                             if 248 <= position[0] <= 474: # 布
                                 choose = True
@@ -494,30 +501,32 @@ class little_game:
             
             if choose:
                 duck = random.randint(0,2)
-                for k in range(200):
-                    print('a')
-                    screen.blit(alist[i], (600, 97))
-                    screen.blit(alist[duck], (350,97))
-                    pygame.display.update()
+                screen.blit(alist[i], (600, 97))
+                screen.blit(alist[duck], (350,97))
+                pygame.display.update()
+                pygame.time.delay(600)
                 choose = False
                 result = True
 
             if result:
-                for k in range(400):
-                    print('dhgksgkf')
-                    if duck == i:
-                        tie = fontobj.render('TIE', True, (146,242,185))
-                        screen.blit(tie, word_pos)
-                    if i - duck == 1 or (i == 0 and duck == 2):
-                        win = fontobj.render('WIN', True, (255,253,89))
-                        screen.blit(win, word_pos)
-                        plus = True
-                    if duck - i == 1 or (duck == 0 and i == 2):
-                        lose = fontobj.render('LOSE', True, (175,190,243))
-                        screen.blit(lose, (380,97))
-                        minus = True
-                    pygame.display.update()
+                if duck == i:
+                    tiesound.play()
+                    tie = fontobj.render('TIE', True, (146,242,185))
+                    screen.blit(tie, word_pos)
+                if i - duck == 1 or (i == 0 and duck == 2):
+                    winsound.play()
+                    win = fontobj.render('WIN', True, (255,253,89))
+                    screen.blit(win, word_pos)
+                    plus = True
+                if duck - i == 1 or (duck == 0 and i == 2):
+                    losesound.play()
+                    lose = fontobj.render('LOSE', True, (175,190,243))
+                    screen.blit(lose, (380,97))
+                    minus = True
+                pygame.display.update()
+                pygame.time.delay(1500)
                 result = False
+                pygame.event.clear() # 把多吃掉的東西清光
             
             if plus:
                 score += 1
@@ -527,13 +536,45 @@ class little_game:
                 if score < 0:
                     score = 0
                 minus = False
-
+            
+            if score == 3:
+                finish = True
+                screen.blit(bg, (0,0))
+                show_score = smallfont.render(str(score)+ '/3', True, (0,0,0))
+                screen.blit(show_score, (530,20))
+                pygame.display.update()
+                score += 1
+                pygame.time.delay(1000)
+            
+            if finish:
+                done = pygame.transform.smoothscale(done, (1120,630))
+                screen.blit(done, (0,0))
             pygame.display.update()
-'''
-    def calculus(self):
-        '''
+    
+    def byebyebell(self):
+        
+        # 載入音效
+        ring = pygame.mixer.Sound('./素材/傅鐘/鐘聲.mp3')
+        laugh = pygame.mixer.Sound('./素材/傅鐘/笑聲.mp3')
+        laugh.set_volume(1)
+        
+        bell = False
+        run = True
+        while run:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+            
+            if bell == False:
+                for i in range(3):
+                    ring.play()
+                    pygame.time.delay(1500)
+                laugh.play()
+                bell = True
+        
+            
 
 # 玩遊戲
 play = little_game()
-play.beatduck()
+play.byebyebell()
 pygame.quit()
