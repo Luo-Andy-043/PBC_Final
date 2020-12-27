@@ -647,10 +647,5 @@ class little_game:
                         laugh.play()
                         pygame.time.delay(190)
                     mock = True
-        
-            
 
-# 玩遊戲
-play = little_game()
-play.beatduck()
 pygame.quit()
