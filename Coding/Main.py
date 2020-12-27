@@ -5,10 +5,14 @@ from map import *
 
 # 更正程式工作位置
 working_path = os.path.dirname(__file__)
+working_path="/Users/yichinhuang/desktop/PBC_Final/PBC_Final/Coding"
 os.chdir(working_path)
 
 start_guan_path_l = './素材/start_game/管管腳踏車（去背）_左.png'
 start_guan_path_r = './素材/start_game/管管腳踏車（去背）_右.png'
+
+background = pygame.image.load('../視覺設計/地圖全圖_完稿_全.jpg').convert_alpha()
+background = pygame.transform.smoothscale(background, (2700, 4500))
 
 # 上、下、左、右
 map_x, map_y = 0, 0
@@ -29,8 +33,6 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
         self.clock = pygame.time.Clock()
         pygame.key.set_repeat(500, 100)
-        self.background = pygame.image.load('../視覺設計/地圖全圖_完稿_全.jpg').convert_alpha()
-        self.background = pygame.transform.smoothscale(self.background, (2700, 4500))
 
     def load(self):
         # all the paths
@@ -92,16 +94,15 @@ class Game:
         self.guan = GUAN(self, 92, 208)
         self.walls = pygame.sprite.Group()
         self.all_sprites.add(self.guan)
-        self.bg = bg_class(self)
+        bg = bg_class(self)
+        #self.screen.blit(bg, (0,0))
         self.load()
         self.show_start_game()
         opening.opening()
-        self.wall_list = []
         for row, tiles in enumerate(self.map.data):
             for col, tile in enumerate(tiles):
                 if tile == '1':
-                    w = Wall(self, col, row)
-                    self.wall_list.append(w)
+                    Wall(self, col, row)
         self.camera = Camera(self.map.width, self.map.height)
         self.music_stop()
         self.run()
@@ -160,6 +161,7 @@ class Game:
         # Timer
         self.start = pygame.time.get_ticks()
         self.playing = True
+        self.screen.blit(background, (0,0))
         while self.playing:
             self.dt = self.clock.tick(60) / 1000
             self.timer = pygame.time.get_ticks()
@@ -167,15 +169,11 @@ class Game:
             self.draw_grid()
             self.events()
             # self.all_sprites.draw(self.screen)
-            # for sprite in self.all_sprites:
-                # self.screen.blit(sprite.image, self.camera.apply(sprite))
-            self.screen.blit(self.bg.image, self.camera.apply(self.bg))
-            self.screen.blit(self.guan.image, self.camera.apply(self.guan))
-            for w in self.wall_list:
-                self.screen.blit(w.image, self.camera.apply(w))
+            for sprite in self.all_sprites:
+                self.screen.blit(sprite.image, self.camera.apply(sprite))
+            self.update()
             # if self.fail == True:
                 # self.gameover()
-            self.update()
         self.music_stop()
 
     def events(self):
@@ -268,6 +266,8 @@ class GUAN(pygame.sprite.Sprite):
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
+        self.speedx = 0
+        self.speedy = 0
 
     def get_keys(self):
         self.vx, self.vy = 0, 0
@@ -333,7 +333,8 @@ class bg_class(pygame.sprite.Sprite):
         self.groups = game.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = self.game.background
+        self.image = background
+        #self.image.set_alpha(0)
         self.rect = self.image.get_rect()
         
 
