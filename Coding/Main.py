@@ -131,12 +131,12 @@ class Game:
             pygame.display.update()
             pygame.time.delay(100)
             self.fail = True
-'''
+    '''
     def fail(self):
         self.fail_img_path = ''
         self.fail_img = pygame.image.load(self.fail_img_path).convert_alpha()
         self.fail_img = pygame.transform.smoothscale(self.fail_img, ())
-'''
+    '''
 
     def run(self):
         # Game Loop
@@ -159,7 +159,7 @@ class Game:
                 self.screen.blit(sprite.image, self.camera.apply(sprite))
 
             self.update()
-            if self.fail = True:
+            if self.fail == True:
                 self.gameover()
 
     def events(self):
