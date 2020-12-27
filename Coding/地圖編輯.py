@@ -37,7 +37,7 @@ def init():
     pygame.init()
     pygame.display.set_caption("地圖行走層編輯器")
     winSur = pygame.display.set_mode((920, 540))
-    mapImg = pygame.image.load('C:\\Users\\asus\\Desktop\\新增資料夾\\地圖全圖_完稿_全.jpg')
+    mapImg = pygame.image.load('C:\\Users\\元G\\Desktop\\GitHub_PBC\\PBC_Final\\視覺設計\\地圖全圖_完稿_全.jpg')
     mapImg = pygame.transform.smoothscale(mapImg, (1350*2, 2250*2))
     # 以20*20像素爲一個可行走的格子
     map2d = Array2D(int(mapImg.get_width() / 20), int(mapImg.get_height() / 20))
