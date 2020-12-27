@@ -23,14 +23,14 @@ pygame.display.set_caption("基本架構")
 # 建立「畫布」
 # screen.get_size(): 取得視窗大小
 # 畫布.convert(): 加快運行
-background = pygame.Surface(screen.get_size())
-background = background.convert()
+# background = pygame.Surface(screen.get_size())
+# background = background.convert()
 
 # 設定畫布顏色(R,G,B)
-background.fill((255,255,255))
+# background.fill((255,255,255))
 
 # 在「視窗」上畫上「畫布」, (0,0): 繪製位置
-screen.blit(background, (0,0))
+# screen.blit(background, (0,0))
 
 # 寫字
 # 字體變數
@@ -41,7 +41,7 @@ screen.blit(background, (0,0))
 
 
 # 載入圖片
-button = pygame.image.load('C:\\Users\\元G\\Desktop\\商管程式設計\\Final_Project\\素材\\畫作\\button_dark.png')
+button = pygame.image.load('C:\\Users\\元G\\Desktop\\小木屋鬆餅-1.jpg')
 button.convert_alpha()
 button = pygame.transform.smoothscale(button, (230,109))
 screen.blit(button, (525,310))
@@ -63,18 +63,6 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT: # 使用者按關閉鈕
             running = False
-
-    mouse = pygame.mouse.get_pos() 
-      
-    # if mouse is hovered on a button it 
-    # changes to lighter shade
-    if 525 <= mouse[0] <= 525+230 and 109 <= mouse[1] <= 109+310: 
-        button = pygame.image.load('C:\\Users\\元G\\Desktop\\商管程式設計\\Final_Project\\素材\\畫作\\button_light.png')
-    else:
-        button = pygame.image.load('C:\\Users\\元G\\Desktop\\商管程式設計\\Final_Project\\素材\\畫作\\button_dark.png')
-    button.convert_alpha()
-    button = pygame.transform.smoothscale(button, (230,109))
-    screen.blit(button, (525,310))
     pygame.display.update()
 
 pygame.quit() # 關閉繪圖視窗
