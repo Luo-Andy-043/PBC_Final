@@ -12,7 +12,7 @@ HEIGHT = 540  # 20*27
 start_button_length, start_button_height = 159, 92
 start_button_x, start_button_y = 550, 270
 
-accer = 1
-MAXspeed = 5
+accer = 0.5
+MAXspeed = 3
 
 TILESIZE = 20
