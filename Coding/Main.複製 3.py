@@ -5,7 +5,7 @@ from map import *
 
 # 更正程式工作位置
 working_path = os.path.dirname(__file__)
-working_path="/Users/yichinhuang/Desktop/PBC_Final/PBC_Final/Coding"
+working_path="/Users/rachel/Desktop/PBC_Final-master/Coding"
 os.chdir(working_path)
 
 start_guan_path_l = './素材/start_game/管管腳踏車（去背）_左.png'
@@ -21,7 +21,7 @@ class Game:
         
         self.walls = pygame.sprite.Group()
         self.clock = pygame.time.Clock()
-        self.map = Map('./map2.txt')
+        self.map = Map('./background.txt')
         self.camera = Camera(self.map.width, self.map.height)
         self.all_sprites = pygame.sprite.Group()
         self.guan = GUAN(self)
@@ -143,9 +143,10 @@ class GUAN(pygame.sprite.Sprite):
         self.GUAN_l = pygame.transform.smoothscale(self.GUAN_l, (96,54))
         self.GUAN_r = pygame.image.load(start_guan_path_r).convert_alpha()
         self.GUAN_r = pygame.transform.smoothscale(self.GUAN_r, (96,54))
-        self.image = self.GUAN_l
+        self.image = self.GUAN_r
         self.rect = self.image.get_rect()
-        self.rect.center = (480, 350)
+        #self.rect.center = (480, 350)
+        self.rect.center = (230, 1110) ##1227 17:13改 把管管放到左上角開始，可以再調整
         self.speedx = 0
         self.speedy = 0
 
@@ -226,22 +227,20 @@ class GUAN(pygame.sprite.Sprite):
         #    for tile in layer:
         #print(self.game.map.data)
     def collide_with_walls(self,keystate, speedx=0, speedy=0):
-        return False
-        #if self.rect.x + self.speedx <=0 or self.rect.x + self.speedx >= 940-3.5*TILESIZE \
-        #or self.rect.y + self.speedy <=0+TILESIZE or self.rect.y + self.speedy >=520-2.5*TILESIZE:
-        #    return True
-        #a=int((self.rect.x+ self.speedx+2.5*TILESIZE)/20)
-        #b=int((self.rect.y+ self.speedy+2.5*TILESIZE)/20)
-        a_r=int((self.rect.x+ self.speedx+66)/20)
+        #1227 17:13改
+        #因為邊界很厚 所以可以不用加上邊界條件（邊界就算是牆壁了）
+        a_r=int((self.rect.x+ self.speedx+70)/20)
         a_l=int((self.rect.x+ self.speedx+20)/20)
-        b_r=int((self.rect.y+ self.speedy+33)/20)
-        b_l=int((self.rect.y+ self.speedy+33+20)/20)
+        #b_l=int((self.rect.y+ self.speedy+33)/20) #管管的頭會被牆壁切掉
+        b_l=int((self.rect.y+ self.speedy+33-35)/20) #管管的頭不會被牆壁切掉
+        b_r=int((self.rect.y+ self.speedy+33+20)/20)
+        #print("len: ",len(self.game.map.map_data[0]),len(self.game.map.map_data))
+        #print("a: ",a_r,a_l)
+        #print("b:",b_l,b_r)
         if self.game.map.map_data[b_l][a_l]=='1' or self.game.map.map_data[b_l][a_r]=='1' \
         or self.game.map.map_data[b_r][a_r]=='1' or self.game.map.map_data[b_r][a_l]=='1':
-            pass
-            #return True
-
-       
+            return True
+        return False
 
 class Wall(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
