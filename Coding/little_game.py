@@ -1,3 +1,5 @@
+import random
+
 if __name__ == '__main__':
     import pygame, os
 
@@ -441,9 +443,76 @@ class little_game:
                 wrong4 = False
             
             pygame.display.update()
+    
+    def beatduck(self):
+        size = (200,200)
+        # 載入圖片
+        bg = pygame.image.load('./素材/猜拳/背景.png')
+        bg = pygame.transform.smoothscale(bg, (1120,630))
+        paper = pygame.image.load('./素材/猜拳/布.png')
+        paper = pygame.transform.smoothscale(paper, size)
+        scissors = pygame.image.load('./素材/猜拳/剪刀.png')
+        scissors = pygame.transform.smoothscale(scissors, size)
+        stone = pygame.image.load('./素材/猜拳/石頭.png')
+        stone = pygame.transform.smoothscale(stone, size)
+        alist = [paper, scissors, stone]
+        
+        # 字型
+        fontobj = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 150)
+
+        choose = False # 有沒有出拳
+        i = 0
+        result = False
+        word_pos = (430,97)
+        run = True
+        while run:
+            # 畫背景
+            screen.blit(bg, (0,0))
+
+            position = pygame.mouse.get_pos()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        if 388 <= position[1] <= 586:
+                            if 248 <= position[0] <= 474: # 布
+                                choose = True
+                                i = 0
+                            if 474 <= position[0] <= 699: # 剪刀
+                                choose = True
+                                i = 1
+                            if 699 <= position[0] <= 927: # 石頭
+                                choose = True
+                                i = 2
             
+            if choose:
+                duck = random.randint(0,2)
+                for k in range(450):
+                    screen.blit(alist[i], (600, 97))
+                    screen.blit(alist[duck], (350,97))
+                    pygame.display.update()
+                choose = False
+                result = True
+
+            if result:
+                for k in range(800):
+                    if duck == i:
+                        tie = fontobj.render('TIE', True, (146,242,185))
+                        screen.blit(tie, word_pos)
+                    if i - duck == 1 or (i == 0 and duck == 2):
+                        win = fontobj.render('WIN', True, (255,253,89))
+                        screen.blit(win, word_pos)
+                    if duck - i == 1 or (duck == 0 and i == 2):
+                        lose = fontobj.render('LOSE', True, (175,190,243))
+                        screen.blit(lose, word_pos)
+                    pygame.display.update()
+                result = False
+
+
+            pygame.display.update()
 
 # 玩遊戲!
 play = little_game()
-play.guess_song()
+play.beatduck()
 pygame.quit()
