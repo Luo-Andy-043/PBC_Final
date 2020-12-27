@@ -5,7 +5,7 @@ from map import *
 
 # 更正程式工作位置
 working_path = os.path.dirname(__file__)
-working_path="/Users/rachel/Desktop/PBC_Final-master/Coding"
+# working_path="/Users/rachel/Desktop/PBC_Final-master/Coding"
 os.chdir(working_path)
 
 start_guan_path_l = './素材/start_game/管管腳踏車（去背）_左.png'
