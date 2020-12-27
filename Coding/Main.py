@@ -56,7 +56,7 @@ class Game:
         self.start_img = pygame.transform.smoothscale(self.start_img, screen_size)
 
         self.GUAN_start = pygame.image.load(guan_path_l).convert_alpha()
-        self.GUAN_start = pygame.transform.smoothscale(self.GUAN_start, (414,234))
+        self.GUAN_start = pygame.transform.smoothscale(self.GUAN_start, (220,220))
 
         self.light_button = pygame.image.load(self.light_button_path)
         self.dark_button = pygame.image.load(self.dark_button_path)
@@ -88,7 +88,7 @@ class Game:
 
     def new(self):
         # start a new game
-        self.guan = GUAN(self, 91, 168)
+        self.guan = GUAN(self, 88, 168)
         self.walls = pygame.sprite.Group()
         self.all_sprites.add(self.guan)
         self.bg = bg_class(self)
@@ -201,16 +201,16 @@ class Game:
     def draw_grid(self):
         # draw the grids on the map
         for x in range(0, WIDTH, TILESIZE):
-            pygame.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
+            pygame.draw.line(self.screen, WHITE, (x, 0), (x, HEIGHT))
         for y in range(0, HEIGHT, TILESIZE):
-            pygame.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
+            pygame.draw.line(self.screen, WHITE, (0, y), (WIDTH, y))
 
     def show_start_game(self):
         # the game starting screen
         self.load()
         self.playing = True
         self.screen.blit(self.start_img,(0,0))
-        self.screen.blit(self.GUAN_start, (250, 300))
+        self.screen.blit(self.GUAN_start, (345, 310))
         self.screen.blit(self.start_button, (start_button_x, start_button_y))
         self.menu_music = pygame.mixer.music.load(self.menu_music_path)
         pygame.mixer.music.play(-1)
