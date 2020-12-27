@@ -5,6 +5,7 @@ from map import *
 
 # 更正程式工作位置
 working_path = os.path.dirname(__file__)
+working_path="/Users/yichinhuang/desktop/PBC_Final/PBC_Final/Coding"
 os.chdir(working_path)
 
 start_guan_path_l = './素材/start_game/管管腳踏車（去背）_左.png'
@@ -94,7 +95,7 @@ class Game:
         self.walls = pygame.sprite.Group()
         self.all_sprites.add(self.guan)
         bg = bg_class(self)
-        self.screen.blit(bg, (0,0))
+        #self.screen.blit(bg, (0,0))
         self.load()
         self.show_start_game()
         opening.opening()
@@ -160,6 +161,7 @@ class Game:
         # Timer
         self.start = pygame.time.get_ticks()
         self.playing = True
+        self.screen.blit(background, (0,0))
         while self.playing:
             self.dt = self.clock.tick(60) / 1000
             self.timer = pygame.time.get_ticks()
@@ -332,6 +334,7 @@ class bg_class(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = background
+        #self.image.set_alpha(0)
         self.rect = self.image.get_rect()
         
 
