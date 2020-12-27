@@ -18,22 +18,35 @@ class Game:
         pygame.mixer.init()
         self.screen = pygame.display.set_mode(screen_size)
         pygame.display.set_caption(TITLE)
-        
+
+        self.playing = True
+        self.fail = False
         self.walls = pygame.sprite.Group()
-        self.clock = pygame.time.Clock()
         self.map = Map('./map1.txt')
         self.camera = Camera(self.map.width, self.map.height)
         self.all_sprites = pygame.sprite.Group()
         self.guan = GUAN(self)
         self.all_sprites.add(self.guan)
 
-
+    def load(self):
         # all the paths
         self.start_img_path = './素材/start_game/遊戲開始.png'
         self.light_button_path = './素材/start_game/button_light.png'
         self.dark_button_path = './素材/start_game/button_dark.png'
         self.menu_music_path = './素材/music/menu_music.wav'
         self.game_music_path = './素材/music/game_music.mp3'
+        self.reminder_6_path = './素材/reminder/reminder_6.png'
+        self.reminder_5_path = './素材/reminder/reminder_5.png'
+        self.reminder_4_path = './素材/reminder/reminder_4.png'
+        self.reminder_3_path = './素材/reminder/reminder_3.png'
+        self.reminder_2_path = './素材/reminder/reminder_2.png'
+        self.reminder_1_path = './素材/reminder/reminder_1.png'
+        self.reminder_30_path = './素材/reminder/reminder_30.png'
+        self.reminder_10_path = './素材/reminder/reminder_10.png'
+        self.reminder_times_up_path = './素材/reminder/times_up.png'
+        self.gameover_path = ''
+        self.close_game_path = ''
+        
 
         # load images/music
         self.start_img = pygame.image.load(self.start_img_path).convert_alpha()
@@ -47,6 +60,29 @@ class Game:
         self.start_button = self.dark_button.convert_alpha()  # 預設為正常顏色的按鈕
         self.start_button = pygame.transform.smoothscale(self.start_button, (start_button_length, start_button_height))
 
+        self.reminder_6 = pygame.image.load(self.reminder_6_path).convert_alpha()
+        self.reminder_6 = pygame.transform.smoothscale(self.reminder_6, (513, 143))
+        self.reminder_5 = pygame.image.load(self.reminder_5_path).convert_alpha()
+        self.reminder_5 = pygame.transform.smoothscale(self.reminder_5, (513, 143))
+        self.reminder_4 = pygame.image.load(self.reminder_4_path).convert_alpha()
+        self.reminder_4 = pygame.transform.smoothscale(self.reminder_4, (513, 143))
+        self.reminder_3 = pygame.image.load(self.reminder_3_path).convert_alpha()
+        self.reminder_3 = pygame.transform.smoothscale(self.reminder_3, (513, 143))
+        self.reminder_2 = pygame.image.load(self.reminder_2_path).convert_alpha()
+        self.reminder_2 = pygame.transform.smoothscale(self.reminder_2, (513, 143))
+        self.reminder_1 = pygame.image.load(self.reminder_1_path).convert_alpha()
+        self.reminder_1 = pygame.transform.smoothscale(self.reminder_1, (513, 143))
+        self.reminder_30 = pygame.image.load(self.reminder_30_path).convert_alpha()
+        self.reminder_30 = pygame.transform.smoothscale(self.reminder_30, (513, 143))
+        self.reminder_10 = pygame.image.load(self.reminder_10_path).convert_alpha()
+        self.reminder_10 = pygame.transform.smoothscale(self.reminder_10, (513, 143))
+        self.reminder_times_up = pygame.image.load(self.reminder_times_up_path).convert_alpha()
+        self.reminder_times_up = pygame.transform.smoothscale(self.reminder_times_up, (513, 143))
+        self.gameover_img = pygame.image.load(self.gameover_path).convert_alpha()
+        self.gameover_img = pygame.transform.smoothscale(self.gameover_img, ())
+        self.close_game_img = pygame.image.load(self.close_game_path).convert_alpha()
+        self.close_game_img = pygame.transform.smoothscale(self.close_game_img, ())
+
     def new(self):
         # start a new game
         for row, tiles in enumerate(self.map.data):
@@ -54,24 +90,69 @@ class Game:
                 if tile == '1':
                     Wall(self, col, row)
         self.camera = Camera(self.map.width, self.map.height)
+        self.load()
         self.run()
+
+    def watch(self):
+        self.time_past = (self.timer - self.start) / 1000
+        if 0.5 <= self.time_past <= 1:
+            self.screen.blit(self.reminder_6, (WIDTH/2-self.reminder_6.get_width()/2, HEIGHT/2-self.reminder_6.get_height()/2))
+            pygame.display.update()
+            pygame.time.delay(100)
+        if 61 <= self.time_past <= 61.5:
+            self.screen.blit(self.reminder_5, (WIDTH/2-self.reminder_5.get_width()/2, HEIGHT/2-self.reminder_5.get_height()/2))
+            pygame.display.update()
+            pygame.time.delay(100)
+        if 120 <= self.time_past <= 120.5:
+            self.screen.blit(self.reminder_4, (WIDTH/2-self.reminder_4.get_width()/2, HEIGHT/2-self.reminder_4.get_height()/2))
+            pygame.display.update()
+            pygame.time.delay(100)
+        if 180 <= self.time_past <= 180.5:
+            self.screen.blit(self.reminder_3, (WIDTH/2-self.reminder_3.get_width()/2, HEIGHT/2-self.reminder_3.get_height()/2))
+            pygame.display.update()
+            pygame.time.delay(100)
+        if 240 <= self.time_past <= 240.5:
+            self.screen.blit(self.reminder_2, (WIDTH/2-self.reminder_2.get_width()/2, HEIGHT/2-self.reminder_2.get_height()/2))
+            pygame.display.update()
+            pygame.time.delay(100)
+        if 300 <= self.time_past <= 300.5:
+            self.screen.blit(self.reminder_1, (WIDTH/2-self.reminder_1.get_width()/2, HEIGHT/2-self.reminder_1.get_height()/2))
+            pygame.display.update()
+            pygame.time.delay(100)
+        if 330 <= self.time_past <= 330.5:
+            self.screen.blit(self.reminder_30, (WIDTH/2-self.reminder_30.get_width()/2, HEIGHT/2-self.reminder_30.get_height()/2))
+            pygame.display.update()
+            pygame.time.delay(100)
+        if 350 <= self.time_past <= 350.5:
+            self.screen.blit(self.reminder_10, (WIDTH/2-self.reminder_10.get_width()/2, HEIGHT/2-self.reminder_10.get_height()/2))
+            pygame.display.update()
+            pygame.time.delay(100)
+        if 360 <= self.time_past <= 360.5:
+            self.screen.blit(self.reminder_times_up, (WIDTH/2-self.reminder_times_up.get_width()/2, HEIGHT/2-self.reminder_times_up.get_height()/2))
+            pygame.display.update()
+            pygame.time.delay(100)
+            self.fail = True
+    '''
+    def fail(self):
+        self.fail_img_path = ''
+        self.fail_img = pygame.image.load(self.fail_img_path).convert_alpha()
+        self.fail_img = pygame.transform.smoothscale(self.fail_img, ())
+    '''
 
     def run(self):
         # Game Loop
-        self.playing = True
         # self.map = pygame.image.load(~~)
         self.bg_tmp = pygame.Surface(self.screen.get_size()).convert()
         self.bg_tmp.fill(WHITE)
 
-        # walls
-        for x in range(WIDTH//TILESIZE):
-            Wall(self, x, 0)
-
         self.game_music = pygame.mixer.music.load(self.game_music_path)
         pygame.mixer.music.play(-1)
 
+        # Timer
+        self.start = pygame.time.get_ticks()
         while self.playing:
-            self.clock.tick(60)
+            self.timer = pygame.time.get_ticks()
+            self.watch()
             self.screen.blit(self.bg_tmp, (0,0))
             self.draw_grid()
             self.events()
@@ -79,6 +160,8 @@ class Game:
                 self.screen.blit(sprite.image, self.camera.apply(sprite))
 
             self.update()
+            if self.fail == True:
+                self.gameover()
 
     def events(self):
         # Game Loop - events
@@ -133,6 +216,23 @@ class Game:
             if self.hover and self.L_click:
                 self.playing = False
 
+    def gameover(self):
+        screen.blit(self.gameover_img, (0,0))
+        self.update()
+        while True:
+            self.event()
+            if self.L_click:
+                self.playing = False
+                break
+
+    def close_game(self):
+        screen.blit(self.close_game_img, (0,0))
+        self.update()
+        while True:
+            self.event()
+            if self.L_click:
+                self.playing = False
+                break
 
 class GUAN(pygame.sprite.Sprite):
     '''角色 Sprite'''
@@ -227,8 +327,8 @@ class GUAN(pygame.sprite.Sprite):
         #print(self.game.map.data)
     def collide_with_walls(self,keystate, speedx=0, speedy=0):
 
-        if self.rect.x + self.speedx <=0 or self.rect.x + self.speedx >= 940-3.5*TILESIZE \
-        or self.rect.y + self.speedy <=0+TILESIZE or self.rect.y + self.speedy >=520-2.5*TILESIZE:
+        if self.rect.x + self.speedx <= 0 or self.rect.x + self.speedx >= 940-3.5*TILESIZE \
+        or self.rect.y + self.speedy <= 0 + TILESIZE or self.rect.y + self.speedy >= 520-2.5*TILESIZE:
             return True
         #a=int((self.rect.x+ self.speedx+2.5*TILESIZE)/20)
         #b=int((self.rect.y+ self.speedy+2.5*TILESIZE)/20)
@@ -256,7 +356,7 @@ class Wall(pygame.sprite.Sprite):
         self.rect.y = y * TILESIZE
 
 
-
+# Run the game
 Guans_friend = Game()
 Guans_friend.show_start_game()
 opening.opening()

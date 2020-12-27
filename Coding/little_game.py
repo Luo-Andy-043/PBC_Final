@@ -1,20 +1,19 @@
-if __name__ == '__main__':
-    import pygame, os
+import random
+import pygame, os
 
-    # 修正程式作業位置
-    working_path = os.path.dirname(__file__)
-    os.chdir(working_path)
+# 修正程式作業位置
+working_path = os.path.dirname(__file__)
+os.chdir(working_path)
 
-    # 啟動pygame
-    pygame.init()
+# 啟動pygame
+pygame.init()
 
-    # 建立視窗
-    screen = pygame.display.set_mode((1120,630))
-    pygame.display.set_caption('Game')
-    screen.fill((255,255,255))
+# 建立視窗
+screen = pygame.display.set_mode((1120,630))
+screen.fill((255,255,255))
 
 class little_game:
-    
+
     def mock_test(self):
         # 載入寫考卷圖片
         pic0 = pygame.image.load('./素材/考卷/0.png')
@@ -441,9 +440,100 @@ class little_game:
                 wrong4 = False
             
             pygame.display.update()
-            
+    
+    def beatduck(self):
+        size = (200,200)
+        # 載入圖片
+        bg = pygame.image.load('./素材/猜拳/背景.png')
+        bg = pygame.transform.smoothscale(bg, (1120,630))
+        paper = pygame.image.load('./素材/猜拳/布.png')
+        paper = pygame.transform.smoothscale(paper, size)
+        scissors = pygame.image.load('./素材/猜拳/剪刀.png')
+        scissors = pygame.transform.smoothscale(scissors, size)
+        stone = pygame.image.load('./素材/猜拳/石頭.png')
+        stone = pygame.transform.smoothscale(stone, size)
+        alist = [paper, scissors, stone]
+        
+        # 字型
+        fontobj = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 150)
+        smallfont = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 64)
 
-# 玩遊戲!
+        choose = False # 有沒有出拳
+        i = 0
+        result = False
+        word_pos = (430,97)
+        score = 0
+        plus = False
+        minus = False
+        run = True
+        while run:
+            pygame.time.delay(100)
+            # 畫背景
+            screen.blit(bg, (0,0))
+            
+            # 顯示分數
+            show_score = smallfont.render(str(score)+ '/3', True, (0,0,0))
+            screen.blit(show_score, (530,20))
+
+            position = pygame.mouse.get_pos()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1 and choose == False and result == False:
+                        if 388 <= position[1] <= 586:
+                            if 248 <= position[0] <= 474: # 布
+                                choose = True
+                                i = 0
+                            if 474 <= position[0] <= 699: # 剪刀
+                                choose = True
+                                i = 1
+                            if 699 <= position[0] <= 927: # 石頭
+                                choose = True
+                                i = 2
+            
+            if choose:
+                duck = random.randint(0,2)
+                for k in range(200):
+                    print('a')
+                    screen.blit(alist[i], (600, 97))
+                    screen.blit(alist[duck], (350,97))
+                    pygame.display.update()
+                choose = False
+                result = True
+
+            if result:
+                for k in range(400):
+                    print('dhgksgkf')
+                    if duck == i:
+                        tie = fontobj.render('TIE', True, (146,242,185))
+                        screen.blit(tie, word_pos)
+                    if i - duck == 1 or (i == 0 and duck == 2):
+                        win = fontobj.render('WIN', True, (255,253,89))
+                        screen.blit(win, word_pos)
+                        plus = True
+                    if duck - i == 1 or (duck == 0 and i == 2):
+                        lose = fontobj.render('LOSE', True, (175,190,243))
+                        screen.blit(lose, (380,97))
+                        minus = True
+                    pygame.display.update()
+                result = False
+            
+            if plus:
+                score += 1
+                plus = False
+            if minus:
+                score -= 1
+                if score < 0:
+                    score = 0
+                minus = False
+
+            pygame.display.update()
+'''
+    def calculus(self):
+        '''
+
+# 玩遊戲
 play = little_game()
-play.guess_song()
+play.beatduck()
 pygame.quit()
