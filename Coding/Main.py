@@ -17,6 +17,7 @@ class Game:
         pygame.mixer.init()
         self.screen = pygame.display.set_mode(screen_size)
         pygame.display.set_caption(TITLE)
+        
         self.walls = pygame.sprite.Group()
         self.clock = pygame.time.Clock()
         self.map = Map('./map1.txt')
@@ -75,6 +76,7 @@ class Game:
             self.events()
             for sprite in self.all_sprites:
                 self.screen.blit(sprite.image, self.camera.apply(sprite))
+
             self.update()
 
     def events(self):
@@ -145,7 +147,6 @@ class GUAN(pygame.sprite.Sprite):
         self.rect.center = (480, 350)
         self.speedx = 0
         self.speedy = 0
-        self.collide= False
 
     def update(self):
         '''鍵盤操作'''
@@ -193,21 +194,12 @@ class GUAN(pygame.sprite.Sprite):
         # 位移疊加速度
         #print(self.collide_with_walls(self.speedx, self.speedy))
         #print(self.rect.x + self.speedx)
-        if not self.collide_with_walls(keystate,self.speedx, self.speedy) and self.collide==False:
+        if not self.collide_with_walls(keystate,self.speedx, self.speedy) :
+            #print("HI")
             self.rect.x += self.speedx 
             self.rect.y += self.speedy
+
         else:
-            """
-            if self.rect.x + self.speedx <=0:   
-                self.rect.x = self.rect.x + 1   
-            if self.rect.x + self.speedx >=940-3.5*TILESIZE:
-                self.rect.x = self.rect.x - 1
-            if self.rect.y + self.speedy <=0+TILESIZE:   
-                self.rect.y = self.rect.y + 1
-            if self.rect.y + self.speedy >=520-3.5*TILESIZE:
-                self.rect.y = self.rect.y - 1
-            """
-            #if self.collide:
             if keystate[pygame.K_DOWN]:
                     #self.speedy=0
                 self.rect.y = self.rect.y-1
@@ -220,7 +212,6 @@ class GUAN(pygame.sprite.Sprite):
             elif keystate[pygame.K_LEFT]:
                 #self.speedx=0
                 self.rect.x = self.rect.x+1
-            self.collide=False
             #self.rect.y = self.rect.y + 1
             
         # 方向向左/右，臉朝向左/右
@@ -234,42 +225,20 @@ class GUAN(pygame.sprite.Sprite):
         #    for tile in layer:
         #print(self.game.map.data)
     def collide_with_walls(self,keystate, speedx=0, speedy=0):
-        #print(self.game.walls)
-        #for wall in self.game.walls:
-         #   print('wall.rect.x =', wall.rect.x)
-            #print('self.rect.x + self.speedx =',self.rect.x + self.speedx )
-         #   if wall.rect.x == self.rect.x + self.speedx and wall.rect.y == self.rect.y + self.speedy:
-            # if wall.rect.x >= self.rect.x + self.speedx*TILESIZE and wall.rect.y >= self.rect.y + self.speedy*TILESIZE:
-         #       return True
-        #self.game.map.map_data
-        #map_data=self.game.map.map_data
-
 
         if self.rect.x + self.speedx <=0 or self.rect.x + self.speedx >= 940-3.5*TILESIZE \
         or self.rect.y + self.speedy <=0+TILESIZE or self.rect.y + self.speedy >=520-2.5*TILESIZE:
             return True
-        a=int((self.rect.x+ self.speedx+2.5*TILESIZE)/20)
-        b=int((self.rect.y+ self.speedy+2.5*TILESIZE)/20)     
-        print("self.rect.x, self.rect.x:",self.rect.x,self.rect.y)
-        print("a,b",a,b)   
-        if keystate[pygame.K_DOWN]:
-            if self.game.map.map_data[b][a]=='1' :
-                self.collide=True
-                return True
-        if keystate[pygame.K_UP]:
-            if self.game.map.map_data[b-3][a]=='1' :
-                self.collide=True
-                return True
-        if keystate[pygame.K_RIGHT]:
-            if self.game.map.map_data[b][a+1]=='1' :
-                self.collide=True
-                return True
-        if keystate[pygame.K_LEFT]:
-            if self.game.map.map_data[b][a-1]=='1' :
-                self.collide=True
-                return True
-        #if self.rect.x + self.speedx>=map_data
-        
+        #a=int((self.rect.x+ self.speedx+2.5*TILESIZE)/20)
+        #b=int((self.rect.y+ self.speedy+2.5*TILESIZE)/20)
+        a_r=int((self.rect.x+ self.speedx+66)/20)
+        a_l=int((self.rect.x+ self.speedx+20)/20)
+        b_r=int((self.rect.y+ self.speedy+33)/20)
+        b_l=int((self.rect.y+ self.speedy+33+20)/20)
+        if self.game.map.map_data[b_l][a_l]=='1' or self.game.map.map_data[b_l][a_r]=='1' \
+        or self.game.map.map_data[b_r][a_r]=='1' or self.game.map.map_data[b_r][a_l]=='1':
+            return True
+
         return False
 
 class Wall(pygame.sprite.Sprite):

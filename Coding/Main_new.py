@@ -1,4 +1,4 @@
-import pygame, os
+import pygame, os, datetime
 import opening
 from setting import *
 from map import *
@@ -26,13 +26,13 @@ class Game:
         self.guan = GUAN(self)
         self.all_sprites.add(self.guan)
 
-
         # all the paths
         self.start_img_path = './素材/start_game/遊戲開始.png'
         self.light_button_path = './素材/start_game/button_light.png'
         self.dark_button_path = './素材/start_game/button_dark.png'
         self.menu_music_path = './素材/music/menu_music.wav'
         self.game_music_path = './素材/music/game_music.mp3'
+        self.reminder_20_path = './素材/reminder/reminder_20.png'
 
         # load images/music
         self.start_img = pygame.image.load(self.start_img_path).convert_alpha()
@@ -46,6 +46,9 @@ class Game:
         self.start_button = self.dark_button.convert_alpha()  # 預設為正常顏色的按鈕
         self.start_button = pygame.transform.smoothscale(self.start_button, (start_button_length, start_button_height))
 
+        self.reminder_20 = pygame.image.load(self.reminder_20_path).convert_alpha()
+        self.reminder_20 = pygame.transform.smoothscale(self.reminder_20, (513, 143))
+
     def new(self):
         # start a new game
         for row, tiles in enumerate(self.map.data):
@@ -55,6 +58,13 @@ class Game:
         self.camera = Camera(self.map.width, self.map.height)
         self.run()
 
+    def watch(self):
+        time_past = self.timer / 1000
+        if 19 <= time_past <= 19.5:
+            self.screen.blit(self.reminder_20, (WIDTH/2-self.reminder_20.get_width()/2, HEIGHT/2-self.reminder_20.get_height()/2))
+            pygame.display.update()
+            pygame.time.delay(1000)
+
     def run(self):
         # Game Loop
         self.playing = True
@@ -63,13 +73,16 @@ class Game:
         self.bg_tmp.fill(WHITE)
 
         # walls
-        for x in range(WIDTH//TILESIZE):
-            Wall(self, x, 0)
+        # for x in range(WIDTH//TILESIZE):
+            # Wall(self, x, 0)
 
         self.game_music = pygame.mixer.music.load(self.game_music_path)
         pygame.mixer.music.play(-1)
 
         while self.playing:
+            self.timer = pygame.time.get_ticks()
+            print(self.timer)
+            self.watch()
             self.clock.tick(60)
             self.screen.blit(self.bg_tmp, (0,0))
             self.draw_grid()
@@ -143,7 +156,7 @@ class GUAN(pygame.sprite.Sprite):
         self.GUAN_r = pygame.transform.smoothscale(self.GUAN_r, (96,54))
         self.image = self.GUAN_l
         self.rect = self.image.get_rect()
-        self.rect.center = (480, 350)
+        self.rect.center = (WIDTH/2, HEIGHT/2)
         self.speedx = 0
         self.speedy = 0
 
@@ -243,6 +256,7 @@ class Wall(pygame.sprite.Sprite):
 
 
 Guans_friend = Game()
+
 Guans_friend.show_start_game()
 opening.opening()
 
