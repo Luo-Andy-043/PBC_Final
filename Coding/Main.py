@@ -10,9 +10,6 @@ os.chdir(working_path)
 start_guan_path_l = './素材/start_game/管管腳踏車（去背）_左.png'
 start_guan_path_r = './素材/start_game/管管腳踏車（去背）_右.png'
 
-background = pygame.image.load('../視覺設計/地圖全圖_完稿_全.jpg').convert_alpha()
-background = pygame.transform.smoothscale(background, (2700, 4500))
-
 # 上、下、左、右
 map_x, map_y = 0, 0
 
@@ -32,6 +29,8 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
         self.clock = pygame.time.Clock()
         pygame.key.set_repeat(500, 100)
+        self.background = pygame.image.load('../視覺設計/地圖全圖_完稿_全.jpg').convert_alpha()
+        self.background = pygame.transform.smoothscale(self.background, (2700, 4500))
 
     def load(self):
         # all the paths
@@ -90,11 +89,11 @@ class Game:
 
     def new(self):
         # start a new game
-        self.guan = GUAN(self, 108, 9)
+        # self.guan = GUAN(self, 108, 9)
+        self.guan = GUAN(self, 0, 0)
         self.walls = pygame.sprite.Group()
         self.all_sprites.add(self.guan)
         bg = bg_class(self)
-        self.screen.blit(bg, (0,0))
         self.load()
         self.show_start_game()
         opening.opening()
@@ -331,7 +330,7 @@ class bg_class(pygame.sprite.Sprite):
         self.groups = game.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = background
+        self.image = self.game.background
         self.rect = self.image.get_rect()
         
 
