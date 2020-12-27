@@ -1,22 +1,19 @@
 import random
+import pygame, os
 
-if __name__ == '__main__':
-    import pygame, os
+# 修正程式作業位置
+working_path = os.path.dirname(__file__)
+os.chdir(working_path)
 
-    # 修正程式作業位置
-    working_path = os.path.dirname(__file__)
-    os.chdir(working_path)
+# 啟動pygame
+pygame.init()
 
-    # 啟動pygame
-    pygame.init()
-
-    # 建立視窗
-    screen = pygame.display.set_mode((1120,630))
-    pygame.display.set_caption('Game')
-    screen.fill((255,255,255))
+# 建立視窗
+screen = pygame.display.set_mode((1120,630))
+screen.fill((255,255,255))
 
 class little_game:
-    
+
     def mock_test(self):
         # 載入寫考卷圖片
         pic0 = pygame.image.load('./素材/考卷/0.png')
@@ -511,6 +508,9 @@ class little_game:
 
 
             pygame.display.update()
+'''
+    def calculus(self):
+        '''
 
 # 玩遊戲!
 play = little_game()

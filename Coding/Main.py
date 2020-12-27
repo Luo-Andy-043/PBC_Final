@@ -21,11 +21,12 @@ class Game:
         self.playing = True
         self.fail = False
         self.walls = pygame.sprite.Group()
-        self.map = Map('./map1.txt')
+        self.map = Map('./background.txt')
         self.camera = Camera(self.map.width, self.map.height)
         self.all_sprites = pygame.sprite.Group()
         self.guan = GUAN(self)
         self.all_sprites.add(self.guan)
+        self.clock = pygame.time.Clock()
 
     def load(self):
         # all the paths
@@ -43,8 +44,8 @@ class Game:
         self.reminder_30_path = './素材/reminder/reminder_30.png'
         self.reminder_10_path = './素材/reminder/reminder_10.png'
         self.reminder_times_up_path = './素材/reminder/times_up.png'
-        self.gameover_path = ''
-        self.close_game_path = ''
+        # self.gameover_path = ''
+        # self.close_game_path = ''
         
 
         # load images/music
@@ -77,10 +78,10 @@ class Game:
         self.reminder_10 = pygame.transform.smoothscale(self.reminder_10, (513, 143))
         self.reminder_times_up = pygame.image.load(self.reminder_times_up_path).convert_alpha()
         self.reminder_times_up = pygame.transform.smoothscale(self.reminder_times_up, (513, 143))
-        self.gameover_img = pygame.image.load(self.gameover_path).convert_alpha()
-        self.gameover_img = pygame.transform.smoothscale(self.gameover_img, ())
-        self.close_game_img = pygame.image.load(self.close_game_path).convert_alpha()
-        self.close_game_img = pygame.transform.smoothscale(self.close_game_img, ())
+        # self.gameover_img = pygame.image.load(self.gameover_path).convert_alpha()
+        # self.gameover_img = pygame.transform.smoothscale(self.gameover_img, ())
+        # self.close_game_img = pygame.image.load(self.close_game_path).convert_alpha()
+        # self.close_game_img = pygame.transform.smoothscale(self.close_game_img, ())
 
     def new(self):
         # start a new game
@@ -89,10 +90,9 @@ class Game:
                 if tile == '1':
                     Wall(self, col, row)
         self.camera = Camera(self.map.width, self.map.height)
-        self.load()
         self.run()
 
-    def watch(self):
+    def watcher(self):
         self.time_past = (self.timer - self.start) / 1000
         if 0.5 <= self.time_past <= 1:
             self.screen.blit(self.reminder_6, (WIDTH/2-self.reminder_6.get_width()/2, HEIGHT/2-self.reminder_6.get_height()/2))
@@ -131,12 +131,12 @@ class Game:
             pygame.display.update()
             pygame.time.delay(100)
             self.fail = True
-'''
+    '''
     def fail(self):
         self.fail_img_path = ''
         self.fail_img = pygame.image.load(self.fail_img_path).convert_alpha()
         self.fail_img = pygame.transform.smoothscale(self.fail_img, ())
-'''
+    '''
 
     def run(self):
         # Game Loop
@@ -149,18 +149,19 @@ class Game:
 
         # Timer
         self.start = pygame.time.get_ticks()
+        self.playing = True
         while self.playing:
+            self.clock.tick(60)
             self.timer = pygame.time.get_ticks()
-            self.watch()
+            self.watcher()
             self.screen.blit(self.bg_tmp, (0,0))
             self.draw_grid()
             self.events()
             for sprite in self.all_sprites:
                 self.screen.blit(sprite.image, self.camera.apply(sprite))
-
             self.update()
-            if self.fail = True:
-                self.gameover()
+            # if self.fail == True:
+                # self.gameover()
 
     def events(self):
         # Game Loop - events
@@ -188,6 +189,7 @@ class Game:
 
     def show_start_game(self):
         # the game starting screen
+        self.load()
         self.playing = True
         self.screen.blit(self.start_img,(0,0))
         self.screen.blit(self.GUAN_start, (250, 300))
@@ -215,23 +217,23 @@ class Game:
             if self.hover and self.L_click:
                 self.playing = False
 
-    def gameover(self):
-        screen.blit(self.gameover_img, (0,0))
-        self.update()
-        while True:
-            self.event()
-            if self.L_click:
-                self.playing = False
-                break
+    # def gameover(self):
+        # screen.blit(self.gameover_img, (0,0))
+        # self.update()
+        # while True:
+            # self.event()
+            # if self.L_click:
+                # self.playing = False
+                # break
 
-    def close_game(self):
-        screen.blit(self.close_game_img, (0,0))
-        self.update()
-        while True:
-            self.event()
-            if self.L_click:
-                self.playing = False
-                break
+    # def close_game(self):
+        # screen.blit(self.close_game_img, (0,0))
+        # self.update()
+        # while True:
+            # self.event()
+            # if self.L_click:
+                # self.playing = False
+                # break
 
 class GUAN(pygame.sprite.Sprite):
     '''角色 Sprite'''
@@ -244,7 +246,7 @@ class GUAN(pygame.sprite.Sprite):
         self.GUAN_r = pygame.transform.smoothscale(self.GUAN_r, (96,54))
         self.image = self.GUAN_l
         self.rect = self.image.get_rect()
-        self.rect.center = (480, 350)
+        self.rect.center = (109*20, 9*20)
         self.speedx = 0
         self.speedy = 0
 
@@ -256,7 +258,7 @@ class GUAN(pygame.sprite.Sprite):
             self.speedx -= accer
             if self.speedx <= -MAXspeed:
                 self.speedx = -MAXspeed
-        if not keystate[pygame.K_LEFT] and self.speedx < 0:
+        if not keystate[pygame.K_LEFT] a  nd self.speedx < 0:
             self.speedx += accer
             if self.speedx >= 0:
                 self.speedx = 0
@@ -357,6 +359,7 @@ class Wall(pygame.sprite.Sprite):
 
 # Run the game
 Guans_friend = Game()
+Guans_friend.load()
 Guans_friend.show_start_game()
 opening.opening()
 
