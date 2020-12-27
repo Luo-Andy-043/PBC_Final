@@ -16,7 +16,7 @@ if __name__ == '__main__':
     screen.fill((255,255,255))
 
 class little_game:
-    
+
     def mock_test(self):
         # 載入寫考卷圖片
         pic0 = pygame.image.load('./素材/考卷/0.png')
@@ -28,6 +28,10 @@ class little_game:
         end = pygame.image.load('./素材/考卷/gameover.png')
         win = pygame.image.load('./素材/考卷/win.png')
         test = [pic0, pic1, pic2, pic3, pic4, pic5]
+        
+        # 載入音效
+        write = pygame.mixer.Sound('./素材/考卷/寫字.mp3')
+        
         # MainLoop
         run = True
         hit = 0
@@ -53,6 +57,7 @@ class little_game:
                 
                 if keys[pygame.K_SPACE]:
                     hit += 1
+                    write.play()
 
                 if hit >= 6:
                     i -= 1
@@ -62,6 +67,9 @@ class little_game:
                 if 0 < i <= 5:
                     test[i] = pygame.transform.smoothscale(test[i], (1120,630))
                     screen.blit(test[i], (0,0))
+                    pygame.draw.rect(screen, (102,51,0), [60, 500, 1000, 40], 0)
+                    pygame.draw.rect(screen, (102,51,0), [310, 540, 40, 70], 0)
+                    pygame.draw.rect(screen, (102,51,0), [810, 540, 40, 70], 0)
                     pygame.display.update()
 
             # 到頂ㄌ就掰掰
@@ -89,7 +97,8 @@ class little_game:
         eaten = 0
         run = True
         # 載入圖片
-        kitchen = pygame.image.load('./素材/煎蛋/新廚房.png')
+        kitchen = pygame.image.load('./素材/煎蛋/背景.png')
+        kitchen = pygame.transform.smoothscale(kitchen, (1120, 630))
         egg = pygame.image.load('./素材/煎蛋/生蛋.png')
         raw_egg = pygame.image.load('./素材/煎蛋/生荷包蛋.png')
         ok_egg = pygame.image.load('./素材/煎蛋/熟荷包蛋.png')
@@ -103,17 +112,24 @@ class little_game:
         
         # 載入字
         fontobj = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 64)
-
+        
+        finish = False
+        show = True
         while run:
             # 畫廚房背景
-            kitchen = pygame.transform.smoothscale(kitchen, (1120, 630))
             screen.blit(kitchen, (0,0))
             
             # 顯示已吃幾顆
-            textsurfaceobj = fontobj.render(str(eaten)+'/5', True, (0,0,0), (255,255,255))
-            textrectobj = textsurfaceobj.get_rect()
-            textrectobj.center = (970,100)
-            screen.blit(textsurfaceobj, textrectobj)
+            score = fontobj.render(str(eaten)+'/5', True, (0,0,0), (255,255,255))
+            screen.blit(score, (950,50))
+            
+            if eaten == 5:
+                if show:
+                    pygame.display.update()
+                    show = False
+                pygame.time.delay(1000)
+                win = pygame.transform.smoothscale(win, (1120,630))
+                screen.blit(win, (0,0))
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -121,7 +137,7 @@ class little_game:
                 position = pygame.mouse.get_pos()
                 # 如果在蛋區點一下就會出現一顆蛋
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if 785 <= position[0] <= 974 and 327 <= position[1] <= 553 and raw_egg_appear == False and ok_egg_appear == False:
+                    if 787 <= position[0] <= 1013 and 335 <= position[1] <= 558 and raw_egg_appear == False and ok_egg_appear == False:
                         if event.button == 1:
                             egg_appear = True
                             egg_pos = position[0]-67.5, position[1]-50
@@ -144,7 +160,7 @@ class little_game:
                 screen.blit(egg, (egg_pos[0]-67.5, egg_pos[1]-50))
             
             # 如果打蛋拖到鍋子上放開 蛋就會變成生荷包蛋
-            if 182 <= egg_pos[0] <= 412 and 336 <= egg_pos[1] <= 552 and move_egg == False:
+            if 156 <= egg_pos[0] <= 392 and 312 <= egg_pos[1] <= 547 and move_egg == False:
                     egg_appear = False
                     raw_egg_appear = True
             
@@ -153,13 +169,13 @@ class little_game:
                 cook += 1
             
             # 煮一段時間之後生蛋就會變熟蛋
-            if raw_egg_appear and cook <= 60: 
+            if raw_egg_appear and cook <= 70: 
                 raw_egg = pygame.transform.smoothscale(raw_egg, (135, 100))
-                screen.blit(raw_egg, (230,400))
+                screen.blit(raw_egg, (210,380))
                 fry.play()
-            elif raw_egg_appear and cook > 60:
+            elif raw_egg_appear and cook > 70:
                 ok_egg_appear = True
-                okegg_pos = 290, 445
+                okegg_pos = 275, 425
                 fry.stop()
                 
             # 熟了之後動蛋     
@@ -187,14 +203,8 @@ class little_game:
                 ok_egg = pygame.transform.smoothscale(ok_egg, (135, 100))
                 screen.blit(ok_egg, (okegg_pos[0]-67.5, okegg_pos[1]-50))
             
-            #延遲一下再顯示贏ㄉ畫面
-            if eaten == 5:
-                pygame.time.delay(1500)
-                win = pygame.transform.smoothscale(win, (1120,630))
-                screen.blit(win, (0,0))
-            
             pygame.display.update()
-    
+ 
     def guess_song(self):
         
         # 載入圖片
@@ -401,9 +411,9 @@ class little_game:
             
             if correct3:
                 yes.play()
-                for i in range(waito):
-                    screen.blit(right, (720,334))
-                    pygame.display.update()
+                screen.blit(right, (720,334))
+                pygame.display.update()
+                pygame.time.delay(30000)
                 correct3 = False
                 done = True
             
@@ -603,5 +613,5 @@ class little_game:
 
 # 玩遊戲
 play = little_game()
-play.byebyebell()
+play.guess_song()
 pygame.quit()
