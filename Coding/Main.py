@@ -89,7 +89,7 @@ class Game:
 
     def new(self):
         # start a new game
-        self.guan = GUAN(self, 108, 9)
+        self.guan = GUAN(self, 92, 208)
         self.walls = pygame.sprite.Group()
         self.all_sprites.add(self.guan)
         self.bg = bg_class(self)
