@@ -89,18 +89,19 @@ class Game:
 
     def new(self):
         # start a new game
-        # self.guan = GUAN(self, 108, 9)
-        self.guan = GUAN(self, 0, 0)
+        self.guan = GUAN(self, 108, 9)
         self.walls = pygame.sprite.Group()
         self.all_sprites.add(self.guan)
-        bg = bg_class(self)
+        self.bg = bg_class(self)
         self.load()
         self.show_start_game()
         opening.opening()
+        self.wall_list = []
         for row, tiles in enumerate(self.map.data):
             for col, tile in enumerate(tiles):
                 if tile == '1':
-                    Wall(self, col, row)
+                    w = Wall(self, col, row)
+                    self.wall_list.append(w)
         self.camera = Camera(self.map.width, self.map.height)
         self.music_stop()
         self.run()
@@ -166,11 +167,15 @@ class Game:
             self.draw_grid()
             self.events()
             # self.all_sprites.draw(self.screen)
-            for sprite in self.all_sprites:
-                self.screen.blit(sprite.image, self.camera.apply(sprite))
-            self.update()
+            # for sprite in self.all_sprites:
+                # self.screen.blit(sprite.image, self.camera.apply(sprite))
+            self.screen.blit(self.bg.image, self.camera.apply(self.bg))
+            self.screen.blit(self.guan.image, self.camera.apply(self.guan))
+            for w in self.wall_list:
+                self.screen.blit(w.image, self.camera.apply(w))
             # if self.fail == True:
                 # self.gameover()
+            self.update()
         self.music_stop()
 
     def events(self):
@@ -263,8 +268,6 @@ class GUAN(pygame.sprite.Sprite):
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-        self.speedx = 0
-        self.speedy = 0
 
     def get_keys(self):
         self.vx, self.vy = 0, 0
