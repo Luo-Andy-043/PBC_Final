@@ -5,7 +5,6 @@ from map import *
 
 # 更正程式工作位置
 working_path = os.path.dirname(__file__)
-working_path="/Users/yichinhuang/Desktop/PBC_Final/PBC_Final/Coding"
 os.chdir(working_path)
 
 start_guan_path_l = './素材/start_game/管管腳踏車（去背）_左.png'
@@ -22,11 +21,11 @@ class Game:
         self.playing = True
         self.fail = False
         self.walls = pygame.sprite.Group()
-        self.map = Map('./map1.txt')
+        self.map = Map('./background.txt')
         self.camera = Camera(self.map.width, self.map.height)
         self.all_sprites = pygame.sprite.Group()
-        self.guan = GUAN(self)
-        self.all_sprites.add(self.guan)
+        self.clock = pygame.time.Clock()
+        pygame.key.set_repeat(500, 100)
 
     def load(self):
         # all the paths
@@ -44,8 +43,8 @@ class Game:
         self.reminder_30_path = './素材/reminder/reminder_30.png'
         self.reminder_10_path = './素材/reminder/reminder_10.png'
         self.reminder_times_up_path = './素材/reminder/times_up.png'
-        self.gameover_path = ''
-        self.close_game_path = ''
+        # self.gameover_path = ''
+        # self.close_game_path = ''
         
 
         # load images/music
@@ -78,22 +77,28 @@ class Game:
         self.reminder_10 = pygame.transform.smoothscale(self.reminder_10, (513, 143))
         self.reminder_times_up = pygame.image.load(self.reminder_times_up_path).convert_alpha()
         self.reminder_times_up = pygame.transform.smoothscale(self.reminder_times_up, (513, 143))
-        self.gameover_img = pygame.image.load(self.gameover_path).convert_alpha()
-        self.gameover_img = pygame.transform.smoothscale(self.gameover_img, ())
-        self.close_game_img = pygame.image.load(self.close_game_path).convert_alpha()
-        self.close_game_img = pygame.transform.smoothscale(self.close_game_img, ())
+        # self.gameover_img = pygame.image.load(self.gameover_path).convert_alpha()
+        # self.gameover_img = pygame.transform.smoothscale(self.gameover_img, ())
+        # self.close_game_img = pygame.image.load(self.close_game_path).convert_alpha()
+        # self.close_game_img = pygame.transform.smoothscale(self.close_game_img, ())
 
     def new(self):
         # start a new game
+        self.guan = GUAN(self, 108, 9)
+        self.walls = pygame.sprite.Group()
+        self.all_sprites.add(self.guan)
+        self.load()
+        self.show_start_game()
+        opening.opening()
         for row, tiles in enumerate(self.map.data):
             for col, tile in enumerate(tiles):
                 if tile == '1':
                     Wall(self, col, row)
         self.camera = Camera(self.map.width, self.map.height)
-        self.load()
+        self.music_stop()
         self.run()
 
-    def watch(self):
+    def watcher(self):
         self.time_past = (self.timer - self.start) / 1000
         if 0.5 <= self.time_past <= 1:
             self.screen.blit(self.reminder_6, (WIDTH/2-self.reminder_6.get_width()/2, HEIGHT/2-self.reminder_6.get_height()/2))
@@ -141,27 +146,29 @@ class Game:
 
     def run(self):
         # Game Loop
-        # self.map = pygame.image.load(~~)
-        self.bg_tmp = pygame.Surface(self.screen.get_size()).convert()
-        self.bg_tmp.fill(WHITE)
+        self.background = pygame.image.load('../視覺設計/地圖全圖_完稿_全.jpg').convert_alpha()
+        self.background = pygame.transform.smoothscale(self.background, (2700, 4500))
 
         self.game_music = pygame.mixer.music.load(self.game_music_path)
         pygame.mixer.music.play(-1)
 
         # Timer
         self.start = pygame.time.get_ticks()
+        self.playing = True
         while self.playing:
+            self.dt = self.clock.tick(60) / 1000
             self.timer = pygame.time.get_ticks()
-            self.watch()
-            self.screen.blit(self.bg_tmp, (0,0))
+            self.watcher()
+            self.screen.blit(self.background, (0,0))
             self.draw_grid()
             self.events()
+            # self.all_sprites.draw(self.screen)
             for sprite in self.all_sprites:
                 self.screen.blit(sprite.image, self.camera.apply(sprite))
-
             self.update()
-            if self.fail == True:
-                self.gameover()
+            # if self.fail == True:
+                # self.gameover()
+        self.music_stop()
 
     def events(self):
         # Game Loop - events
@@ -173,6 +180,10 @@ class Game:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.L_click = True
+
+    def music_stop(self):
+        pygame.mixer.music.stop()
+        pygame.mixer.music.unload()
 
     def update(self):
         # Game Loop - Update
@@ -189,6 +200,7 @@ class Game:
 
     def show_start_game(self):
         # the game starting screen
+        self.load()
         self.playing = True
         self.screen.blit(self.start_img,(0,0))
         self.screen.blit(self.GUAN_start, (250, 300))
@@ -211,136 +223,90 @@ class Game:
             self.start_button = pygame.transform.smoothscale(self.start_button, (start_button_length,start_button_height))
             self.screen.blit(self.start_button, (start_button_x, start_button_y))
 
-            self.update()
+            pygame.display.update()
 
             if self.hover and self.L_click:
                 self.playing = False
 
-    def gameover(self):
-        screen.blit(self.gameover_img, (0,0))
-        self.update()
-        while True:
-            self.event()
-            if self.L_click:
-                self.playing = False
-                break
+    # def gameover(self):
+        # screen.blit(self.gameover_img, (0,0))
+        # self.update()
+        # while True:
+            # self.event()
+            # if self.L_click:
+                # self.playing = False
+                # break
 
-    def close_game(self):
-        screen.blit(self.close_game_img, (0,0))
-        self.update()
-        while True:
-            self.event()
-            if self.L_click:
-                self.playing = False
-                break
+    # def close_game(self):
+        # screen.blit(self.close_game_img, (0,0))
+        # self.update()
+        # while True:
+            # self.event()
+            # if self.L_click:
+                # self.playing = False
+                # break
 
 class GUAN(pygame.sprite.Sprite):
     '''角色 Sprite'''
-    def __init__(self, game):
+    def __init__(self, game, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
-        self.GUAN_l = pygame.image.load(start_guan_path_l).convert_alpha()
-        self.GUAN_l = pygame.transform.smoothscale(self.GUAN_l, (96,54))
-        self.GUAN_r = pygame.image.load(start_guan_path_r).convert_alpha()
-        self.GUAN_r = pygame.transform.smoothscale(self.GUAN_r, (96,54))
-        self.image = self.GUAN_l
+        # self.GUAN_l = pygame.image.load(start_guan_path_l).convert_alpha()
+        # self.GUAN_l = pygame.transform.smoothscale(self.GUAN_l, (60,60))
+        # self.GUAN_r = pygame.image.load(start_guan_path_r).convert_alpha()
+        # self.GUAN_r = pygame.transform.smoothscale(self.GUAN_r, (60,60))
+        self.image = pygame.Surface((TILESIZE, TILESIZE))
         self.rect = self.image.get_rect()
-        self.rect.center = (480, 350)
+        self.vx, self.vy = 0, 0
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
         self.speedx = 0
         self.speedy = 0
 
+    def get_keys(self):
+        self.vx, self.vy = 0, 0
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            self.vx = -sprite_speed
+        if keys[pygame.K_RIGHT]:
+            self.vx = sprite_speed
+        if keys[pygame.K_UP]:
+            self.vy = -sprite_speed
+        if keys[pygame.K_DOWN]:
+            self.vy = sprite_speed
+        if self.vx != 0 and self.vy != 0:
+            self.vx *= 0.707
+            self.vy *= 0.707
+
     def update(self):
-        '''鍵盤操作'''
-        keystate = pygame.key.get_pressed()
-        # 左鍵
-        if keystate[pygame.K_LEFT]:
-            self.speedx -= accer
-            if self.speedx <= -MAXspeed:
-                self.speedx = -MAXspeed
-        if not keystate[pygame.K_LEFT] and self.speedx < 0:
-            self.speedx += accer
-            if self.speedx >= 0:
-                self.speedx = 0
+        self.get_keys()
+        self.x += self.vx * self.game.dt
+        self.y += self.vy * self.game.dt
+        self.rect.x = self.x
+        self.collide_with_walls('x')
+        self.rect.y = self.y
+        self.collide_with_walls('y')
 
-        # 右鍵
-        if keystate[pygame.K_RIGHT]:
-            self.speedx += accer
-            if self.speedx >= MAXspeed:
-                self.speedx = MAXspeed
-        if not keystate[pygame.K_RIGHT] and self.speedx > 0:
-            self.speedx -= accer
-            if self.speedx <= 0:
-                self.speedx = 0
+    def collide_with_walls(self, d):
+        if d == 'x':
+            hits = pygame.sprite.spritecollide(self, self.game.walls, False)
+            if hits:
+                if self.vx > 0:
+                    self.x = hits[0].rect.left - self.rect.width
+                if self.vx < 0:
+                    self.x = hits[0].rect.right
+                self.vx = 0
+                self.rect.x = self.x
 
-        # 上鍵
-        if keystate[pygame.K_UP]:
-            self.speedy -= accer
-            if self.speedy <= -MAXspeed:
-                self.speedy = -MAXspeed
-        if not keystate[pygame.K_UP] and self.speedy < 0:
-            self.speedy += accer
-            if self.speedy >= 0:
-                self.speedy = 0
-
-        # 下鍵
-        if keystate[pygame.K_DOWN]:
-            self.speedy += accer
-            if self.speedy >= MAXspeed:
-                self.speedy = MAXspeed
-        if not keystate[pygame.K_DOWN] and self.speedy > 0:
-            self.speedy -= accer
-            if self.speedy <= 0:
-                self.speedy = 0
-
-        # 位移疊加速度
-        #print(self.collide_with_walls(self.speedx, self.speedy))
-        #print(self.rect.x + self.speedx)
-        if not self.collide_with_walls(keystate,self.speedx, self.speedy) :
-            #print("HI")
-            self.rect.x += self.speedx 
-            self.rect.y += self.speedy
-
-        else:
-            if keystate[pygame.K_DOWN]:
-                    #self.speedy=0
-                self.rect.y = self.rect.y-1
-            elif keystate[pygame.K_UP]:
-                #self.speedy=0
-                self.rect.y = self.rect.y+1
-            elif keystate[pygame.K_RIGHT]:
-                #self.speedx=0
-                self.rect.x = self.rect.x-1
-            elif keystate[pygame.K_LEFT]:
-                #self.speedx=0
-                self.rect.x = self.rect.x+1
-            #self.rect.y = self.rect.y + 1
-            
-        # 方向向左/右，臉朝向左/右
-        if self.speedx < 0:
-            self.image = self.GUAN_l
-        elif self.speedx > 0:
-            self.image = self.GUAN_r
-        elif self.speedx == 0:
-            self.image = self.image
-        #for layer in self.game.map:
-        #    for tile in layer:
-        #print(self.game.map.data)
-    def collide_with_walls(self,keystate, speedx=0, speedy=0):
-
-        if self.rect.x + self.speedx <= 0 or self.rect.x + self.speedx >= 940-3.5*TILESIZE \
-        or self.rect.y + self.speedy <= 0 + TILESIZE or self.rect.y + self.speedy >= 520-2.5*TILESIZE:
-            return True
-        #a=int((self.rect.x+ self.speedx+2.5*TILESIZE)/20)
-        #b=int((self.rect.y+ self.speedy+2.5*TILESIZE)/20)
-        a_r=int((self.rect.x+ self.speedx+66)/20)
-        a_l=int((self.rect.x+ self.speedx+20)/20)
-        b_r=int((self.rect.y+ self.speedy+33)/20)
-        b_l=int((self.rect.y+ self.speedy+33+20)/20)
-        if self.game.map.map_data[b_l][a_l]=='1' or self.game.map.map_data[b_l][a_r]=='1' \
-        or self.game.map.map_data[b_r][a_r]=='1' or self.game.map.map_data[b_r][a_l]=='1':
-            return True
-
-        return False
+        if d == 'y':
+            hits = pygame.sprite.spritecollide(self, self.game.walls, False)
+            if hits:
+                if self.vy > 0:
+                    self.y = hits[0].rect.top - self.rect.height
+                if self.vy < 0:
+                    self.y = hits[0].rect.bottom
+                self.vy = 0
+                self.rect.y = self.y
 
 class Wall(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
@@ -348,7 +314,7 @@ class Wall(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pygame.Surface((TILESIZE, TILESIZE))
-        self.image.fill(LIGHTGREY)
+        self.image.set_alpha(100)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -358,15 +324,5 @@ class Wall(pygame.sprite.Sprite):
 
 # Run the game
 Guans_friend = Game()
-Guans_friend.show_start_game()
-opening.opening()
-
-pygame.mixer.music.stop()
-pygame.mixer.music.unload()
-
 Guans_friend.new()
-
-pygame.mixer.music.stop()
-pygame.mixer.music.unload()
-
 pygame.quit()
