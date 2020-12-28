@@ -684,49 +684,104 @@ class little_game:
                     mock = True
     def hitmath(self):
         # 載入圖片
+        rule = pygame.image.load('./素材/e^x/指數規則.png')
+        rule = pygame.transform.smoothscale(rule, (960,540))
         bg = pygame.image.load('./素材/指數/背景.png')
         bg = pygame.transform.smoothscale(bg, (960,540))
-        e = pygame.image.load('./素材/指數/函數.png')
+        myhead = pygame.image.load('./素材/指數/guanguan.png')
+        myhead = pygame.transform.smoothscale(myhead, (172,200))
+        e = pygame.image.load('./素材/e^x/e^x.png')
         e = pygame.transform.smoothscale(e, (360,200))
         xone = pygame.image.load('./素材/e^x/x+1.png')
         xone = pygame.transform.smoothscale(xone, (360,200))
+        one = pygame.image.load('./素材/e^x/1.png')
+        one = pygame.transform.smoothscale(one, (151,200))
+        fire = pygame.image.load('./素材/e^x/火.png')
+        fire = pygame.transform.smoothscale(fire, (151,200))
         
         # 載入字型
         fontobj = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 30)
         
+        # 載入音效
+        explode = pygame.mixer.Sound('./素材/e^x/火聲.ogg')
+        oh = pygame.mixer.Sound('./素材/e^x/ㄛㄛ.mp3')
+        oh.set_volume(0.6)
+        tada = pygame.mixer.Sound('./素材/e^x/登場.mp3')
+        
+        part1 = True
+        part2 = False
+        part3 = False
         option1 = False  # 一次微分
         option2 = False  # 不定積分
         option3 = False  # 計量財務模型
         option4 = False  # 極限
-        stage1 = True
+        stage1 = False
         stage2 = False
         stage3 = False
-        success = False
+        success1 = False
+        success2 = False
+        success3 = False
         fail = False
         black = (0,0,0)
         linepos = (50,328)
+        finish = False
         run = True
         while run:
-            # 繪製背景
-            screen.blit(bg, (0,0))
-            
-            # 畫數學
-            if stage1:
+            if part1:
+                screen.blit(rule, (0,0))
+            if part2:
+                screen.blit(bg, (0,0))
+                screen.blit(myhead, (155,120))
+                pygame.draw.rect(screen, (223,225,205), [0, 430, 960, 108], 0)
+                say = fontobj.render('外星語言館派出了函數怪物！', True, black)
+                screen.blit(say, linepos)
+                pygame.display.update()
+                pygame.time.delay(2000)
                 screen.blit(e, (500,25))
-            if stage2:
-                screen.blit(xone, (515,25))
-            # 畫台詞
-            
-            
-            # 畫選項
-            option1wd = fontobj.render('一次微分', True, black)
-            option2wd = fontobj.render('不定積分', True, black)
-            option3wd = fontobj.render('計量財務模型', True, black)
-            option4wd = fontobj.render('求x→0極限', True, black)
-            screen.blit(option1wd, (87,453))
-            screen.blit(option2wd, (316,453))
-            screen.blit(option3wd, (513,453))
-            screen.blit(option4wd, (752,453))
+                tada.play()
+                pygame.time.delay(200)
+                pygame.display.update()
+                pygame.time.delay(300)
+                pygame.time.delay(2300)
+                screen.blit(bg, (0,0))
+                screen.blit(e, (500,25))
+                screen.blit(myhead, (155,120))
+                pygame.draw.rect(screen, (223,225,205), [0, 430, 960, 108], 0)
+                say = fontobj.render('打倒它！', True, black)
+                screen.blit(say, linepos)
+                pygame.display.update()
+                pygame.time.delay(2000)
+                part2 = False
+                part3 = True
+                stage1 = True
+
+            elif part3:
+                # 繪製背景
+                screen.blit(bg, (0,0))
+                
+                # 畫管管
+                screen.blit(myhead, (155,120))
+                
+                # 畫數學
+                if stage1:
+                    screen.blit(e, (500,25))
+                if stage2:
+                    screen.blit(xone, (515,25))
+                if stage3:
+                    screen.blit(one, (625,25))
+                # 畫台詞
+                always = fontobj.render('想要管管做什麼？', True, black)
+                screen.blit(always, linepos)
+                
+                # 畫選項
+                option1wd = fontobj.render('一次微分', True, black)
+                option2wd = fontobj.render('不定積分', True, black)
+                option3wd = fontobj.render('計量財務模型', True, black)
+                option4wd = fontobj.render('求x→0極限', True, black)
+                screen.blit(option1wd, (87,453))
+                screen.blit(option2wd, (316,453))
+                screen.blit(option3wd, (513,453))
+                screen.blit(option4wd, (752,453))
             
             position = pygame.mouse.get_pos()
             for event in pygame.event.get():
@@ -734,30 +789,97 @@ class little_game:
                     run = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
+                        if part1:
+                            part1 = False
+                            part2 = True
                         if stage1:
                             if option4:
-                                success = True
+                                success1 = True
                             elif option2 or option3 or option1:
                                 fail = True
                         if stage2:
-                            pass
+                            if option1:
+                                success2 = True
+                            elif option2 or option3 or option4:
+                                fail = True
+                        if stage3:
+                            if option1:
+                                success3 = True
+                            elif option2 or option3 or option4:
+                                fail = True 
             if fail:
-                line = fontobj.render('似乎沒什麼用...', True, black)
+                line = fontobj.render('似乎沒什麼用...', True, black, (225,230,170))
                 screen.blit(line, linepos)
                 pygame.display.update()
+                oh.play()
                 pygame.time.delay(1500)
                 fail = False
+                pygame.event.clear()
 
-            if success:
-                line = fontobj.render('效果十分顯著！', True, black)
+            if success1:
+                line = fontobj.render('效果十分顯著！', True, black, (225,230,170))
+                screen.blit(bg, (0,0))
+                screen.blit(e, (500,25))
+                screen.blit(fire,(625,25))
                 screen.blit(line, linepos)
+                screen.blit(option1wd, (87,453))
+                screen.blit(option2wd, (316,453))
+                screen.blit(option3wd, (513,453))
+                screen.blit(option4wd, (752,453))
+                screen.blit(myhead, (155,120))
                 pygame.display.update()
+                explode.play()
                 pygame.time.delay(1500)
-                if stage1:
-                    stage1 = False
-                    stage2 = True
-                success = False
+                stage1 = False
+                stage2 = True
+                success1 = False
+                pygame.event.clear()
             
+            if success2:
+                line = fontobj.render('效果十分顯著！', True, black, (225,230,170))
+                screen.blit(bg, (0,0))
+                screen.blit(xone, (515,25))
+                screen.blit(fire,(625,25))
+                screen.blit(line, linepos)
+                screen.blit(option1wd, (87,453))
+                screen.blit(option2wd, (316,453))
+                screen.blit(option3wd, (513,453))
+                screen.blit(option4wd, (752,453))
+                screen.blit(myhead, (155,120))
+                pygame.display.update()
+                explode.play()
+                pygame.time.delay(1500)
+                stage2 = False
+                stage3 = True
+                success2 = False
+                pygame.event.clear()
+            
+            if success3:
+                line = fontobj.render('效果十分顯著！', True, black, (225,230,170))
+                screen.blit(bg, (0,0))
+                screen.blit(one, (625,25))
+                screen.blit(fire,(625,25))
+                screen.blit(line, linepos)
+                screen.blit(option1wd, (87,453))
+                screen.blit(option2wd, (316,453))
+                screen.blit(option3wd, (513,453))
+                screen.blit(option4wd, (752,453))
+                screen.blit(myhead, (155,120))
+                pygame.display.update()
+                explode.play()
+                pygame.time.delay(1500)
+                stage3 = False
+                success3 = False
+                screen.blit(bg, (0,0))
+                screen.blit(option1wd, (87,453))
+                screen.blit(option2wd, (316,453))
+                screen.blit(option3wd, (513,453))
+                screen.blit(option4wd, (752,453))
+                screen.blit(myhead, (155,120))
+                pygame.display.update()
+                pygame.time.delay(800)
+                run = False
+                pygame.event.clear()
 
             if 447 <= position[1] <= 513:
                 if 31 <= position[0] <= 251:
@@ -776,23 +898,7 @@ class little_game:
                     option4 = True
                 else:
                     option4 = False
-            '''
-            if stage1:
-                if option1 or option2 or option3:
-                    text = '似乎沒什麼用...'
-                if option4:
-                    text = '效果十分顯著！'
-            if stage2:
-                if option1:
-                    text = '效果十分顯著！'
-                if option2 or option3 or option4:
-                    text = '似乎沒什麼用...'
-            if stage3:
-                if option1:
-                    text = '效果十分顯著！'
-                if option2 or option3 or option4:
-                    text = '似乎沒什麼用...'
-            '''
+
             pygame.display.update()
             
             # print(position)
