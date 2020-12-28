@@ -299,7 +299,7 @@ def Battle(pMoveList):
     DISPLAYSURF.blit(guanguanHead, (0,195))
     drawText('管管', font, DISPLAYSURF, 200, 320, BLACK)
     DISPLAYSURF.blit(background, (0,0))
-    drawText("天數館派出了 e^x 函數!", font, DISPLAYSURF, 10,400, BLACK)
+    drawText("外星語言館派出了 e^x 函數!", font, DISPLAYSURF, 10,400, BLACK)
     DISPLAYSURF.blit(guanguanHead, (0,195))
     drawText('管管', font, DISPLAYSURF, 200, 320, BLACK)
     time.sleep(2)
@@ -326,7 +326,7 @@ def Battle(pMoveList):
                 TextToPrint = "效果十分顯著！"
                 enemy.transform_to_first()
             elif pMove == skills[2]: # 泰勒展開？
-                TextToPrint = "效果十分顯著！"
+                TextToPrint = "似乎沒什麼用..."
             else:
                 TextToPrint = "似乎沒什麼用..."
                 enemy.hit_count += 1 # 打了幾次
@@ -354,6 +354,8 @@ def Battle(pMoveList):
             TextToPrint = "似乎沒什麼用..."
             enemy.hit_count += 1 # 打了幾次
 
+
+        # 需要更改
         DISPLAYSURF.pygame.blit(background,(0,0))
         displayMessage(TextToPrint)
         enemyBar.updateBar()
