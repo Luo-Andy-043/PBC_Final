@@ -1,5 +1,14 @@
 import random, pygame, os
 
+'''
+打考卷:L
+煎蛋:U
+猜歌:E
+打函數:F
+
+'''
+
+
 class little_game:
 
     def __init__(self, screen):
@@ -78,6 +87,7 @@ class little_game:
                     pygame.display.update()
                     run = False # 結束遊戲
                     pygame.time.delay(1500)
+                    return 'fail'
 
                 # 寫完就贏ㄌ 耶
                 else:
@@ -85,9 +95,18 @@ class little_game:
                     self.screen.blit(win, (0,0))
                     pygame.display.update()
                     run = False # 結束遊戲
+                    note = pygame.image.load('../視覺設計/紙條.jpg').convert_alpha()
+                    note = pygame.transform.smoothscale(note, (self.screen.get_size()))
+                    self.screen.blit(note, (0,0))
                     pygame.time.delay(1500)
+                    return 'win'
 
     def egg_game(self):
+        story_1 = pygame.image.load('./素材/煎蛋/after_game_1.png').convert_alpha()
+        story_2 = pygame.image.load('./素材/煎蛋/after_game_2.png').convert_alpha()
+        story_1 = pygame.transform.smoothscale(story_1, (self.screen.get_size()))
+        story_2 = pygame.transform.smoothscale(story_2, (self.screen.get_size()))
+        switcher = [story_1, story_2]
 
         move_egg = False
         move_ok_egg = False
@@ -241,6 +260,21 @@ class little_game:
                 self.screen.blit(ok_egg, (okegg_pos[0]-67.5, okegg_pos[1]-50))
 
             pygame.display.update()
+
+        waiting = True
+        index = 0
+        while waiting:
+            for e in pygame.event.get():
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if e.button == 1:
+                        index += 1
+                        if index >= 2:
+                            waiting = False
+                        else:
+                            self.screen.blit(switcher[index], (0,0))
+                            pygame.display.update()
+                    
+        return 'win'
 
     def guess_song(self):
 
