@@ -692,12 +692,17 @@ class little_game:
         # 載入字型
         fontobj = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 30)
         
-        option1 = False
-        option2 = False
-        option3 = False
-        option4 = False
+        option1 = False  # 一次微分
+        option2 = False  # 不定積分
+        option3 = False  # 計量財務模型
+        option4 = False  # 極限
         stage1 = True
+        stage2 = False
+        stage3 = False
+        success = False
+        fail = False
         black = (0,0,0)
+        linepos = (50,328)
         run = True
         while run:
             # 繪製背景
@@ -706,6 +711,8 @@ class little_game:
             # 畫數學
             if stage1:
                 screen.blit(e, (500,25))
+            
+            # 畫台詞
             
             
             # 畫選項
@@ -724,21 +731,59 @@ class little_game:
                     run = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
-                        if 447 <= position[1] <= 513:
-                            if 31 <= position[0] <= 251:
-                                option1 = True
-                            elif 262 <= position[0] <= 481:
-                                option2 = True
-                            elif 490 <= position[0] <= 709:
-                                option3 = True
-                            elif 717 <= position[0] <= 937:
-                                option4 = True
-            if stage1:
+                        if stage1:
+                            if option4:
+                                success = True
+                                option4 = False
+                            elif option2 or option3 or option1:
+                                fail = True
+                                option2 = False
+                                option1 = False
+                                option3 = False
+            if fail:
+                line = fontobj.render('似乎沒什麼用...', True, black)
+                screen.blit(line, linepos)
+                pygame.display.update()
+                pygame.time.delay(1500)
+                fail = False
+
+            if success:
+                line = fontobj.render('效果十分顯著！', True, black)
+                screen.blit(line, linepos)
+                pygame.display.update()
+                pygame.time.delay(1500)
+                success = False
             
-                
+
+            if 447 <= position[1] <= 513:
+                if 31 <= position[0] <= 251:
+                    option1 = True
+                elif 262 <= position[0] <= 481:
+                    option2 = True
+                elif 490 <= position[0] <= 709:
+                    option3 = True
+                elif 717 <= position[0] <= 937:
+                    option4 = True
+            '''
+            if stage1:
+                if option1 or option2 or option3:
+                    text = '似乎沒什麼用...'
+                if option4:
+                    text = '效果十分顯著！'
+            if stage2:
+                if option1:
+                    text = '效果十分顯著！'
+                if option2 or option3 or option4:
+                    text = '似乎沒什麼用...'
+            if stage3:
+                if option1:
+                    text = '效果十分顯著！'
+                if option2 or option3 or option4:
+                    text = '似乎沒什麼用...'
+            '''
             pygame.display.update()
             
-            print(position)
+            # print(position)
 play = little_game()
 play.hitmath()
 pygame.quit()
