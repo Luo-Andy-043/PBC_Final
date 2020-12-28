@@ -3,6 +3,7 @@ import pygame, os
 import opening
 from setting import *
 from map import *
+import little_game
 
 
 
@@ -205,15 +206,13 @@ class NPC(pygame.sprite.Sprite):
     def encounter(self):
         global schedule
         # 碰撞了 而且 找對人
-        # self.they_encounters = False
-        # self.they_encounters = pygame.sprite.collide_rect_ratio( 0.95 )(self, self.game.guan)
         self.touch = False 
         if (abs(NPCcamera_place[self.indicator][0] - GUANcamera_place[0]) < 40 and \
             abs(NPCcamera_place[self.indicator][1] - GUANcamera_place[1]) < 40):
             print(self.name, '媽我在這裡')
             self.touch = True
         
-        if self.touch == True :
+        if self.touch:
             if self.cooler==0:
                 print(schedule, self.index)
                 print(self.name)
@@ -248,7 +247,7 @@ class NPC(pygame.sprite.Sprite):
                             dialog(self.game, replypath, self.name, self.imgpath)
                             yrpass()
                             pygame.time.delay(1500)
-                            self. cooler = 60
+                            self.cooler = 60
                             self.game.update()
                             
 
@@ -257,14 +256,14 @@ class NPC(pygame.sprite.Sprite):
                             print('i=', i, 'way=', way_to_talk, 'now2')
                             dialog(self.game, txtpath, self.name, self.imgpath)
                             pygame.display.update()
-                            self. cooler = 45
+                            self.cooler = 45
 
                         # 第三種講話模式
                         if way_to_talk == 3:  # 管管說一段話
                             print('i=', i, 'way=', way_to_talk, 'now3')
                             dialog(self.game, txtpath)
                             pygame.display.update()
-                            self. cooler = 45
+                            self.cooler = 45
 
                 # 罐頭台詞
                 else:
@@ -404,8 +403,8 @@ class Game:
         self.reminder_30_path = './素材/reminder/reminder_30.png'
         self.reminder_10_path = './素材/reminder/reminder_10.png'
         self.reminder_times_up_path = './素材/reminder/times_up.png'
-        # self.gameover_path = ''
-        # self.close_game_path = ''
+        self.gameover_path = '../視覺設計/game_over.png'
+        self.close_game_path = '../視覺設計/congrats.png'
 
         # load images/music
         self.start_img = img(self.start_img_path, screen_size)
@@ -422,10 +421,10 @@ class Game:
         self.light_button = img(self.light_button_path, (start_button_length, start_button_height))
         self.dark_button = img(self.dark_button_path, (start_button_length, start_button_height))
 
-        # self.gameover_img = pygame.image.load(self.gameover_path).convert_alpha()
-        # self.gameover_img = pygame.transform.smoothscale(self.gameover_img, ())
-        # self.close_game_img = pygame.image.load(self.close_game_path).convert_alpha()
-        # self.close_game_img = pygame.transform.smoothscale(self.close_game_img, ())
+        self.gameover_img = pygame.image.load(self.gameover_path).convert_alpha()
+        self.gameover_img = pygame.transform.smoothscale(self.gameover_img, self.screen.get_size())
+        self.close_game_img = pygame.image.load(self.close_game_path).convert_alpha()
+        self.close_game_img = pygame.transform.smoothscale(self.close_game_img, self.screen.get_size())
 
 
     # 遊戲起始畫面
@@ -458,6 +457,9 @@ class Game:
 
         # 背景
         self.bg = bg_class(self)
+
+        # 小遊戲
+        self.games = little_game.little_game(self.screen)
 
         self.load()
         self.show_start_game()
@@ -510,14 +512,8 @@ class Game:
             self.screen.blit(self.reminder_times_up, (WIDTH/2-self.reminder_times_up.get_width()/2, HEIGHT/2-self.reminder_times_up.get_height()/2))
             pygame.display.update()
             pygame.time.delay(100)
-            self.fail = True
+            self.game_over()
 
-    '''
-    def fail(self):
-        self.fail_img_path = ''
-        self.fail_img = pygame.image.load(self.fail_img_path).convert_alpha()
-        self.fail_img = pygame.transform.smoothscale(self.fail_img, ())
-    '''
 
     # 遊戲運作
     def run(self):
@@ -543,7 +539,6 @@ class Game:
             self.dt = self.clock.tick(60) / 1000
             self.timer = pygame.time.get_ticks()
             self.watcher()
-            self.draw_grid()
             self.events()
             # self.all_sprites.draw(self.screen)
             # for sprite in self.all_sprites:
@@ -585,19 +580,16 @@ class Game:
             self.NPC_elder.encounter()
             self.NPC_e.encounter()
             self.NPC_shortfarmer.encounter()
-            
-            # if self.fail == True:
-                # self.gameover()
+
             self.update()
             
-            
-               
 
         self.music_stop()
 
     def events(self):
         # Game Loop - events
         self.L_click = False
+        keys = pygame.key.get_pressed()
         for event in pygame.event.get():
             # check for closing window
             if event.type == pygame.QUIT:
@@ -606,6 +598,23 @@ class Game:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.L_click = True
+            if keys[pygame.K_l]:
+                state = self.games.mock_test()
+                if state == 'lose':
+                    self.gameover()
+            if keys[pygame.K_u]:
+                self.games.egg_game()
+            if keys[pygame.K_e]:
+                pygame.mixer.music.pause()
+                self.games.guess_song()
+                pygame.mixer.music.unpause()
+            if keys[pygame.K_f]:
+                self.games.hitmath()
+            if keys[pygame.K_s]:
+                self.games.sun_by_the_lake()
+                self.close_game()
+            
+
 
     def music_stop(self):
         pygame.mixer.music.stop()
@@ -616,38 +625,23 @@ class Game:
         pygame.display.update()
         self.all_sprites.update()
         self.camera.update(self.guan)
-        
-    def draw_grid(self):  # 障礙物設定
-        # draw the grids on the map
-        for x in range(0, WIDTH, TILESIZE):
-            pygame.draw.line(self.screen, WHITE, (x, 0), (x, HEIGHT))
-        for y in range(0, HEIGHT, TILESIZE):
-            pygame.draw.line(self.screen, WHITE, (0, y), (WIDTH, y))
-    
+   
+    def gameover(self):
+        self.screen.blit(self.gameover_img, (0,0))
+        pygame.display.update()
+        while True:
+            self.events()
+            if self.L_click:
+                pygame.quit()
 
+    def close_game(self):
+        self.screen.blit(self.close_game_img, (0,0))
+        pygame.display.update()
+        while True:
+            self.events()
+            if self.L_click:
+                pygame.quit()
 
-    # def gameover(self):
-        # screen.blit(self.gameover_img, (0,0))
-        # self.update()
-        # while True:
-            # self.event()
-            # if self.L_click:
-                # self.playing = False
-                # break
-
-    # def close_game(self):
-        # screen.blit(self.close_game_img, (0,0))
-        # self.update()
-        # while True:
-            # self.event()
-            # if self.L_click:
-                # self.playing = False
-                # break
-
-
-
-
-        
 
 '''6｜執行'''
 # Run the game

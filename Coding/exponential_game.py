@@ -27,7 +27,6 @@
 # 正文開始
 import pygame, os, sys, time
 working_path = os.path.dirname(__file__)
-print(working_path)
 os.chdir(working_path)
 
 # 定義指數函數的class
