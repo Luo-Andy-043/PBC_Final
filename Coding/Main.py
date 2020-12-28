@@ -5,6 +5,7 @@ from map import *
 
 # 更正程式工作位置
 working_path = os.path.dirname(__file__)
+working_path="/Users/yichinhuang/desktop/PBC_Final/PBC_Final/Coding"
 os.chdir(working_path)
 
 guan_path_l = '../視覺設計/管管騎ubike（左_方形）.png'
@@ -240,6 +241,8 @@ class Game:
         self.reminder_30_path = './素材/reminder/reminder_30.png'
         self.reminder_10_path = './素材/reminder/reminder_10.png'
         self.reminder_times_up_path = './素材/reminder/times_up.png'
+        #self.congrats_path = './視覺設計/congrats.png'
+        #self.game_over_path = './視覺設計/game_over.png'
         # self.gameover_path = ''
         # self.close_game_path = ''
 
