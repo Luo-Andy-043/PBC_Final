@@ -101,11 +101,15 @@ class buttonHSU(pygame.sprite.Sprite):
 
 
 # 紀錄破關進度
-schedule = 0
+schedule = 1
 def yrpass():
     global schedule 
     schedule += 1
 
+
+# 位置紀錄
+NPCcamera_place = [0,0,0,0,0,0]
+GUANcamera_place = [0,0]
 
 '''1｜圖片、字型、素材載入'''
 # 共用圖片
@@ -183,12 +187,14 @@ class NPC(pygame.sprite.Sprite):
         self.game = game      # 所屬遊戲
         self.name = name      # 正式名字，兩個字
         self.index = index    # 關卡次序
+        self.indicator = index-1
         self.mode = mode      # 說話模式，是個list
         self.size = size      # 圖片大小
         # self.place = place
         self.imgpath = './素材/NPCPic/' + self.name + '.png' #圖片路徑       
         self.image = img(self.imgpath, size)  # 用函數載圖片
         self.rect = self.image.get_rect()
+        self.touch = False
         # game.screen.blit(self.image, CLERK_Place)
         # pygame.display.update()
 
@@ -196,52 +202,72 @@ class NPC(pygame.sprite.Sprite):
     def encounter(self):
         global schedule
         # 碰撞了 而且 找對人
-        if pygame.sprite.collide_rect(self, self.game.guan) and schedule == self.index:
+        # self.they_encounters = False
+        # self.they_encounters = pygame.sprite.collide_rect_ratio( 0.95 )(self, self.game.guan)
+        self.touch = False 
+        if (abs(NPCcamera_place[self.indicator][0] - GUANcamera_place[0]) < 40 and \
+            abs(NPCcamera_place[self.indicator][1] - GUANcamera_place[1]) < 40):
+            print(self.name, '媽我在這裡')
+            self.touch = True
+        
+        if self.touch == True:
+            print(schedule, self.index)
             print(self.name)
-            for i in range(len(self.mode)):  # moden兩種，三格[0,1,2]
-                way_to_talk = self.mode[i]   # 讀進來的模式，第幾句話的講話方法
-                txtpath = './素材/NPCText/' + self.name + str(i+1) + '.txt'
-                # 第一種講話模式
-                if way_to_talk == 1:
-                    # chosen = 'notyet'
-                    button_A = buttonHSU(self.game, 'dSelBt_A', 'lSelBt_A', (720, 365))
-                    button_B = buttonHSU(self.game, 'dSelBt_B', 'lSelBt_A', (840, 365))
-                    choose_A, choose_B = False, False
-                    while choose_A is False and choose_B is False:
-                        self.game.events()
-                        choose_A = button_A.show()
-                        choose_B = button_B.show()
+            pygame.display.update()
+            if schedule == self.index:
+                for i in range(len(self.mode)):  # model三種，四格[2,1,3,2] len=4 i = 0,1,2,3
+                    way_to_talk = self.mode[i]   # 讀進來的模式，第幾句話的講話方法
+                    txtpath = './素材/NPCText/' + self.name + str(i+1) + '.txt'
+                    if way_to_talk == 1:
+                        print('i=', i, 'way=', way_to_talk)
+                        # chosen = 'notyet'
+                        button_A = buttonHSU(self.game, 'dSelBt_A', 'lSelBt_A', (720, 365))
+                        button_B = buttonHSU(self.game, 'dSelBt_B', 'lSelBt_B', (840, 365))
+                        choose_A, choose_B = False, False
+                        while choose_A is False and choose_B is False:
+                            self.game.events()
+                            choose_A = button_A.show()
+                            choose_B = button_B.show()
+                            pygame.display.update()
+
+                        # 選到不對的或還沒選
+                        # while chosen != 'A':
+                            # if chosen == 'B':
+                                # replypath = './素材/NPCText/' + self.name + 'B' + '.txt'
+                                # dialog(self.game, replypath, self.name, self.imgpath)
+                                # dialog(self.game, txtpath, self.name, self.imgpath)
+                        # 對了
+                        # replypath = './素材/NPCText/' + self.name + 'A' + '.txt'
+                        # dialog(replypath, self.name, self.imgpath)
+                        
+                        # 選錯了
+                        if choose_B and not choose_A:
+                            replypath = './素材/NPCText/' + self.name + 'B' + '.txt'
+                            dialog(self.game, replypath, self.name, self.imgpath)
+                            dialog(self.game, txtpath, self.name, self.imgpath)
+                            pygame.display.update()
+                        
+                        # 選對了
+                        if choose_A and not choose_B:
+                            replypath = './素材/NPCText/' + self.name + 'A' + '.txt'
+                            dialog(self.game, replypath, self.name, self.imgpath)
+                            pygame.display.update()
+
+                    # 第二種講話模式
+                    if way_to_talk == 2:  # NPC說一段話
+                        dialog(self.game, txtpath, self.name, self.imgpath)
                         pygame.display.update()
 
-                    # 選到不對的或還沒選
-                    # while chosen != 'A':
-                        # if chosen == 'B':
-                            # replypath = './素材/NPCText/' + self.name + B + '.txt'
-                            # dialog(self.game, replypath, self.name, self.imgpath)
-                            # dialog(self.game, txtpath, self.name, self.imgpath)
-                    # 選錯了
-                    if choose_B and not choose_A:
-                        replypath = './素材/NPCText/' + self.name + 'B' + '.txt'
-                        dialog(self.game, replypath, self.name, self.imgpath)
-                        dialog(self.game, txtpath, self.name, self.imgpath)
-                    
-                    # 選對了
-                    if choose_A and not choose_B:
-                        replypath = './素材/NPCText/' + self.name + 'A' + '.txt'
-                        dialog(self.game, replypath, self.name, self.imgpath)
-
-                # 第二種講話模式
-                elif way_to_talk == 2:  # NPC說一段話
-                    dialog(self.game, txtpath, self.name, self.imgpath)
-
-                # 第三種講話模式
-                elif way_to_talk == 3:  # 管管說一段話
-                    dialog(self.game, txtpath)
+                    # 第三種講話模式
+                    if way_to_talk == 3:  # 管管說一段話
+                        dialog(self.game, txtpath)
+                        pygame.display.update()
 
                 # 罐頭台詞
-                else:
-                    txtpath = './素材/NPCText/' + self.name + '0' + '.txt'
-                    dialog(self.game, self.name, self.image, txtpath) 
+            else:
+                txtpath = './素材/NPCText/' + self.name + '0' + '.txt'
+                dialog(self.game, txtpath, self.name, self.imgpath) 
+                pygame.display.update()
 
 
 '''3｜管中閔'''
@@ -284,45 +310,45 @@ class GUAN(pygame.sprite.Sprite):
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
         self.rect.x = self.x
-        # self.collide_with_walls('x')
+        self.collide_with_walls('x')
         self.rect.y = self.y
-        # self.collide_with_walls('y')
+        self.collide_with_walls('y')
 
-    # def collide_with_walls(self, d):
-        # if d == 'x':
-            # hits = pygame.sprite.spritecollide(self, self.game.walls, False)
-            # if hits:
-                # if self.vx > 0:
-                    # self.x = hits[0].rect.left - self.rect.width
-                # if self.vx < 0:
-                    # self.x = hits[0].rect.right
-                # self.vx = 0
-                # self.rect.x = self.x
+    def collide_with_walls(self, d):
+        if d == 'x':
+            hits = pygame.sprite.spritecollide(self, self.game.walls, False)
+            if hits:
+                if self.vx > 0:
+                    self.x = hits[0].rect.left - self.rect.width
+                if self.vx < 0:
+                    self.x = hits[0].rect.right
+                self.vx = 0
+                self.rect.x = self.x
 
-        # if d == 'y':
-            # hits = pygame.sprite.spritecollide(self, self.game.walls, False)
-            # if hits:
-                # if self.vy > 0:
-                    # self.y = hits[0].rect.top - self.rect.height
-                # if self.vy < 0:
-                    # self.y = hits[0].rect.bottom
-                # self.vy = 0
-                # self.rect.y = self.y
+        if d == 'y':
+            hits = pygame.sprite.spritecollide(self, self.game.walls, False)
+            if hits:
+                if self.vy > 0:
+                    self.y = hits[0].rect.top - self.rect.height
+                if self.vy < 0:
+                    self.y = hits[0].rect.bottom
+                self.vy = 0
+                self.rect.y = self.y
 
 
 '''4｜牆壁與地圖'''
-# class Wall(pygame.sprite.Sprite):
-    # def __init__(self, game, x, y):
-        # self.groups = game.all_sprites, game.walls
-        # pygame.sprite.Sprite.__init__(self, self.groups)
-        # self.game = game
-        # self.image = pygame.Surface((TILESIZE, TILESIZE))
-        # self.image.set_alpha(0)
-        # self.rect = self.image.get_rect()
-        # self.x = x
-        # self.y = y
-        # self.rect.x = x * TILESIZE
-        # self.rect.y = y * TILESIZE
+class Wall(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.walls
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pygame.Surface((TILESIZE, TILESIZE))
+        self.image.set_alpha(0)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
 
 class bg_class(pygame.sprite.Sprite):
     def __init__(self, game):
@@ -345,7 +371,7 @@ class Game:
 
         self.playing = True
         self.fail = False
-        # self.walls = pygame.sprite.Group()
+        self.walls = pygame.sprite.Group()
         self.map = Map('./background.txt')
         self.camera = Camera(self.map.width, self.map.height)
         self.all_sprites = pygame.sprite.Group()
@@ -420,7 +446,7 @@ class Game:
         self.guan = GUAN(self, 88, 168)
 
         # 牆壁
-        # self.walls = pygame.sprite.Group()
+        self.walls = pygame.sprite.Group()
         self.all_sprites.add(self.guan)
 
         # 背景
@@ -429,12 +455,12 @@ class Game:
         self.load()
         self.show_start_game()
         opening.opening()
-        # self.wall_list = []
-        # for row, tiles in enumerate(self.map.data):
-            # for col, tile in enumerate(tiles):
-                # if tile == '1':
-                    # w = Wall(self, col, row)
-                    # self.wall_list.append(w)
+        self.wall_list = []
+        for row, tiles in enumerate(self.map.data):
+            for col, tile in enumerate(tiles):
+                if tile == '1':
+                    w = Wall(self, col, row)
+                    self.wall_list.append(w)
         self.music_stop()
         self.run()
     
@@ -493,12 +519,12 @@ class Game:
         pygame.mixer.music.play(-1)
         
         # NPC定義
-        self.NPC_CLERK = NPC(self, '店員', index=0, mode=[1,2,3])
-        self.NPC_JK = NPC(self, '屁孩', 2, [1,2,3])
-        self.NPC_student = NPC(self, '學生', 3, [1,2,3])
-        self.NPC_elder = NPC(self, '老人', 4, [1,2,3])
-        self.NPC_e = NPC( self, '函數', 5, [1,2,3])
-        self.NPC_shortfarmer = NPC(self, '北北', 6, [1,2,3])
+        self.NPC_CLERK = NPC(self, '店員', 1, mode=[2,1,3])
+        self.NPC_JK = NPC(self, '屁孩', 2, [3,2,3,2,1])
+        self.NPC_student = NPC(self, '學生', 3, [2,1])
+        self.NPC_elder = NPC(self, '老人', 4, [2,1])
+        self.NPC_e = NPC( self, '函數', 5, [3,2])
+        self.NPC_shortfarmer = NPC(self, '北北', 6, [2,1])
         
 
         # Timer
@@ -519,11 +545,22 @@ class Game:
             
             # 物件呈現：牆與地圖
             self.screen.blit(self.bg.image, self.camera.apply(self.bg))
-            # for w in self.wall_list:
-                # self.screen.blit(w.image, self.camera.apply(w))
+            for w in self.wall_list:
+                self.screen.blit(w.image, self.camera.apply(w))
             
+                   
+                        
             #物件呈現：ＮＰＣ
-            # self.screen.blit(self.NPC_CLERK.image, self.camera.apply(self.NPC_CLERK))
+            NPCcamera_place[0] = (self.camera.apply(self.NPC_CLERK)[0]+1820, self.camera.apply(self.NPC_CLERK)[1]+3020)
+            NPCcamera_place[1] = (self.camera.apply(self.NPC_JK)[0]+2020, self.camera.apply(self.NPC_JK)[1]+2960)
+            NPCcamera_place[2] = (self.camera.apply(self.NPC_student)[0]+1740, self.camera.apply(self.NPC_student)[1]+1720)
+            NPCcamera_place[3] = (self.camera.apply(self.NPC_elder)[0]+1060, self.camera.apply(self.NPC_elder)[1]+400)
+            NPCcamera_place[4] = (self.camera.apply(self.NPC_e)[0]+2160, self.camera.apply(self.NPC_e)[1]+500)
+            NPCcamera_place[5] = (self.camera.apply(self.NPC_shortfarmer)[0]+1880, self.camera.apply(self.NPC_shortfarmer)[1]+500)
+            GUANcamera_place[0] = self.camera.apply(self.guan)[0]
+            GUANcamera_place[1] = self.camera.apply(self.guan)[1]
+            # print(NPCcamera_place)
+            # print(GUANcamera_place)
             self.screen.blit(self.NPC_CLERK.image, (self.camera.apply(self.NPC_CLERK)[0]+1820, self.camera.apply(self.NPC_CLERK)[1]+3020))
             self.screen.blit(self.NPC_JK.image, (self.camera.apply(self.NPC_JK)[0]+2020, self.camera.apply(self.NPC_JK)[1]+2960))            
             self.screen.blit(self.NPC_student.image, (self.camera.apply(self.NPC_student)[0]+1740, self.camera.apply(self.NPC_student)[1]+1720))
@@ -537,16 +574,19 @@ class Game:
 
             
             # NPC偵測
-            # self.NPC_CLERK.encounter()
-            # self.NPC_JK.encounter()
-            # self.NPC_student.encounter()
-            # self.NPC_elder.encounter()
-            # self.NPC_e.encounter()
-            # self.NPC_shortfarmer.encounter()
+            self.NPC_CLERK.encounter()
+            self.NPC_JK.encounter()
+            self.NPC_student.encounter()
+            self.NPC_elder.encounter()
+            self.NPC_e.encounter()
+            self.NPC_shortfarmer.encounter()
             
             # if self.fail == True:
                 # self.gameover()
             self.update()
+            
+            
+               
 
         self.music_stop()
 
