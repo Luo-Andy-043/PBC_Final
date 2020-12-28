@@ -137,7 +137,7 @@ def displayMessage(message):
 # in an efficient manner.
     drawText(message, font, DISPLAYSURF, 10,400, BLACK)
     redraw()
-    time.sleep(1)
+    pygame.time.delay(10)
     DISPLAYSURF.blit(background, (0,0))
 
 
@@ -232,11 +232,11 @@ def pMoveSelect(pMoveList):
     button1.drawButton(button)
     drawMoveText(pMoveList[0], font, DISPLAYSURF, 100, 499, BLACK)
     button2.drawButton(button)
-    drawMoveText(pMoveList[1], font, DISPLAYSURF, 300, 499, BLACK)
+    drawMoveText(pMoveList[1], font, DISPLAYSURF, 330, 499, BLACK)
     button3.drawButton(button)
-    drawMoveText(pMoveList[2], font, DISPLAYSURF, 100, 566, BLACK)
+    drawMoveText(pMoveList[2], font, DISPLAYSURF, 560, 566, BLACK)
     button4.drawButton(button)
-    drawMoveText(pMoveList[3], font, DISPLAYSURF, 300, 566, BLACK)
+    drawMoveText(pMoveList[3], font, DISPLAYSURF, 790, 566, BLACK)
     pygame.display.update()
 
   #Key listener block for the move selection process. When the mouse is clicked,
@@ -311,6 +311,7 @@ def Battle(pMoveList):
   #Main program loop. Loop terminates when one pokemon has fainted.
     while True:
     #Executing the move selection functions for both the player and the computer
+        redraw()
         pMove = pMoveSelect(pMoveList)
         pygame.display.update()
 
@@ -322,45 +323,42 @@ def Battle(pMoveList):
 
         if enemy.status == "exponential^x":
             if pMove == skills[3]:
-                drawText("效果十分顯著！", font, DISPLAYSURF, 10, 400, BLACK)
+                TextToPrint = "效果十分顯著！"
                 enemy.transform_to_first()
             elif pMove == skills[2]: # 泰勒展開？
-                drawText("效果十分顯著！", font, DISPLAYSURF, 10, 400, BLACK)
+                TextToPrint = "效果十分顯著！"
             else:
-                drawText("似乎沒什麼用...", font, DISPLAYSURF, 10, 400, BLACK)
+                TextToPrint = "似乎沒什麼用..."
                 enemy.hit_count += 1 # 打了幾次
 
         elif enemy.status == "x+1":
             if pMove == skills[0]:
-                drawText("效果十分顯著！", font, DISPLAYSURF, 10, 400, BLACK)
+                TextToPrint = "效果十分顯著！"
                 enemy.transform_to_constant()
             elif pMove == skills[2]: # 泰勒展開？
-                drawText("效果十分顯著！", font, DISPLAYSURF, 10, 400, BLACK)
+                TextToPrint = "效果十分顯著！"
 
             else:
-                drawText("似乎沒什麼用...", font, DISPLAYSURF, 10, 400, BLACK)
+                TextToPrint = "似乎沒什麼用..."
                 enemy.hit_count += 1 # 打了幾次
 
         elif enemy.status == "1":
             if pMove == skills[0]:
-                drawText("效果十分顯著！", font, DISPLAYSURF, 10, 400, BLACK)
+                TextToPrint = "效果十分顯著！"
                 enemy.transform_to_zero()
                 won = True
             elif pMove == skills[2]: # 泰勒展開？
-                drawText("效果十分顯著！", font, DISPLAYSURF, 10, 400, BLACK)
+                TextToPrint = "效果十分顯著！"
 
         else:
-            drawText("似乎沒什麼用...", font, DISPLAYSURF, 10, 400, BLACK)
+            TextToPrint = "似乎沒什麼用..."
             enemy.hit_count += 1 # 打了幾次
 
-
+        DISPLAYSURF.pygame.blit(background,(0,0))
+        displayMessage(TextToPrint)
         enemyBar.updateBar()
         enemyBar.drawRects()
         pygame.display.update()
-
-        time.sleep(10)
-
-        redraw()
 
         if won:
             break
@@ -371,7 +369,7 @@ def Battle(pMoveList):
         DISPLAYSURF.blit(endBackground,(0,0))
         drawText("You won!", font, TEXTSURF, 120, 100, BLACK)
         pygame.display.update()
-        time.sleep(2)
+
 
 ################################################################################
 #Execution and Initialization
@@ -408,16 +406,16 @@ if __name__ == '__main__':
   #Initializing the buttons for player move selection each turn
     button1 = Button()
     button1.assignImage(button)
-    button1.setCoords(468,2)
+    button1.setCoords(2,468)
     button2 = Button()
     button2.assignImage(button)
-    button2.setCoords(468,202)
+    button2.setCoords(242,468)
     button3 = Button()
     button3.assignImage(button)
-    button3.setCoords(535,2)
+    button3.setCoords(482,468)
     button4 = Button()
     button4.assignImage(button)
-    button4.setCoords(535,202)
+    button4.setCoords(722,468)
 
   #Execution of the main loop of the program. More information on this function
   #can be found above.
