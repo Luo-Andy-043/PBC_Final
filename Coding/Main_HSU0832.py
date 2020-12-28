@@ -4,6 +4,8 @@ import opening
 from setting import *
 from map import *
 
+
+
 # 更正程式工作位置
 working_path = os.path.dirname(__file__)
 os.chdir(working_path)
@@ -114,7 +116,7 @@ GUANcamera_place = [0,0]
 '''1｜圖片、字型、素材載入'''
 # 共用圖片
 box_img = img('./素材/dialog_box/box.png', (500,160))
-head_background = img('./素材/dialog_box/head_background.png', (157, 200))
+head_background = img('./素材/dialog_box/head_background.png', (157, 300))
 select_button_A =  img('./素材/dialog_box/select_button_A.png', (110, 160))
 select_button_B =  img('./素材/dialog_box/select_button_B.png', (110, 160))
 guan_path_l = '../視覺設計/管管騎ubike（左_方形）.png'
@@ -136,12 +138,12 @@ def pic_speaker(game, charname, headpath):
     NPC_head = img(headpath, (146,170)) # 使用函數
 
     # 繪製
-    game.screen.blit(head_background, (20,290))
+    game.screen.blit(head_background, (20,250))
     game.screen.blit(NPC_head, (40,340))
 
     # 把XX說貼上去
     name = charname + "說："
-    name = font.render(name, True, BLACK)
+    name = font.render(name, True, WHITE)
     game.screen.blit(name, (70,490))
 
 # 零件：顯示文字之獨白
@@ -195,6 +197,7 @@ class NPC(pygame.sprite.Sprite):
         self.image = img(self.imgpath, size)  # 用函數載圖片
         self.rect = self.image.get_rect()
         self.touch = False
+        self.cooler = 45
         # game.screen.blit(self.image, CLERK_Place)
         # pygame.display.update()
 
@@ -210,80 +213,67 @@ class NPC(pygame.sprite.Sprite):
             print(self.name, '媽我在這裡')
             self.touch = True
         
-        if self.touch == True:
-            print(schedule, self.index)
-            print(self.name)
-            pygame.display.update()
-            if schedule == self.index:
-                for i in range(len(self.mode)):  # model三種，四格[2,1,3] len=3 i = 0,1,2
-                    way_to_talk = self.mode[i]   # 讀進來的模式，第幾句話的講話方法
-                    txtpath = './素材/NPCText/' + self.name + str(i+1) + '.txt'
-                    print('i=', i, 'way=', way_to_talk)
-                    if way_to_talk == 1:
-                        print('i=', i, 'way=', way_to_talk, 'now1')
-                        # chosen = 'notyet'
-                        button_A = buttonHSU(self.game, 'dSelBt_A', 'lSelBt_A', (720, 365))
-                        button_B = buttonHSU(self.game, 'dSelBt_B', 'lSelBt_B', (840, 365))
-                        choose_A, choose_B = False, False
-                        dialog(self.game, txtpath, self.name, self.imgpath)
-                        # while choose_A is False and choose_B is False:
-                            # self.game.events()
-                            # choose_A = button_A.show()
-                            # choose_B = button_B.show()
-                            # pygame.display.update()
+        if self.touch == True :
+            if self.cooler==0:
+                print(schedule, self.index)
+                print(self.name)
+                pygame.display.update()
+                if schedule == self.index:
+                    for i in range(len(self.mode)):  # model三種，四格[2,1,3] len=3 i = 0,1,2
+                        way_to_talk = self.mode[i]   # 讀進來的模式，第幾句話的講話方法
+                        txtpath = './素材/NPCText/' + self.name + str(i+1) + '.txt'
+                        print('i=', i, 'way=', way_to_talk)
+                        if way_to_talk == 1:
+                            print('i=', i, 'way=', way_to_talk, 'now1')
 
-                        # 選到不對的或還沒選
-                        while choose_A is False:
-                            self.game.events()
-                            choose_A = button_A.show()
-                            choose_B = button_B.show()
-                            pygame.display.update()
-                            if choose_B:
-                                print('i=', i, 'way=', way_to_talk, 'nowwrong')
-                                replypath = './素材/NPCText/' + self.name + 'B' + '.txt'
-                                dialog(self.game, replypath, self.name, self.imgpath)
-                                dialog(self.game, txtpath, self.name, self.imgpath)
-                                choose_B = False
-                        # 對了
-                        print('i=', i, 'way=', way_to_talk, 'nowright')
-                        replypath = './素材/NPCText/' + self.name + 'A' + '.txt'
-                        dialog(self.game, replypath, self.name, self.imgpath)
-                        yrpass()
-                        
-                            # 選錯了
-                            # if choose_B and not choose_A:
-                                # print('i=', i, 'way=', way_to_talk, 'nowwrong')
-                                # replypath = './素材/NPCText/' + self.name + 'B' + '.txt'
-                                # dialog(self.game, replypath, self.name, self.imgpath)
-                                # dialog(self.game, txtpath, self.name, self.imgpath)
-                                # pygame.display.update()
+                            button_A = buttonHSU(self.game, 'dSelBt_A', 'lSelBt_A', (720, 365))
+                            button_B = buttonHSU(self.game, 'dSelBt_B', 'lSelBt_B', (840, 365))
+                            choose_A, choose_B = False, False
+                            dialog(self.game, txtpath, self.name, self.imgpath)
+
+                            while choose_A is False:
+                                self.game.events()
+                                choose_A = button_A.show()
+                                choose_B = button_B.show()
+                                pygame.display.update()
+                                if choose_B:
+                                    print('i=', i, 'way=', way_to_talk, 'nowwrong')
+                                    replypath = './素材/NPCText/' + self.name + 'B' + '.txt'
+                                    dialog(self.game, replypath, self.name, self.imgpath)
+                                    dialog(self.game, txtpath, self.name, self.imgpath)
+                                    choose_B = False
+                            # 對了
+                            print('i=', i, 'way=', way_to_talk, 'nowright')
+                            replypath = './素材/NPCText/' + self.name + 'A' + '.txt'
+                            dialog(self.game, replypath, self.name, self.imgpath)
+                            yrpass()
+                            self. cooler = 60
+                            self.game.update()
                             
-                            # 選對了
-                            # if choose_A and not choose_B:
-                                # print('i=', i, 'way=', way_to_talk, 'nowright')
-                                # replypath = './素材/NPCText/' + self.name + 'A' + '.txt'
-                                # dialog(self.game, replypath, self.name, self.imgpath)
-                                # pygame.display.update()
-                                # yrpass()
-                                # break
 
-                    # 第二種講話模式
-                    if way_to_talk == 2:  # NPC說一段話
-                        print('i=', i, 'way=', way_to_talk, 'now2')
-                        dialog(self.game, txtpath, self.name, self.imgpath)
-                        pygame.display.update()
+                        # 第二種講話模式
+                        if way_to_talk == 2:  # NPC說一段話
+                            print('i=', i, 'way=', way_to_talk, 'now2')
+                            dialog(self.game, txtpath, self.name, self.imgpath)
+                            pygame.display.update()
+                            self. cooler = 45
 
-                    # 第三種講話模式
-                    if way_to_talk == 3:  # 管管說一段話
-                        print('i=', i, 'way=', way_to_talk, 'now3')
-                        dialog(self.game, txtpath)
-                        pygame.display.update()
+                        # 第三種講話模式
+                        if way_to_talk == 3:  # 管管說一段話
+                            print('i=', i, 'way=', way_to_talk, 'now3')
+                            dialog(self.game, txtpath)
+                            pygame.display.update()
+                            self. cooler = 45
 
                 # 罐頭台詞
+                else:
+                    txtpath = './素材/NPCText/' + self.name + '0' + '.txt'
+                    dialog(self.game, txtpath, self.name, self.imgpath) 
+                    pygame.display.update()
+                    self.cooler = 45
             else:
-                txtpath = './素材/NPCText/' + self.name + '0' + '.txt'
-                dialog(self.game, txtpath, self.name, self.imgpath) 
-                pygame.display.update()
+                self.cooler -= 1
+
 
 
 '''3｜管中閔'''
@@ -539,7 +529,7 @@ class Game:
         self.NPC_JK = NPC(self, '屁孩', 2, [3,2,3,2,1])
         self.NPC_student = NPC(self, '學生', 3, [2,1])
         self.NPC_elder = NPC(self, '老人', 4, [2,1])
-        self.NPC_e = NPC( self, '函數', 5, [3,2])
+        self.NPC_e = NPC( self, '函數', 5, [3,2,1])
         self.NPC_shortfarmer = NPC(self, '北北', 6, [2,1])
         
 
@@ -562,9 +552,8 @@ class Game:
             # 物件呈現：牆與地圖
             self.screen.blit(self.bg.image, self.camera.apply(self.bg))
             for w in self.wall_list:
-                self.screen.blit(w.image, self.camera.apply(w))
-            
-                   
+                self.screen.blit(w.image, self.camera.apply(w))            
+
                         
             #物件呈現：ＮＰＣ
             NPCcamera_place[0] = (self.camera.apply(self.NPC_CLERK)[0]+1820, self.camera.apply(self.NPC_CLERK)[1]+3020)
@@ -575,20 +564,19 @@ class Game:
             NPCcamera_place[5] = (self.camera.apply(self.NPC_shortfarmer)[0]+1880, self.camera.apply(self.NPC_shortfarmer)[1]+500)
             GUANcamera_place[0] = self.camera.apply(self.guan)[0]
             GUANcamera_place[1] = self.camera.apply(self.guan)[1]
-            # print(NPCcamera_place)
-            # print(GUANcamera_place)
-            self.screen.blit(self.NPC_CLERK.image, (self.camera.apply(self.NPC_CLERK)[0]+1820, self.camera.apply(self.NPC_CLERK)[1]+3020))
-            self.screen.blit(self.NPC_JK.image, (self.camera.apply(self.NPC_JK)[0]+2020, self.camera.apply(self.NPC_JK)[1]+2960))            
-            self.screen.blit(self.NPC_student.image, (self.camera.apply(self.NPC_student)[0]+1740, self.camera.apply(self.NPC_student)[1]+1720))
-            self.screen.blit(self.NPC_elder.image, (self.camera.apply(self.NPC_elder)[0]+1060, self.camera.apply(self.NPC_elder)[1]+400))
-            self.screen.blit(self.NPC_e.image, (self.camera.apply(self.NPC_e)[0]+2160, self.camera.apply(self.NPC_e)[1]+500))
-            self.screen.blit(self.NPC_shortfarmer.image, (self.camera.apply(self.NPC_shortfarmer)[0]+1880, self.camera.apply(self.NPC_shortfarmer)[1]+500))
+
+            self.screen.blit(self.NPC_CLERK.image,NPCcamera_place[0])
+            self.screen.blit(self.NPC_JK.image, NPCcamera_place[1])            
+            self.screen.blit(self.NPC_student.image,  NPCcamera_place[2])
+            self.screen.blit(self.NPC_elder.image, NPCcamera_place[3])
+            self.screen.blit(self.NPC_e.image, NPCcamera_place[4])
+            self.screen.blit(self.NPC_shortfarmer.image, NPCcamera_place[5])
 
 
             # 物件呈現：管
             self.screen.blit(self.guan.image, self.camera.apply(self.guan))
 
-            
+        
             # NPC偵測
             self.NPC_CLERK.encounter()
             self.NPC_JK.encounter()
