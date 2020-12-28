@@ -688,6 +688,8 @@ class little_game:
         bg = pygame.transform.smoothscale(bg, (960,540))
         e = pygame.image.load('./素材/指數/函數.png')
         e = pygame.transform.smoothscale(e, (360,200))
+        xone = pygame.image.load('./素材/e^x/x+1.png')
+        xone = pygame.transform.smoothscale(xone, (360,200))
         
         # 載入字型
         fontobj = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 30)
@@ -711,7 +713,8 @@ class little_game:
             # 畫數學
             if stage1:
                 screen.blit(e, (500,25))
-            
+            if stage2:
+                screen.blit(xone, (515,25))
             # 畫台詞
             
             
@@ -734,12 +737,10 @@ class little_game:
                         if stage1:
                             if option4:
                                 success = True
-                                option4 = False
                             elif option2 or option3 or option1:
                                 fail = True
-                                option2 = False
-                                option1 = False
-                                option3 = False
+                        if stage2:
+                            pass
             if fail:
                 line = fontobj.render('似乎沒什麼用...', True, black)
                 screen.blit(line, linepos)
@@ -752,18 +753,29 @@ class little_game:
                 screen.blit(line, linepos)
                 pygame.display.update()
                 pygame.time.delay(1500)
+                if stage1:
+                    stage1 = False
+                    stage2 = True
                 success = False
             
 
             if 447 <= position[1] <= 513:
                 if 31 <= position[0] <= 251:
                     option1 = True
-                elif 262 <= position[0] <= 481:
+                else:
+                    option1 = False
+                if 262 <= position[0] <= 481:
                     option2 = True
-                elif 490 <= position[0] <= 709:
+                else:
+                    option2 = False
+                if 490 <= position[0] <= 709:
                     option3 = True
-                elif 717 <= position[0] <= 937:
+                else:
+                    option3 = False
+                if 717 <= position[0] <= 937:
                     option4 = True
+                else:
+                    option4 = False
             '''
             if stage1:
                 if option1 or option2 or option3:
