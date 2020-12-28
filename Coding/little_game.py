@@ -20,6 +20,8 @@ class little_game:
         win = pygame.image.load('./素材/考卷/win.png')
         paper = pygame.image.load('./素材/考卷/紙條.png')
         test = [pic0, pic1, pic2, pic3, pic4, pic5]
+        talk = pygame.image.load('./素材/考卷/talk.png')
+        talk = pygame.transform.smoothscale(talk, (960,540))
 
         # 載入音效
         write = pygame.mixer.Sound('./素材/考卷/寫字.mp3')
@@ -27,6 +29,8 @@ class little_game:
         # MainLoop
         died = False
         rule = True
+        said = False
+        over = False
         run = True
         hit = 0
         i = 3  # 開始的時候是三層
@@ -43,10 +47,13 @@ class little_game:
                         if rule == True:
                             rule = False
                         if died == True:
+                            # 再玩一次
                             hit = 0
                             add = 0
                             i = 3
                             died = False
+                        if over:
+                            run = False  # 顯示紙條，點一下離開
 
             if rule:
                 self.screen.blit(rulepic, (0,0))
@@ -84,15 +91,19 @@ class little_game:
                     died = True
                     end = pygame.transform.smoothscale(end, (960,540))
                     self.screen.blit(end, (0,0))
-                    pygame.display.update()
+                    pygame.display.update()  # press to retry
 
                 # 寫完就贏ㄌ 耶
                 else:
+                    over = True
+                    if said = False:
+                        screen.blit(talk, (0,0))
+                        pygame.display.update()
+                        pygame.time.delay(2000)
+                        said = True
                     paper = pygame.transform.smoothscale(paper, (960,540))
                     self.screen.blit(paper, (0,0))
                     pygame.display.update()
-                    run = False # 結束遊戲
-                    pygame.time.delay(1500)
 
     def egg_game(self):
 
@@ -106,6 +117,7 @@ class little_game:
         cook = 0
         wait = 0
         eaten = 0
+        said = False
         run = True
         # 載入圖片
         rulepic = pygame.image.load('./素材/煎蛋/煎蛋規則.png')
@@ -119,7 +131,9 @@ class little_game:
         bite1 = pygame.transform.smoothscale(bite1, (135,100))
         bite2 = pygame.image.load('./素材/煎蛋/咬2.png')
         bite2 = pygame.transform.smoothscale(bite2, (135,100))
-        win = pygame.image.load('./素材/考卷/win.png')
+        win = pygame.image.load('./素材/考卷/word.png')
+        pic = pygame.image.load('./素材/考卷/體育館提示.png')
+        pic = pygame.transform.smoothscale(pic, (960,540))
 
         # 載入音效
         swallow = pygame.mixer.Sound('./素材/煎蛋/吞.mp3')
@@ -148,12 +162,16 @@ class little_game:
                     if show:
                         pygame.display.update()
                         show = False
-                    pygame.time.delay(1000)
-                    win = pygame.transform.smoothscale(win, (960,540))
-                    self.screen.blit(win, (0,0))
+                    if said == False:
+                        pygame.time.delay(1000)
+                        win = pygame.transform.smoothscale(win, (960,540))
+                        self.screen.blit(win, (0,0))
+                        pygame.display.update()
+                        pygame.time.delay(1500)
+                        said = True
+                    screen.blit(pic, (0,0))
                     pygame.display.update()
-                    run = False
-                    pygame.time.delay(1500)
+                    
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -179,6 +197,8 @@ class little_game:
                     if event.button == 1:
                         move_egg = False
                         move_ok_egg = False
+                        if said == True:
+                            run = False  # 顯示提示時點一下關閉
 
             if move_egg:
                 egg_pos = pygame.mouse.get_pos()
@@ -656,7 +676,7 @@ class little_game:
         # 載入圖片
         back = pygame.image.load('./素材/傅鐘/傅鐘.jpg')
         back = pygame.transform.smoothscale(back, (266, 500))
-        end = pygame.image.load('./素材/考卷/gameover.png')
+        end = pygame.image.load('./素材/傅鐘/報應.png')
         end = pygame.transform.smoothscale(end, (960, 540))
 
         # 載入字
@@ -671,6 +691,9 @@ class little_game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1 and bell == True:
+                        run = False
 
             if bell == False:
                 ring.play()
@@ -687,7 +710,6 @@ class little_game:
                 bell = True
                 self.screen.blit(end, (0,0))
                 pygame.display.update()
-                pygame.time.delay(500)
 
                 if mock == False:
                     for k in range(2):
@@ -931,6 +953,8 @@ class little_game:
             pygame.display.update()
 
     def old_talk(self):
+        sentence0 = pygame.image.load('./素材/老人的話/words1.png')
+        sentence0 = pygame.transform.smoothscale(sentence0, (960,540))
         sentence1 = pygame.image.load('./素材/老人的話/words1.png')
         sentence1 = pygame.transform.smoothscale(sentence1, (960,540))
         sentence2 = pygame.image.load('./素材/老人的話/words2.png')
@@ -941,7 +965,9 @@ class little_game:
         sentence4 = pygame.transform.smoothscale(sentence4, (960,540))
         sentence5 = pygame.image.load('./素材/老人的話/words5.png')
         sentence5 = pygame.transform.smoothscale(sentence5, (960,540))
-        alist = [sentence1, sentence2, sentence3, sentence4, sentence5]
+        hint = pygame.image.load('./素材/猜歌/提示.png')
+        hint = pygame.transform.smoothscale(hint, (960,540))
+        alist = [sentence0, sentence1, sentence2, sentence3, sentence4, sentence5, hint]
         
         # 音效
         old11 = pygame.mixer.Sound('./素材/老人的話/講古1-1.mp3')
@@ -961,16 +987,15 @@ class little_game:
         while run:
             self.screen.blit(alist[i], (0,0))
             pygame.display.update()
-            old11.play()
-            pygame.time.delay(13500)
-            old12.play()
-            pygame.time.delay(13000)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
-                        i += 1
+                        if i < 6:
+                            i += 1
+                        else:
+                            run = False
 
     def sun_by_the_lake(self):
 
@@ -1073,7 +1098,7 @@ class little_game:
 
 
 
-'''
+
 if __name__ == '__main__':
 
 
@@ -1091,7 +1116,7 @@ if __name__ == '__main__':
     play = little_game(screen)
     play.sun_by_the_lake()
     pygame.quit()
-'''
+
 
 play = little_game()
 play.mock_test()
