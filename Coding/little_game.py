@@ -1,23 +1,4 @@
-import random,pygame,os
-
-if __name__ == '__main__':
-
-
-    # 修正程式作業位置
-    #working_path = os.path.dirname(__file__)
-    #os.chdir(working_path)
-
-    # 啟動pygame
-    pygame.init()
-
-    # 建立視窗
-    screen = pygame.display.set_mode((960,540))
-    pygame.display.set_caption('Game')
-    screen.fill((255,255,255))
-    play = little_game(screen)
-    play.sun_by_the_lake()
-    pygame.quit()
-
+import random, pygame, os
 
 class little_game:
 
@@ -958,40 +939,46 @@ class little_game:
 
     def sun_by_the_lake(self):
 
-
         # The PATHSSSSS!
         bg_path = "./素材/曬太陽/北北曬太陽.PNG"
-        duck_path = "./素材/曬太陽/鴨鴨腳踏車（去背）.PNG"
-        button_light_path = 
-        button_dark_path =
+        duck_path = "./素材/曬太陽/鴨鴨腳踏車（去背）.png"
+        button_light_path = "./素材/曬太陽/find_bike_light.png"
+        button_dark_path = "./素材/曬太陽/find_bike_dark.png"
 
         # 載入圖片
-        sun_background = pygame.image.load(bg_path)# 待補,要轉換
+        sun_background = pygame.image.load(bg_path).convert_alpha()
         sun_background = pygame.transform.smoothscale(sun_background, (960, 540))
 
+        duck_img = pygame.image.load(duck_path).convert_alpha()
+        duck_img = pygame.transform.smoothscale(duck_img, (300,240)) # 待補,要轉換
 
-        duck_img =       # 待補,要轉換
-        button_img =     # 1288*450 真實
+        # Button 1288*450 真實
 
-        button_light =
-        button_dark =
+        button_light = pygame.image.load(button_light_path).convert_alpha()
+        button_light = pygame.transform.smoothscale(button_light, (220,120))
 
-        button = pygame.Rect()
-        duck = pygame.Rect()
+        button_dark = pygame.image.load(button_dark_path).convert_alpha()
+        button_dark = pygame.transform.smoothscale(button_dark, (220,120))
 
-        BUTTON_COORDS = ()
+        # 設定一些座標
+        BUTTON_COORDS = (700,320)
+        duck_pos = (0,320)  # For moving purposes
 
+        # 建立鴨子跟按鈕 Rect 物件
+        button = pygame.Rect(BUTTON_COORDS[0], BUTTON_COORDS[1], 220, 120)
 
         self.screen.blit(sun_background, (0,0))
         pygame.display.update()
 
         run = True
+        show_button = False
         stage1 = True
         stage2 = False
 
         while run:
 
-            clock.tick(30) # 快速迴圈
+
+            pygame.time.Clock().tick(100) # 快速迴圈
 
             time_elapsed = pygame.time.get_ticks() / 1000
             mousedown = False
@@ -1004,49 +991,68 @@ class little_game:
                    mousedown = True
 
                 # 變色迴圈，偷放
+            if show_button and stage1:
                 if button.collidepoint(mouse_position):
-                    button = button_light
-                    self.screen.blit(button, BUTTON_COORDS)
+                    button_img = button_light
+                    self.screen.blit(button_img, BUTTON_COORDS)
                     pygame.display.update()
 
                 else:
-                    button = button_dark
-                    self.screen.blit(button, BUTTON_COORDS)
+                    button_img = button_dark
+                    self.screen.blit(button_img, BUTTON_COORDS)
                     pygame.display.update()
 
 
             mouse_position = pygame.mouse.get_pos()
 
 
-            if time_elapsed > 20 and stage1:
-                self.screen.blit(button_img, (,)) # 待補座標
+            if time_elapsed > 10 and stage1 and not show_button:
+                show_button = True
+                button_img = button_dark
+                self.screen.blit(button_img, BUTTON_COORDS) # 待補座標
                 pygame.display.update()
 
-                if mousedown and button.collidepoint(mouse_position):
-                    self.byebyebell()
-                    run = False
+            if mousedown and button.collidepoint(mouse_position) and stage1:
+                self.byebyebell()
+                run = False
 
-            elif time_elapsed > 40:
+            elif time_elapsed > 15 and not stage2:
                 stage1 = False
                 stage2 = True
                 self.screen.blit(sun_background, (0,0))
+
+
+            elif time_elapsed > 16 and stage2:
+                duck_pos = (duck_pos[0] + 1, duck_pos[1])
+                button = pygame.Rect(duck_pos[0], duck_pos[1], 300, 240)
+                self.screen.blit(sun_background, (0,0))
+                self.screen.blit(duck_img, duck_pos)
                 pygame.display.update()
 
-            elif time_elapsed > 60 and stage2:
-                self.screen.blit(sun_background, (0,0))
-                self.screen.blit(duck)
+
+                if mousedown and button.collidepoint(mouse_position):
+                    self.beatduck()
+                    run = False
+
+            pygame.display.update()
 
 
 
 
+if __name__ == '__main__':
 
 
+    # 修正程式作業位置
+    #working_path = os.path.dirname(__file__)
+    #os.chdir(working_path)
 
+    # 啟動pygame
+    pygame.init()
 
-
-
-
-
-
-
-            # print(position)
+    # 建立視窗
+    screen = pygame.display.set_mode((960,540))
+    pygame.display.set_caption('Game')
+    screen.fill((255,255,255))
+    play = little_game(screen)
+    play.sun_by_the_lake()
+    pygame.quit()
