@@ -1,3 +1,4 @@
+'''0｜IMPORT、環境路徑設置、通用函數集'''
 import pygame, os
 import opening
 from setting import *
@@ -5,13 +6,7 @@ from map import *
 
 # 更正程式工作位置
 working_path = os.path.dirname(__file__)
-working_path="/Users/yichinhuang/desktop/PBC_Final/PBC_Final/Coding"
 os.chdir(working_path)
-
-guan_path_l = '../視覺設計/管管騎ubike（左_方形）.png'
-guan_path_r = '../視覺設計/管管騎ubike（右_方形）.png'
-guan_path_u = '../視覺設計/管管騎ubike（背_方形）.png'
-guan_path_d = '../視覺設計/管管騎ubike（正_方形）.png'
 
 
 # 載圖片函數
@@ -20,26 +15,76 @@ def img(path, size):
     image = pygame.transform.smoothscale(image, size)
     return image
 
+
 # 載文字檔函數
 def txt(text_path):
     with open(text_path, 'r', encoding = 'utf-8') as text:
         text_file = text.readlines()
     return text_file
 
-'''
-繪製對話框系列函數：
-三種類型：型一 選項；型二 腳色自說自話；型三 管管自說自話
-'''
 
+# 按鈕函數
+class button(pygame.sprite.Sprite):
+    # lbt:light_button
+    # dbt:dark_button
+    def __init__(self, game, dbt_path, lbt_path, place, size=(110, 160)):
+        # 照片
+        self.dbt_path = dbt_path
+        self.lbt_path = lbt_path
+        self.dbt = img(self.dbt_path, size)
+        self.lbt = img(self.lbt_path, size)
+        # 尺寸、位置
+        self.size = size
+        self.place = place
+        # 使用函數放出圖片
+        self.game = game
+
+    def show(self):
+        #顯示按鈕（按鈕要放在迴圈裡）
+        self.normalbt = self.dbt
+        self.game.screen.blit(self.normalbt, self.place)
+        # 游標在按鈕上時變色
+        self.choose = False
+        self.mouse = pygame.mouse.get_pos()
+        self.hover = self.place[0] <= self.mouse[0] <= self.place[0]+self.size[0] and \
+                     self.place[1] <= self.mouse[1] <= self.place[1]+self.size[1]
+
+        if self.hover:
+            self.normalbt = self.lbt
+        else:
+            self.normalbt = self.dbt
+        self.game.screen.blit(self.normalbt, self.place)
+        pygame.display.update()
+
+        if self.hover and self.game.L_click:
+            self.choose = True
+        return self.choose
+
+
+# 紀錄破關進度
+schedule = 0
+def yrpass():
+    global schedule 
+    schedule += 1
+
+
+'''1｜圖片、字型、素材載入'''
 # 共用圖片
 box_img = img('./素材/dialog_box/box.png', (500,160))
 head_background = img('./素材/dialog_box/head_background.png', (157, 200))
 select_button_A =  img('./素材/dialog_box/select_button_A.png', (110, 160))
 select_button_B =  img('./素材/dialog_box/select_button_B.png', (110, 160))
+guan_path_l = '../視覺設計/管管騎ubike（左_方形）.png'
+guan_path_r = '../視覺設計/管管騎ubike（右_方形）.png'
+guan_path_u = '../視覺設計/管管騎ubike（背_方形）.png'
+guan_path_d = '../視覺設計/管管騎ubike（正_方形）.png'
 
 # 字型
 font = pygame.font.Font("./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf", 28)
 
+'''2｜NPC相關程式'''
+
+'''2.1｜對話框'''
 # 零件：顯示說話者圖片
 def pic_speaker(game, charname, headpath):
     # 載圖
@@ -59,11 +104,11 @@ def pic_speaker(game, charname, headpath):
 # 零件：顯示文字之獨白
 def text(game, path):
     global box_img
-    '''字數上限：16字'''
+    # 字數上限：16字
     # 將一句話拆分成list，顯示一個一個字的效果
     file = txt(path)
     for line in file:       # 每一句話
-        '''以覆蓋方式刪除上一句'''
+        # 以覆蓋方式刪除上一句
         game.screen.blit(box_img, (210,365))
         for word in range(len(line)):    # 每句話的每個字
             sentence = font.render(line[:word+1], True, BLACK)
@@ -84,56 +129,13 @@ def text(game, path):
 
 # 組裝零件一＆零件二
 def dialog(game, txtpath, name = '管管', imgpath = './素材/dialog_box/head/guanguan.png'):
-    '''如果是管管獨白，dialog(只需要輸入檔案路徑)
-       如果是腳色獨白，dialog(txtpath, self.name, self.imgpath)'''
+    # 如果是管管獨白，dialog(只需要輸入檔案路徑)
+    # 如果是腳色獨白，dialog(txtpath, self.name, self.imgpath)
     pic_speaker(game, name, imgpath) # 在NPC中，就是self.name, self.path
     text(game, txtpath) # 在NPC中，是self.txt
 
-# 按鈕家族
-class button(pygame.sprite.Sprite):
-    # lbt:light_button
-    # dbt:dark_button
-    def __init__(self, game, dbt_path, lbt_path, place, size=(110, 160)):
-        # 照片
-        self.dbt_path = dbt_path
-        self.lbt_path = lbt_path
-        self.dbt = img(self.dbt_path, size)
-        self.lbt = img(self.lbt_path, size)
-        # 尺寸、位置
-        self.size = size
-        self.place = place
-        # 使用函數放出圖片
-        self.game = game
 
-    def show(self):
-        '''顯示按鈕（按鈕要放在迴圈裡）'''
-        self.normalbt = self.dbt
-        self.game.screen.blit(self.normalbt, self.place)
-        # 游標在按鈕上時變色
-        self.choose = False
-        self.mouse = pygame.mouse.get_pos()
-        self.hover = self.place[0] <= self.mouse[0] <= self.place[0]+self.size[0] and \
-                     self.place[1] <= self.mouse[1] <= self.place[1]+self.size[1]
-
-        if self.hover:
-            self.normalbt = self.lbt
-        else:
-            self.normalbt = self.dbt
-        self.game.screen.blit(self.normalbt, self.place)
-        pygame.display.update()
-
-        if self.hover and self.game.L_click:
-            self.choose = True
-
-        return self.choose
-
-# 紀錄破關進度
-schedule = 0
-def yrpass():
-    global schedule 
-    schedule += 1
-
-'''2 程式部分'''
+'''2.2｜NPC'''
 class NPC(pygame.sprite.Sprite):
     # 初始
     def __init__(self, game, name, place, index, mode, size=(80,80)):
@@ -148,10 +150,8 @@ class NPC(pygame.sprite.Sprite):
         self.imgpath = './素材/NPCPic/' + self.name + '.png' #圖片路徑       
         self.image = img(self.imgpath, size)  # 用函數載圖片
         self.rect = self.image.get_rect()
-
-    def update(self, game):
-        game.screen.blit(self.image, CLERK_Place)
-        pygame.display.update()
+        # game.screen.blit(self.image, CLERK_Place)
+        # pygame.display.update()
 
     # 觸發
     def encounter(self):
@@ -162,7 +162,7 @@ class NPC(pygame.sprite.Sprite):
                 way_to_talk = self.mode[i]   # 讀進來的模式，第幾句話的講話方法
                 txtpath = './素材/NPCText/' + self.name + str(i+1) + '.txt'
                 # 第一種講話模式
-                if way_to_talk == 2:
+                if way_to_talk == 1:
                     # chosen = 'notyet'
                     button_A = button(self.game, 'A', 'dSelBt_A', 'lSelBt_A', (720, 365))
                     button_B = button(self.game, 'B', 'dSelBt_B', 'lSelBt_A', (840, 365))
@@ -191,7 +191,7 @@ class NPC(pygame.sprite.Sprite):
                         dialog(self.game, replypath, self.name, self.imgpath)
 
                 # 第二種講話模式
-                elif way_to_talk == 1:  # NPC說一段話
+                elif way_to_talk == 2:  # NPC說一段話
                     dialog(self.game, txtpath, self.name, self.imgpath)
 
                 # 第三種講話模式
@@ -204,6 +204,97 @@ class NPC(pygame.sprite.Sprite):
                     dialog(self.game, self.name, self.image, txtpath) 
 
 
+'''3｜管中閔'''
+class GUAN(pygame.sprite.Sprite):
+    '''角色 Sprite'''
+    def __init__(self, game, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.game = game
+        self.GUAN_l = img(guan_path_l, (60,60))
+        self.GUAN_r = img(guan_path_r, (60,60))
+        self.GUAN_u = img(guan_path_u, (60,60))
+        self.GUAN_d = img(guan_path_d, (60,60))
+        self.image = self.GUAN_r
+        self.rect = self.image.get_rect()
+        self.vx, self.vy = 0, 0
+        self.x = x * TILESIZE
+        self.y = y * TILESIZE
+
+    def get_keys(self):
+        self.vx, self.vy = 0, 0
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            self.vx = -sprite_speed
+            self.image = self.GUAN_l
+        if keys[pygame.K_RIGHT]:
+            self.vx = sprite_speed
+            self.image = self.GUAN_r
+        if keys[pygame.K_UP]:
+            self.vy = -sprite_speed
+            self.image = self.GUAN_u
+        if keys[pygame.K_DOWN]:
+            self.vy = sprite_speed
+            self.image = self.GUAN_d
+        if self.vx != 0 and self.vy != 0:
+            self.vx *= 0.707
+            self.vy *= 0.707
+
+    def update(self):
+        self.get_keys()
+        self.x += self.vx * self.game.dt
+        self.y += self.vy * self.game.dt
+        self.rect.x = self.x
+        # self.collide_with_walls('x')
+        self.rect.y = self.y
+        # self.collide_with_walls('y')
+
+    # def collide_with_walls(self, d):
+        # if d == 'x':
+            # hits = pygame.sprite.spritecollide(self, self.game.walls, False)
+            # if hits:
+                # if self.vx > 0:
+                    # self.x = hits[0].rect.left - self.rect.width
+                # if self.vx < 0:
+                    # self.x = hits[0].rect.right
+                # self.vx = 0
+                # self.rect.x = self.x
+
+        # if d == 'y':
+            # hits = pygame.sprite.spritecollide(self, self.game.walls, False)
+            # if hits:
+                # if self.vy > 0:
+                    # self.y = hits[0].rect.top - self.rect.height
+                # if self.vy < 0:
+                    # self.y = hits[0].rect.bottom
+                # self.vy = 0
+                # self.rect.y = self.y
+
+
+'''4｜牆壁與地圖'''
+# class Wall(pygame.sprite.Sprite):
+    # def __init__(self, game, x, y):
+        # self.groups = game.all_sprites, game.walls
+        # pygame.sprite.Sprite.__init__(self, self.groups)
+        # self.game = game
+        # self.image = pygame.Surface((TILESIZE, TILESIZE))
+        # self.image.set_alpha(0)
+        # self.rect = self.image.get_rect()
+        # self.x = x
+        # self.y = y
+        # self.rect.x = x * TILESIZE
+        # self.rect.y = y * TILESIZE
+
+class bg_class(pygame.sprite.Sprite):
+    def __init__(self, game):
+        self.groups = game.all_sprites
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = self.game.background
+        self.rect = self.image.get_rect()
+
+
+'''5｜主程式'''
+
 class Game:
     def __init__(self):
         #  initialize
@@ -214,7 +305,7 @@ class Game:
 
         self.playing = True
         self.fail = False
-        self.walls = pygame.sprite.Group()
+        # self.walls = pygame.sprite.Group()
         self.map = Map('./background.txt')
         self.camera = Camera(self.map.width, self.map.height)
         self.all_sprites = pygame.sprite.Group()
@@ -241,8 +332,6 @@ class Game:
         self.reminder_30_path = './素材/reminder/reminder_30.png'
         self.reminder_10_path = './素材/reminder/reminder_10.png'
         self.reminder_times_up_path = './素材/reminder/times_up.png'
-        #self.congrats_path = './視覺設計/congrats.png'
-        #self.game_over_path = './視覺設計/game_over.png'
         # self.gameover_path = ''
         # self.close_game_path = ''
 
@@ -356,7 +445,9 @@ class Game:
             # for sprite in self.all_sprites:
                 # self.screen.blit(sprite.image, self.camera.apply(sprite))
             self.screen.blit(self.bg.image, self.camera.apply(self.bg))
-            self.screen.blit(self.CLERK.image, CLERK_Place)
+            # self.screen.blit(self.CLERK.image, self.camera.apply(self.CLERK))
+            self.screen.blit(self.CLERK.image, (self.camera.apply(self.CLERK)[0]+1000, self.camera.apply(self.CLERK)[1]+1000))
+
             self.screen.blit(self.guan.image, self.camera.apply(self.guan))
             # for w in self.wall_list:
                 # self.screen.blit(w.image, self.camera.apply(w))
@@ -386,18 +477,18 @@ class Game:
         # Game Loop - Update
         pygame.display.update()
         self.all_sprites.update()
-        self.CLERK.update(self)
+        # self.CLERK.update(self)
         self.camera.update(self.guan)
-        self.camera.update(self.CLERK)
+        # self.camera.update(self.CLERK)
 
-    def draw_grid(self):
+    def draw_grid(self):  # 障礙物設定
         # draw the grids on the map
         for x in range(0, WIDTH, TILESIZE):
             pygame.draw.line(self.screen, WHITE, (x, 0), (x, HEIGHT))
         for y in range(0, HEIGHT, TILESIZE):
             pygame.draw.line(self.screen, WHITE, (0, y), (WIDTH, y))
 
-    def show_start_game(self):
+    def show_start_game(self):  # 遊戲開始畫面
         # the game starting screen
         self.load()
         start_button = button(self, self.dark_button_path, self.light_button_path, (550, 270), (159, 92))
@@ -432,93 +523,12 @@ class Game:
                 # self.playing = False
                 # break
 
-class GUAN(pygame.sprite.Sprite):
-    '''角色 Sprite'''
-    def __init__(self, game, x, y):
-        pygame.sprite.Sprite.__init__(self)
-        self.game = game
-        self.GUAN_l = img(guan_path_l, (60,60))
-        self.GUAN_r = img(guan_path_r, (60,60))
-        self.GUAN_u = img(guan_path_u, (60,60))
-        self.GUAN_d = img(guan_path_d, (60,60))
-        self.image = self.GUAN_r
-        self.rect = self.image.get_rect()
-        self.vx, self.vy = 0, 0
-        self.x = x * TILESIZE
-        self.y = y * TILESIZE
 
-    def get_keys(self):
-        self.vx, self.vy = 0, 0
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            self.vx = -sprite_speed
-            self.image = self.GUAN_l
-        if keys[pygame.K_RIGHT]:
-            self.vx = sprite_speed
-            self.image = self.GUAN_r
-        if keys[pygame.K_UP]:
-            self.vy = -sprite_speed
-            self.image = self.GUAN_u
-        if keys[pygame.K_DOWN]:
-            self.vy = sprite_speed
-            self.image = self.GUAN_d
-        if self.vx != 0 and self.vy != 0:
-            self.vx *= 0.707
-            self.vy *= 0.707
 
-    def update(self):
-        self.get_keys()
-        self.x += self.vx * self.game.dt
-        self.y += self.vy * self.game.dt
-        self.rect.x = self.x
-        self.collide_with_walls('x')
-        self.rect.y = self.y
-        self.collide_with_walls('y')
 
-    def collide_with_walls(self, d):
-        if d == 'x':
-            hits = pygame.sprite.spritecollide(self, self.game.walls, False)
-            if hits:
-                if self.vx > 0:
-                    self.x = hits[0].rect.left - self.rect.width
-                if self.vx < 0:
-                    self.x = hits[0].rect.right
-                self.vx = 0
-                self.rect.x = self.x
-
-        if d == 'y':
-            hits = pygame.sprite.spritecollide(self, self.game.walls, False)
-            if hits:
-                if self.vy > 0:
-                    self.y = hits[0].rect.top - self.rect.height
-                if self.vy < 0:
-                    self.y = hits[0].rect.bottom
-                self.vy = 0
-                self.rect.y = self.y
-
-class Wall(pygame.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.walls
-        pygame.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = pygame.Surface((TILESIZE, TILESIZE))
-        self.image.set_alpha(0)
-        self.rect = self.image.get_rect()
-        self.x = x
-        self.y = y
-        self.rect.x = x * TILESIZE
-        self.rect.y = y * TILESIZE
-
-class bg_class(pygame.sprite.Sprite):
-    def __init__(self, game):
-        self.groups = game.all_sprites
-        pygame.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.image = self.game.background
-        self.rect = self.image.get_rect()
         
 
-
+'''6｜執行'''
 # Run the game
 Guans_friend = Game()
 Guans_friend.new()
