@@ -14,6 +14,10 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((960,540))
     pygame.display.set_caption('Game')
     screen.fill((255,255,255))
+    play = little_game(screen)
+    play.sun_by_the_lake()
+    pygame.quit()
+
 
 class little_game:
 
@@ -955,9 +959,17 @@ class little_game:
     def sun_by_the_lake(self):
 
 
+        # The PATHSSSSS!
+        bg_path = "./素材/曬太陽/北北曬太陽.PNG"
+        duck_path = "./素材/曬太陽/鴨鴨腳踏車（去背）.PNG"
+        button_light_path = 
+        button_dark_path =
 
         # 載入圖片
-        sun_background = # 待補,要轉換
+        sun_background = pygame.image.load(bg_path)# 待補,要轉換
+        sun_background = pygame.transform.smoothscale(sun_background, (960, 540))
+
+
         duck_img =       # 待補,要轉換
         button_img =     # 1288*450 真實
 
@@ -1022,7 +1034,7 @@ class little_game:
 
             elif time_elapsed > 60 and stage2:
                 self.screen.blit(sun_background, (0,0))
-                self.screen.blit()
+                self.screen.blit(duck)
 
 
 
@@ -1038,6 +1050,3 @@ class little_game:
 
 
             # print(position)
-#play = little_game(screen)
-#play.byebyebell()
-#pygame.quit()
