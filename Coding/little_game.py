@@ -14,7 +14,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((960,540))
     pygame.display.set_caption('Game')
     screen.fill((255,255,255))
-creen = pygame.display.set_mode((960,540))
+
 class little_game:
 
     def __init__(self, screen):
@@ -952,7 +952,92 @@ class little_game:
                         i += 1
 
 
+    def sun_by_the_lake(self):
+
+
+
+        # 載入圖片
+        sun_background = # 待補,要轉換
+        duck_img =       # 待補,要轉換
+        button_img =     # 1288*450 真實
+
+        button_light =
+        button_dark =
+
+        button = pygame.Rect()
+        duck = pygame.Rect()
+
+        BUTTON_COORDS = ()
+
+
+        self.screen.blit(sun_background, (0,0))
+        pygame.display.update()
+
+        run = True
+        stage1 = True
+        stage2 = False
+
+        while run:
+
+            clock.tick(30) # 快速迴圈
+
+            time_elapsed = pygame.time.get_ticks() / 1000
+            mousedown = False
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.QUIT:
+                    run = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                   mousedown = True
+
+                # 變色迴圈，偷放
+                if button.collidepoint(mouse_position):
+                    button = button_light
+                    self.screen.blit(button, BUTTON_COORDS)
+                    pygame.display.update()
+
+                else:
+                    button = button_dark
+                    self.screen.blit(button, BUTTON_COORDS)
+                    pygame.display.update()
+
+
+            mouse_position = pygame.mouse.get_pos()
+
+
+            if time_elapsed > 20 and stage1:
+                self.screen.blit(button_img, (,)) # 待補座標
+                pygame.display.update()
+
+                if mousedown and button.collidepoint(mouse_position):
+                    self.byebyebell()
+                    run = False
+
+            elif time_elapsed > 40:
+                stage1 = False
+                stage2 = True
+                self.screen.blit(sun_background, (0,0))
+                pygame.display.update()
+
+            elif time_elapsed > 60 and stage2:
+                self.screen.blit(sun_background, (0,0))
+                self.screen.blit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             # print(position)
-#play = little_game()
+#play = little_game(screen)
 #play.byebyebell()
 #pygame.quit()
