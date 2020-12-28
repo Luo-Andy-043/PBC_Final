@@ -690,7 +690,7 @@ class little_game:
         bg = pygame.transform.smoothscale(bg, (960,540))
         myhead = pygame.image.load('./素材/指數/guanguan.png')
         myhead = pygame.transform.smoothscale(myhead, (172,200))
-        e = pygame.image.load('./素材/指數/函數.png')
+        e = pygame.image.load('./素材/e^x/e^x.png')
         e = pygame.transform.smoothscale(e, (360,200))
         xone = pygame.image.load('./素材/e^x/x+1.png')
         xone = pygame.transform.smoothscale(xone, (360,200))
