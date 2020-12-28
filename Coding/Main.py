@@ -214,7 +214,7 @@ class Game:
 
         self.playing = True
         self.fail = False
-        # self.walls = pygame.sprite.Group()
+        self.walls = pygame.sprite.Group()
         self.map = Map('./background.txt')
         self.camera = Camera(self.map.width, self.map.height)
         self.all_sprites = pygame.sprite.Group()
@@ -471,43 +471,43 @@ class GUAN(pygame.sprite.Sprite):
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
         self.rect.x = self.x
-        # self.collide_with_walls('x')
+        self.collide_with_walls('x')
         self.rect.y = self.y
-        # self.collide_with_walls('y')
+        self.collide_with_walls('y')
 
-    # def collide_with_walls(self, d):
-        # if d == 'x':
-            # hits = pygame.sprite.spritecollide(self, self.game.walls, False)
-            # if hits:
-                # if self.vx > 0:
-                    # self.x = hits[0].rect.left - self.rect.width
-                # if self.vx < 0:
-                    # self.x = hits[0].rect.right
-                # self.vx = 0
-                # self.rect.x = self.x
+    def collide_with_walls(self, d):
+        if d == 'x':
+            hits = pygame.sprite.spritecollide(self, self.game.walls, False)
+            if hits:
+                if self.vx > 0:
+                    self.x = hits[0].rect.left - self.rect.width
+                if self.vx < 0:
+                    self.x = hits[0].rect.right
+                self.vx = 0
+                self.rect.x = self.x
 
-        # if d == 'y':
-            # hits = pygame.sprite.spritecollide(self, self.game.walls, False)
-            # if hits:
-                # if self.vy > 0:
-                    # self.y = hits[0].rect.top - self.rect.height
-                # if self.vy < 0:
-                    # self.y = hits[0].rect.bottom
-                # self.vy = 0
-                # self.rect.y = self.y
+        if d == 'y':
+            hits = pygame.sprite.spritecollide(self, self.game.walls, False)
+            if hits:
+                if self.vy > 0:
+                    self.y = hits[0].rect.top - self.rect.height
+                if self.vy < 0:
+                    self.y = hits[0].rect.bottom
+                self.vy = 0
+                self.rect.y = self.y
 
-# class Wall(pygame.sprite.Sprite):
-    # def __init__(self, game, x, y):
-        # self.groups = game.all_sprites, game.walls
-        # pygame.sprite.Sprite.__init__(self, self.groups)
-        # self.game = game
-        # self.image = pygame.Surface((TILESIZE, TILESIZE))
-        # self.image.set_alpha(0)
-        # self.rect = self.image.get_rect()
-        # self.x = x
-        # self.y = y
-        # self.rect.x = x * TILESIZE
-        # self.rect.y = y * TILESIZE
+class Wall(pygame.sprite.Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.walls
+        pygame.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pygame.Surface((TILESIZE, TILESIZE))
+        self.image.set_alpha(0)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
 
 class bg_class(pygame.sprite.Sprite):
     def __init__(self, game):

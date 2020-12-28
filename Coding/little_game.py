@@ -899,6 +899,23 @@ class little_game:
                 else:
                     option4 = False
 
+    def trivial_words(self):
+        sentence1 = pygame.image.load(('./素材/老人的話/words1.png')
+        sentence1 = pygame.transform.smoothscale(sentence1, (960,540)))
+        sentence2 = pygame.image.load(('./素材/老人的話/words2.png')
+        sentence2 = pygame.transform.smoothscale(sentence3, (960,540)))
+        sentence3 = pygame.image.load(('./素材/老人的話/words3.png')
+        sentence3 = pygame.transform.smoothscale(sentence3, (960,540)))
+        sentence4 = pygame.image.load(('./素材/老人的話/words4.png')
+        sentence4 = pygame.transform.smoothscale(sentence4, (960,540)))
+        sentence5 = pygame.image.load(('./素材/老人的話/words5.png')
+        sentence5 = pygame.transform.smoothscale(sentence5, (960,540)))
+
+        run = True
+        finish = False
+        
+
+
             pygame.display.update()
             
             # print(position)
