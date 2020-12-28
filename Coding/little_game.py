@@ -707,6 +707,9 @@ class little_game:
         oh = pygame.mixer.Sound('./素材/e^x/ㄛㄛ.mp3')
         oh.set_volume(0.6)
         tada = pygame.mixer.Sound('./素材/e^x/登場.mp3')
+        scream1 = pygame.mixer.Sound('./素材/e^x/尖叫1.mp3')
+        scream2 = pygame.mixer.Sound('./素材/e^x/尖叫2.mp3')
+        scream3 = pygame.mixer.Sound('./素材/e^x/尖叫3.mp3')
         
         part1 = True
         part2 = False
@@ -829,7 +832,8 @@ class little_game:
                 screen.blit(myhead, (155,120))
                 pygame.display.update()
                 explode.play()
-                pygame.time.delay(1500)
+                scream1.play()
+                pygame.time.delay(2100)
                 stage1 = False
                 stage2 = True
                 success1 = False
@@ -848,6 +852,7 @@ class little_game:
                 screen.blit(myhead, (155,120))
                 pygame.display.update()
                 explode.play()
+                scream2.play()
                 pygame.time.delay(1500)
                 stage2 = False
                 stage3 = True
@@ -867,7 +872,8 @@ class little_game:
                 screen.blit(myhead, (155,120))
                 pygame.display.update()
                 explode.play()
-                pygame.time.delay(1500)
+                scream3.play()
+                pygame.time.delay(2100)
                 stage3 = False
                 success3 = False
                 screen.blit(bg, (0,0))
@@ -900,23 +906,30 @@ class little_game:
                     option4 = False
 
     def trivial_words(self):
-        sentence1 = pygame.image.load(('./素材/老人的話/words1.png')
-        sentence1 = pygame.transform.smoothscale(sentence1, (960,540)))
-        sentence2 = pygame.image.load(('./素材/老人的話/words2.png')
-        sentence2 = pygame.transform.smoothscale(sentence3, (960,540)))
-        sentence3 = pygame.image.load(('./素材/老人的話/words3.png')
-        sentence3 = pygame.transform.smoothscale(sentence3, (960,540)))
-        sentence4 = pygame.image.load(('./素材/老人的話/words4.png')
-        sentence4 = pygame.transform.smoothscale(sentence4, (960,540)))
-        sentence5 = pygame.image.load(('./素材/老人的話/words5.png')
-        sentence5 = pygame.transform.smoothscale(sentence5, (960,540)))
-
-        run = True
-        finish = False
+        sentence1 = pygame.image.load('./素材/老人的話/words1.png')
+        sentence1 = pygame.transform.smoothscale(sentence1, (960,540))
+        sentence2 = pygame.image.load('./素材/老人的話/words2.png')
+        sentence2 = pygame.transform.smoothscale(sentence2, (960,540))
+        sentence3 = pygame.image.load('./素材/老人的話/words3.png')
+        sentence3 = pygame.transform.smoothscale(sentence3, (960,540))
+        sentence4 = pygame.image.load('./素材/老人的話/words4.png')
+        sentence4 = pygame.transform.smoothscale(sentence4, (960,540))
+        sentence5 = pygame.image.load('./素材/老人的話/words5.png')
+        sentence5 = pygame.transform.smoothscale(sentence5, (960,540))
+        alist = [sentence1, sentence2, sentence3, sentence4, sentence5]
         
-
-
+        i = 0
+        run = True
+        while run:
+            screen.blit(alist[i], (0,0))
             pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        i += 1
+
             
             # print(position)
 play = little_game()
