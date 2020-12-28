@@ -18,3 +18,5 @@ MAXspeed = 4
 TILESIZE = 20
 
 sprite_speed = 300
+
+CLERK_Place = (85, 146)

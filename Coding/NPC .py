@@ -1,3 +1,4 @@
+import pygame
 '''
 分三部分：
 1 在GLOBAL增加的變數與函數
@@ -9,7 +10,7 @@
 
 '''1 在GLOBAL增加的變數與函數'''
 # 破關變數與函數
-schedule = int(0)
+schedule = 0
 def yrpass():
     global schedule 
     schedule += 1
@@ -33,45 +34,42 @@ def txt(text_path):
 class button(pygame.sprite.Sprite):
     # lbt:light_button
     # dbt:dark_button
-    def __init__(self, code, dbt_path, lbt_path, place, size=(110, 160)):
-        self.code = code #A或B
-        # 設定圖片路徑
-        self.dbt_path = './素材/button/' + dbt_path + '.png'
-        # self.dbt_path = dbt_path
-        self.lbt_path = './素材/button/' + lbt_path + '.png'
-        # self.lbt_path = lbt_path
+    def __init__(self, game, dbt_path, lbt_path, place, size=(110, 160)):
+        # 照片
+        self.dbt_path = dbt_path
+        self.lbt_path = lbt_path
         # 尺寸、位置
-        self.size = size        
+        self.size = size
         self.place = place
         # 使用函數放出圖片
-        print(self.dbt_path)
-        self.dbt = img(self.dbt_path, size)
-        self.lbt = img(self.lbt_path, size)
+        self.game = game
 
         
     def show(self):
-        print('show')
-        self.normalbt = self.dbt  # 預設為正常顏色的按鈕
-        screen.blit(self.normalbt, self.place)
+        '''要放在迴圈裡'''
+        self.dbt = img(self.dbt_path, self.size)
+        self.lbt = img(self.lbt_path, self.size)
+        self.normalbt = self.dbt
+        self.game.screen.blit(self.normalbt, self.place)
         # 游標在按鈕上時變色
-        self.choosing = True
-        while self.choosing:
-            self.mouse = pygame.mouse.get_pos()
-            self.hover = self.place[0] <= self.mouse[0] <= self.place[0]+self.size[0] and \
-                    self.place[1] <= self.mouse[1] <= self.place[1]+self.place[1]
-            print(self.mouse)
-            if self.hover:
-                self.nomalbt = self.lbt
-            else:
-                self.normalbt = self.dbt
-            pygame.display.update()
+        self.choosing = False
+        self.mouse = pygame.mouse.get_pos()
+        self.hover = self.place[0] <= self.mouse[0] <= self.place[0]+self.size[0] and \
+                     self.place[1] <= self.mouse[1] <= self.place[1]+self.size[1]
 
-            if self.hover and pygame.mouse.get_pressed()[0] is True:
-                global chosen
-                chosen = self.code
-                slef.choosing = False
- 
-  
+        if self.hover:
+            self.normalbt = self.lbt
+        else:
+            self.normalbt = self.dbt
+        self.game.screen.blit(self.normalbt, self.place)
+        pygame.display.update()
+
+        if self.hover and self.game.L_click:
+            self.choosing = True
+
+        return self.choosing
+
+
 # 共用圖片
 box_img = img('./素材/dialog_box/box.png', (500,160))
 head_background = img('./素材/dialog_box/head_background.png', (157, 200))
@@ -87,7 +85,7 @@ def pic_speaker(charname, headpath):
     global head_background
     # global box_img
     NPC_head = img(headpath, (146,170)) # 使用函數
-    
+
     # 繪製
     screen.blit(head_background, (20,290))
     screen.blit(NPC_head, (40,340))
@@ -127,23 +125,6 @@ def text(path):
 
 
 # 組裝
-'''
-# 合併繪製_mode2
-def dialog_NPC(name, imgpath, txtpath, select_mode = False):
-    # 預設沒有選項按鈕
-
-    # 如果有選項按鈕
-    if select_mode is True:
-        screen.blit(select_button_A, (720, 365))  # 左按鈕
-        screen.blit(select_button_B, (840, 365))  # 右按鈕
-    pic_speaker(name, imgpath) # 在NPC中，就是self.name,self.imgpath
-    text(txtpath) # 在NPC中，是self.txt
-
-# 型三：管管自說自話
-def dialog_Guan(txtpath):
-    pic_speaker('管管', './素材/dialog_box/head/管管.png') 
-    text(txtpath)
-'''
 # 合併型(測試中)
 def dialog(txtpath, name = '管管', imgpath = './素材/dialog_box/head/管管.png'):
     # 如果是管管獨白，dialog(只需要輸入檔案路徑)
@@ -153,54 +134,59 @@ def dialog(txtpath, name = '管管', imgpath = './素材/dialog_box/head/管管.
 
 
 '''2 程式部分'''
-class NPC(pygame.sprite.Sprite):    
+class NPC(pygame.sprite.Sprite):
+    '''要放在迴圈裡'''
     # 初始
-    def __init__(self, name, place, index, mode, size=(80,80)):
+    def __init__(self, game, name, place, index, mode, size=(80,80)):
         # name: 腳色名字；place: 腳色座標；index: 腳色的關卡次序(第幾關)；mode: 說話模式
-        self.name = name  # 正式名字
-        self.place = place  # 座標
-        self.index = index  # 關卡次序
-        self.mode = list(mode)  # 說話模式
-        self.size = size  # 圖片大小
+        self.game = game     # 所屬遊戲
+        self.name = name     # 正式名字，兩個字
+        self.place = place   # 座標
+        self.index = index   # 關卡次序
+        self.mode = mode     # 說話模式，是個list
+        self.size = size     # 圖片大小
         self.imgpath = './素材/NPCPic/' + self.name + '.png' #圖片路徑       
         self.img = img(self.imgpath, size)  # 用函數載圖片
-        screen.blit(self.img, self.place)  # 畫出角色
-        pygame.display.update()
-    
+        game.screen.blit(self.img, self.place)  # 畫出角色
 
     # 觸發
     def encounter(self):
         global schedule
-        if pygame.sprite.collide_rect(self, guan):
-            if schedule == self.index:  # 找對人了
-                for i in range(len(self.mode)-1):  #moden兩種，三格[0,1,2]
-                    way_to_talk = self.mode[i+1] # 讀進來的模式，第幾句話的講話方法
-                    txtpath = './素材/NPCText/' + self.name + str(i) + '.txt'
-                    if way_to_talk == 1:
-                        chosen = 'notyet'
-                        button_A = button('A', 'dSelBt_A', 'lSelBt_A', (720, 365))
-                        button_B = button('B', 'dSelBt_B', 'lSelBt_A', (840, 365))
-                        button_A.show()
-                        button_B.show()
+        # 碰撞了 而且 找對人
+        if pygame.sprite.collide_rect(self, self.game.guan) and schedule == self.index:
+            for i in range(len(self.mode)):  # moden兩種，三格[0,1,2]
+                way_to_talk = self.mode[i]   # 讀進來的模式，第幾句話的講話方法
+                txtpath = './素材/NPCText/' + self.name + str(i) + '.txt'
+                if way_to_talk == 1:
+                    chosen = 'notyet'
+                    button_A = button(self.game, 'A', 'dSelBt_A', 'lSelBt_A', (720, 365))
+                    button_B = button(self.game, 'B', 'dSelBt_B', 'lSelBt_A', (840, 365))
+                    choose_A, choose_B = False, False
+                    while choose_A is False and choose_B is False:
+                        self.game.events()
+                        choose_A = button_A.show()
+                        choose_B = button_B.show()
+                        pygame.display.update()
 
-                        # 選不到對的或還沒選
-                        while chosen != 'A':
-                            if chosen == 'B':
-                                replypath = './素材/NPCText/' + self.name + B + '.txt'
-                                dialog(replypath, self.name, self.imgpath)
-                                dialog(txtpath, self.name, self.imgpath)
-                        
-                        # 對了
-                        replypath = './素材/NPCText/' + self.name + A + '.txt'
-                        dialog(replypath, self.name, self.imgpath)
-
-                    if way_to_talk == 2:  # NPC說一段話
-                        # dialog_NPC(self.name, self.imgpath, txtpath)
-                        dialog(txtpath, self.name, self.imgpath)
+                    # 選到不對的或還沒選
+                    # while chosen != 'A':
+                        # if chosen == 'B':
+                            # replypath = './素材/NPCText/' + self.name + B + '.txt'
+                            # dialog(self.game, replypath, self.name, self.imgpath)
+                            # dialog(self.game, txtpath, self.name, self.imgpath)
+                    if choose_A is True and 
                     
-                    if way_to_talk == 3:  #  管管說一段話
-                        # dialog_Guan(txtpath)
-                        dialog(txtpath)
+                    # 對了
+                    replypath = './素材/NPCText/' + self.name + A + '.txt'
+                    dialog(replypath, self.name, self.imgpath)
+
+                if way_to_talk == 2:  # NPC說一段話
+                    # dialog_NPC(self.name, self.imgpath, txtpath)
+                    dialog(txtpath, self.name, self.imgpath)
+                
+                if way_to_talk == 3:  #  管管說一段話
+                    # dialog_Guan(txtpath)
+                    dialog(txtpath)
 
             else:  # 罐頭台詞
                txtpath = './素材/NPCText/' + self.name + 0 + '.txt'
@@ -208,7 +194,7 @@ class NPC(pygame.sprite.Sprite):
 
 
 '''3 指派object'''
-NPC_clerk = NPC('店員', (150,150), 1, (2,1,3))
+# NPC_clerk = NPC('店員', (150,150), 1, (2,1,3))
 
 '''
 NPC_JK = NPC('屁孩', place, 2, mode)
