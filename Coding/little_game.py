@@ -114,6 +114,10 @@ class little_game:
         egg = pygame.image.load('./素材/煎蛋/生蛋.png')
         raw_egg = pygame.image.load('./素材/煎蛋/生荷包蛋.png')
         ok_egg = pygame.image.load('./素材/煎蛋/熟荷包蛋.png')
+        bite1 = pygame.image.load('./素材/煎蛋/咬1.png')
+        bite1 = pygame.transform.smoothscale(bite1, (135,100))
+        bite2 = pygame.image.load('./素材/煎蛋/咬2.png')
+        bite2 = pygame.transform.smoothscale(bite2, (135,100))
         win = pygame.image.load('./素材/考卷/win.png')
         
         # 載入音效
@@ -152,7 +156,7 @@ class little_game:
                     run = False
                 position = pygame.mouse.get_pos()
                 # 如果在蛋區點一下就會出現一顆蛋
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONDOWN and eaten < 5:
                     if rule == True:
                         if event.button == 1:
                             rule = False
@@ -207,7 +211,23 @@ class little_game:
                 ok_egg_appear = False
                 raw_egg_appear = False
                 eaten += 1
+                # 吃蛋囉
                 swallow.play()
+                screen.blit(kitchen, (0,0))
+                screen.blit(bite1, (413,160))
+                screen.blit(score, (800,50))
+                pygame.display.update()
+                pygame.time.delay(500)
+                swallow.play()
+                screen.blit(kitchen, (0,0))
+                screen.blit(bite2, (413,128.5))
+                screen.blit(score, (800,50))
+                pygame.display.update()
+                pygame.time.delay(500)
+                swallow.play()
+                screen.blit(kitchen, (0,0))
+                screen.blit(score, (800,50))
+                pygame.display.update()
                 # 回到最一開始ㄉ狀態
                 move_egg = False
                 move_ok_egg = False
@@ -490,6 +510,12 @@ class little_game:
         rulepic = pygame.transform.smoothscale(rulepic, (960, 540))
         bg = pygame.image.load('./素材/猜拳/背景.png')
         bg = pygame.transform.smoothscale(bg, (960,540))
+        stonebig = pygame.image.load('./素材/猜拳/中石頭.png')
+        stonebig = pygame.transform.smoothscale(stonebig, (152,165))
+        paperbig = pygame.image.load('./素材/猜拳/中布.png')
+        paperbig = pygame.transform.smoothscale(paperbig, (156,165))
+        scissorsbig = pygame.image.load('./素材/猜拳/中剪刀.png')
+        scissorsbig = pygame.transform.smoothscale(scissorsbig, (122,165))
         paper = pygame.image.load('./素材/猜拳/布.png')
         paper = pygame.transform.smoothscale(paper, size)
         scissors = pygame.image.load('./素材/猜拳/剪刀.png')
@@ -518,15 +544,23 @@ class little_game:
         finish = False
         run = True
         while run:
-
+            
+            position = pygame.mouse.get_pos()
             # 畫背景
             screen.blit(bg, (0,0))
+            
+            if  332 <= position[1] <= 503:
+                if 213 <= position[0] <= 406:
+                    screen.blit(paperbig, (233,335))
+                elif 406 <= position[0] <= 600:
+                    screen.blit(scissorsbig, (442,335))
+                elif 600 <= position[0] <= 794:
+                    screen.blit(stonebig, (621,335))
             
             # 顯示分數
             show_score = smallfont.render(str(score)+ '/3', True, (0,0,0))
             screen.blit(show_score, (451,20))
-                 
-            position = pygame.mouse.get_pos()
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
@@ -648,4 +682,6 @@ class little_game:
                         pygame.time.delay(190)
                     mock = True
 
+play = little_game()
+play.egg_game()
 pygame.quit()
