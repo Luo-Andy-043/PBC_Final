@@ -95,6 +95,7 @@ class little_game:
                     pygame.display.update()
     
     def egg_game(self):
+    
         move_egg = False
         move_ok_egg = False
         egg_pos = 0, 0
@@ -508,8 +509,8 @@ class little_game:
         # 載入圖片
         rulepic = pygame.image.load('./素材/猜拳/猜拳規則.png')
         rulepic = pygame.transform.smoothscale(rulepic, (960, 540))
-        bg = pygame.image.load('./素材/猜拳/背景.png')
-        bg = pygame.transform.smoothscale(bg, (960,540))
+        back = pygame.image.load('./素材/猜拳/背景.png')
+        back = pygame.transform.smoothscale(back, (960,540))
         stonebig = pygame.image.load('./素材/猜拳/中石頭.png')
         stonebig = pygame.transform.smoothscale(stonebig, (152,165))
         paperbig = pygame.image.load('./素材/猜拳/中布.png')
@@ -547,7 +548,7 @@ class little_game:
             
             position = pygame.mouse.get_pos()
             # 畫背景
-            screen.blit(bg, (0,0))
+            screen.blit(back, (0,0))
             
             if  332 <= position[1] <= 503:
                 if 213 <= position[0] <= 406:
@@ -622,7 +623,7 @@ class little_game:
                 
                 if score == 3:
                     finish = True
-                    screen.blit(bg, (0,0))
+                    screen.blit(back, (0,0))
                     show_score = smallfont.render(str(score)+ '/3', True, (0,0,0))
                     screen.blit(show_score, (451,20))
                     pygame.display.update()
@@ -641,8 +642,8 @@ class little_game:
         laugh = pygame.mixer.Sound('./素材/傅鐘/笑聲.mp3')
         
         # 載入圖片
-        bg = pygame.image.load('./素材/傅鐘/傅鐘.jpg')
-        bg = pygame.transform.smoothscale(bg, (266, 500))
+        back = pygame.image.load('./素材/傅鐘/傅鐘.jpg')
+        back = pygame.transform.smoothscale(back, (266, 500))
         end = pygame.image.load('./素材/考卷/gameover.png')
         end = pygame.transform.smoothscale(end, (960, 540))
         
@@ -665,7 +666,7 @@ class little_game:
                 total = fontobj.render(str(count)+'/21', True, (0,0,0))
                 # 畫背景
                 screen.fill((255,255,255))
-                screen.blit(bg, (347, 20))
+                screen.blit(back, (347, 20))
                 screen.blit(total, (720,25))
                 pygame.display.update()
                 pygame.time.delay(1500)
@@ -681,7 +682,63 @@ class little_game:
                         laugh.play()
                         pygame.time.delay(190)
                     mock = True
-
+    def hitmath(self):
+        # 載入圖片
+        bg = pygame.image.load('./素材/指數/背景.png')
+        bg = pygame.transform.smoothscale(bg, (960,540))
+        e = pygame.image.load('./素材/指數/函數.png')
+        e = pygame.transform.smoothscale(e, (360,200))
+        
+        # 載入字型
+        fontobj = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 30)
+        
+        option1 = False
+        option2 = False
+        option3 = False
+        option4 = False
+        stage1 = True
+        black = (0,0,0)
+        run = True
+        while run:
+            # 繪製背景
+            screen.blit(bg, (0,0))
+            
+            # 畫數學
+            if stage1:
+                screen.blit(e, (500,25))
+            
+            
+            # 畫選項
+            option1wd = fontobj.render('一次微分', True, black)
+            option2wd = fontobj.render('不定積分', True, black)
+            option3wd = fontobj.render('計量財務模型', True, black)
+            option4wd = fontobj.render('求x→0極限', True, black)
+            screen.blit(option1wd, (87,453))
+            screen.blit(option2wd, (316,453))
+            screen.blit(option3wd, (513,453))
+            screen.blit(option4wd, (752,453))
+            
+            position = pygame.mouse.get_pos()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        if 447 <= position[1] <= 513:
+                            if 31 <= position[0] <= 251:
+                                option1 = True
+                            elif 262 <= position[0] <= 481:
+                                option2 = True
+                            elif 490 <= position[0] <= 709:
+                                option3 = True
+                            elif 717 <= position[0] <= 937:
+                                option4 = True
+            if stage1:
+            
+                
+            pygame.display.update()
+            
+            print(position)
 play = little_game()
-play.egg_game()
+play.hitmath()
 pygame.quit()

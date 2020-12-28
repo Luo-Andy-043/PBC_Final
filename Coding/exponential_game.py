@@ -26,7 +26,9 @@
 
 # 正文開始
 import pygame, os, sys, time
-
+working_path = os.path.dirname(__file__)
+print(working_path)
+os.chdir(working_path)
 
 # 定義指數函數的class
 class Exponential():
@@ -75,7 +77,7 @@ class HealthBar():
         self.posDimensions[0] = newDimension
 
 enemy = Exponential()       # 建立 Exponential 物件
-enemyBar = HealthBar(10,35)      # 建立 Exponential 血量條
+enemyBar = HealthBar(410,35)      # 建立 Exponential 血量條
 
 
 # 建立技能選項
@@ -121,10 +123,10 @@ def redraw():
 #This function contains a series of expressions that redraw every element of
 #the battle screen in order from top to bottom.
 # 需要修正位置"""
-    DISPLAYSURF.blit(guanguanHead, (0,195))
-    drawText("管管", font, DISPLAYSURF, 200, 315, BLACK)
-    DISPLAYSURF.blit(enemyHead, (200, 0))
-    drawText("邪惡的數學怪獸", font, DISPLAYSURF, 10, 45, BLACK)
+    DISPLAYSURF.blit(guanguanHead, (200,175))
+    drawText("管管", font, DISPLAYSURF, 380, 260, BLACK)
+    DISPLAYSURF.blit(enemyHead, (620, 0))
+    drawText("邪惡的數學怪獸", font, DISPLAYSURF, 430, 45, BLACK)
     enemyBar.updateBar()
     enemyBar.drawRects()
     pygame.display.update()
@@ -296,12 +298,12 @@ def Battle(pMoveList):
   #Entire following block of code dedicated to drawing the battle screen for the
   #first time in the correct order, and with good readability
     DISPLAYSURF.blit(background, (0,0))
-    DISPLAYSURF.blit(guanguanHead, (0,195))
-    drawText('管管', font, DISPLAYSURF, 200, 320, BLACK)
+    DISPLAYSURF.blit(guanguanHead, (200,175))  # 改
+    drawText('管管', font, DISPLAYSURF, 380, 260, BLACK)
     DISPLAYSURF.blit(background, (0,0))
     drawText("外星語言館派出了 e^x 函數!", font, DISPLAYSURF, 10,400, BLACK)
-    DISPLAYSURF.blit(guanguanHead, (0,195))
-    drawText('管管', font, DISPLAYSURF, 200, 320, BLACK)
+    DISPLAYSURF.blit(guanguanHead, (200,175))  # 改
+    drawText('管管', font, DISPLAYSURF, 380, 260, BLACK)
     time.sleep(2)
     DISPLAYSURF.blit(background, (0,0))
     redraw()
@@ -386,7 +388,7 @@ if __name__ == '__main__':
     pygame.display.set_caption('ExpGame')
     fpsClock = pygame.time.Clock()
     FPS = 15
-    font = pygame.font.Font("./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf", 24)
+    font = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 24)
     guanguanHead = pygame.image.load(headPath).convert_alpha()
     guanguanHead = pygame.transform.smoothscale(guanguanHead, (170,140))
 
@@ -399,6 +401,7 @@ if __name__ == '__main__':
   #Statements below initialize genergic image assets
     button = pygame.image.load("./素材/指數/button.png")
     background = pygame.image.load("./素材/指數/background.png")
+    background = pygame.transform.smoothscale(background, (960, 540))
 
 
   #initializing the health bars for the enemy.
