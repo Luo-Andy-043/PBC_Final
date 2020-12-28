@@ -5,7 +5,7 @@ from map import *
 
 # 更正程式工作位置
 working_path = os.path.dirname(__file__)
-working_path="/Users/yichinhuang/desktop/PBC_Final/PBC_Final/Coding"
+# working_path="/Users/yichinhuang/desktop/PBC_Final/PBC_Final/Coding"
 os.chdir(working_path)
 
 guan_path_l = '../視覺設計/管管騎ubike（左_方形）.png'

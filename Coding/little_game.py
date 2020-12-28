@@ -467,8 +467,7 @@ class little_game:
                     pygame.event.clear()
                 
                 if done: # 三題都答完ㄌ
-                    win = pygame.transform.smoothscale(win, (960,540))
-                    screen.blit(win, (0,0))
+                    play.old_talk()
                 
                 if wrong1:
                     no.play()
@@ -690,7 +689,7 @@ class little_game:
         bg = pygame.transform.smoothscale(bg, (960,540))
         myhead = pygame.image.load('./素材/指數/guanguan.png')
         myhead = pygame.transform.smoothscale(myhead, (172,200))
-        e = pygame.image.load('./素材/e^x/e^x.png')
+        e = pygame.image.load('./素材/e^x/e^x（去背）.png')
         e = pygame.transform.smoothscale(e, (360,200))
         xone = pygame.image.load('./素材/e^x/x+1.png')
         xone = pygame.transform.smoothscale(xone, (360,200))
@@ -704,12 +703,14 @@ class little_game:
         
         # 載入音效
         explode = pygame.mixer.Sound('./素材/e^x/火聲.ogg')
-        oh = pygame.mixer.Sound('./素材/e^x/ㄛㄛ.mp3')
-        oh.set_volume(0.6)
         tada = pygame.mixer.Sound('./素材/e^x/登場.mp3')
         scream1 = pygame.mixer.Sound('./素材/e^x/尖叫1.mp3')
+        scream1.set_volume(0.5)
         scream2 = pygame.mixer.Sound('./素材/e^x/尖叫2.mp3')
+        scream2.set_volume(0.5)
         scream3 = pygame.mixer.Sound('./素材/e^x/尖叫3.mp3')
+        scream3.set_volume(0.5)
+        bad = pygame.mixer.Sound('./素材/e^x/壞笑.mp3')
         
         part1 = True
         part2 = False
@@ -737,9 +738,10 @@ class little_game:
                 screen.blit(myhead, (155,120))
                 pygame.draw.rect(screen, (223,225,205), [0, 430, 960, 108], 0)
                 say = fontobj.render('外星語言館派出了函數怪物！', True, black)
+                first.play()
                 screen.blit(say, linepos)
                 pygame.display.update()
-                pygame.time.delay(2000)
+                pygame.time.delay(4000)
                 screen.blit(e, (500,25))
                 tada.play()
                 pygame.time.delay(200)
@@ -814,7 +816,7 @@ class little_game:
                 line = fontobj.render('似乎沒什麼用...', True, black, (225,230,170))
                 screen.blit(line, linepos)
                 pygame.display.update()
-                oh.play()
+                bad.play()
                 pygame.time.delay(1500)
                 fail = False
                 pygame.event.clear()
@@ -904,8 +906,10 @@ class little_game:
                     option4 = True
                 else:
                     option4 = False
+            
+            pygame.display.update()
 
-    def trivial_words(self):
+    def old_talk(self):
         sentence1 = pygame.image.load('./素材/老人的話/words1.png')
         sentence1 = pygame.transform.smoothscale(sentence1, (960,540))
         sentence2 = pygame.image.load('./素材/老人的話/words2.png')
@@ -918,20 +922,33 @@ class little_game:
         sentence5 = pygame.transform.smoothscale(sentence5, (960,540))
         alist = [sentence1, sentence2, sentence3, sentence4, sentence5]
         
+        # 音效
+        old11 = pygame.mixer.Sound('./素材/老人的話/講古1-1.mp3')
+        old12 = pygame.mixer.Sound('./素材/老人的話/講古1-2.mp3')
+        old21 = pygame.mixer.Sound('./素材/老人的話/講古2-1.mp3')
+        old22 = pygame.mixer.Sound('./素材/老人的話/講古2-2.mp3')
+        old31 = pygame.mixer.Sound('./素材/老人的話/講古3-1.mp3')
+        old32 = pygame.mixer.Sound('./素材/老人的話/講古3-2.mp3')
+        
         i = 0
         run = True
         while run:
-            screen.blit(alist[i], (0,0))
+            screen.blit(sentence1, (0,0))
             pygame.display.update()
+            old11.play()
+            pygame.time.delay(13500)
+            old12.play()
+            pygame.time.delay(13000)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         i += 1
+    
 
             
             # print(position)
 play = little_game()
-play.hitmath()
+play.old_talk()
 pygame.quit()
