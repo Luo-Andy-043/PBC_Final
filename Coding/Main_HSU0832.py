@@ -143,7 +143,7 @@ def pic_speaker(game, charname, headpath):
 
     # 把XX說貼上去
     name = charname + "說："
-    name = font.render(name, True, WHITE)
+    name = font.render(name, True, (139,0,0))
     game.screen.blit(name, (70,490))
 
 # 零件：顯示文字之獨白
@@ -247,6 +247,7 @@ class NPC(pygame.sprite.Sprite):
                             replypath = './素材/NPCText/' + self.name + 'A' + '.txt'
                             dialog(self.game, replypath, self.name, self.imgpath)
                             yrpass()
+                            pygame.time.delay(1500)
                             self. cooler = 60
                             self.game.update()
                             
