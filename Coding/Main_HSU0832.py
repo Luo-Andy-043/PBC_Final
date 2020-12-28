@@ -141,7 +141,7 @@ def pic_speaker(game, charname, headpath):
 
     # 把XX說貼上去
     name = charname + "說："
-    name = font.render(name, True, WHITE)
+    name = font.render(name, True, BLACK)
     game.screen.blit(name, (70,490))
 
 # 零件：顯示文字之獨白
@@ -215,51 +215,67 @@ class NPC(pygame.sprite.Sprite):
             print(self.name)
             pygame.display.update()
             if schedule == self.index:
-                for i in range(len(self.mode)):  # model三種，四格[2,1,3,2] len=4 i = 0,1,2,3
+                for i in range(len(self.mode)):  # model三種，四格[2,1,3] len=3 i = 0,1,2
                     way_to_talk = self.mode[i]   # 讀進來的模式，第幾句話的講話方法
                     txtpath = './素材/NPCText/' + self.name + str(i+1) + '.txt'
+                    print('i=', i, 'way=', way_to_talk)
                     if way_to_talk == 1:
-                        print('i=', i, 'way=', way_to_talk)
+                        print('i=', i, 'way=', way_to_talk, 'now1')
                         # chosen = 'notyet'
                         button_A = buttonHSU(self.game, 'dSelBt_A', 'lSelBt_A', (720, 365))
                         button_B = buttonHSU(self.game, 'dSelBt_B', 'lSelBt_B', (840, 365))
                         choose_A, choose_B = False, False
-                        while choose_A is False and choose_B is False:
+                        dialog(self.game, txtpath, self.name, self.imgpath)
+                        # while choose_A is False and choose_B is False:
+                            # self.game.events()
+                            # choose_A = button_A.show()
+                            # choose_B = button_B.show()
+                            # pygame.display.update()
+
+                        # 選到不對的或還沒選
+                        while choose_A is False:
                             self.game.events()
                             choose_A = button_A.show()
                             choose_B = button_B.show()
                             pygame.display.update()
-
-                        # 選到不對的或還沒選
-                        # while chosen != 'A':
-                            # if chosen == 'B':
+                            if choose_B:
+                                print('i=', i, 'way=', way_to_talk, 'nowwrong')
+                                replypath = './素材/NPCText/' + self.name + 'B' + '.txt'
+                                dialog(self.game, replypath, self.name, self.imgpath)
+                                dialog(self.game, txtpath, self.name, self.imgpath)
+                                choose_B = False
+                        # 對了
+                        print('i=', i, 'way=', way_to_talk, 'nowright')
+                        replypath = './素材/NPCText/' + self.name + 'A' + '.txt'
+                        dialog(self.game, replypath, self.name, self.imgpath)
+                        yrpass()
+                        
+                            # 選錯了
+                            # if choose_B and not choose_A:
+                                # print('i=', i, 'way=', way_to_talk, 'nowwrong')
                                 # replypath = './素材/NPCText/' + self.name + 'B' + '.txt'
                                 # dialog(self.game, replypath, self.name, self.imgpath)
                                 # dialog(self.game, txtpath, self.name, self.imgpath)
-                        # 對了
-                        # replypath = './素材/NPCText/' + self.name + 'A' + '.txt'
-                        # dialog(replypath, self.name, self.imgpath)
-                        
-                        # 選錯了
-                        if choose_B and not choose_A:
-                            replypath = './素材/NPCText/' + self.name + 'B' + '.txt'
-                            dialog(self.game, replypath, self.name, self.imgpath)
-                            dialog(self.game, txtpath, self.name, self.imgpath)
-                            pygame.display.update()
-                        
-                        # 選對了
-                        if choose_A and not choose_B:
-                            replypath = './素材/NPCText/' + self.name + 'A' + '.txt'
-                            dialog(self.game, replypath, self.name, self.imgpath)
-                            pygame.display.update()
+                                # pygame.display.update()
+                            
+                            # 選對了
+                            # if choose_A and not choose_B:
+                                # print('i=', i, 'way=', way_to_talk, 'nowright')
+                                # replypath = './素材/NPCText/' + self.name + 'A' + '.txt'
+                                # dialog(self.game, replypath, self.name, self.imgpath)
+                                # pygame.display.update()
+                                # yrpass()
+                                # break
 
                     # 第二種講話模式
                     if way_to_talk == 2:  # NPC說一段話
+                        print('i=', i, 'way=', way_to_talk, 'now2')
                         dialog(self.game, txtpath, self.name, self.imgpath)
                         pygame.display.update()
 
                     # 第三種講話模式
                     if way_to_talk == 3:  # 管管說一段話
+                        print('i=', i, 'way=', way_to_talk, 'now3')
                         dialog(self.game, txtpath)
                         pygame.display.update()
 
