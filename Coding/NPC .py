@@ -34,36 +34,42 @@ class button(pygame.sprite.Sprite):
     # lbt:light_button
     # dbt:dark_button
     def __init__(self, code, dbt_path, lbt_path, place, size=(110, 160)):
-       self.code = code #A或B
+        self.code = code #A或B
         # 設定圖片路徑
-        dbt_path = './素材/button/' + dbt_path + 'png'
-        self.dbt_path = dbt_path
-        lbt_path = './素材/button/' + lbt_path + 'png'
-        self.lbt)path = lbt_path
+        self.dbt_path = './素材/button/' + dbt_path + '.png'
+        # self.dbt_path = dbt_path
+        self.lbt_path = './素材/button/' + lbt_path + '.png'
+        # self.lbt_path = lbt_path
         # 尺寸、位置
         self.size = size        
         self.place = place
         # 使用函數放出圖片
+        print(self.dbt_path)
         self.dbt = img(self.dbt_path, size)
         self.lbt = img(self.lbt_path, size)
 
         
     def show(self):
+        print('show')
         self.normalbt = self.dbt  # 預設為正常顏色的按鈕
-        screen.blit(normalbt, self.place)
+        screen.blit(self.normalbt, self.place)
         # 游標在按鈕上時變色
-        mouse = pygame.mouse.get_pos()
-        hover = start_button_x <= mouse[0] <= start_button_x+start_button_length and \
-                start_button_y <= mouse[1] <= start_button_y+start_button_height
-        if hover:
-            nomalbt = lbt
-        else:
-            normalbt = dbt
-        pygame.display.update()
+        self.choosing = True
+        while self.choosing:
+            self.mouse = pygame.mouse.get_pos()
+            self.hover = self.place[0] <= self.mouse[0] <= self.place[0]+self.size[0] and \
+                    self.place[1] <= self.mouse[1] <= self.place[1]+self.place[1]
+            print(self.mouse)
+            if self.hover:
+                self.nomalbt = self.lbt
+            else:
+                self.normalbt = self.dbt
+            pygame.display.update()
 
-        if hover and pygame.mouse.get_pressed()[0] is True:
-            global chosen
-            chosen = self.code
+            if self.hover and pygame.mouse.get_pressed()[0] is True:
+                global chosen
+                chosen = self.code
+                slef.choosing = False
  
   
 # 共用圖片
@@ -93,7 +99,7 @@ def pic_speaker(charname, headpath):
 
 
 # 零件：顯示文字之獨白
-def text(path)
+def text(path):
     global box_img
     '''字數上限：16字'''
     # 將一句話拆分成list，顯示一個一個字的效果
@@ -159,6 +165,7 @@ class NPC(pygame.sprite.Sprite):
         self.imgpath = './素材/NPCPic/' + self.name + '.png' #圖片路徑       
         self.img = img(self.imgpath, size)  # 用函數載圖片
         screen.blit(self.img, self.place)  # 畫出角色
+        pygame.display.update()
     
 
     # 觸發
@@ -166,13 +173,10 @@ class NPC(pygame.sprite.Sprite):
         global schedule
         if pygame.sprite.collide_rect(self, guan):
             if schedule == self.index:  # 找對人了
-                for i = range(len(self.mode)-1):  #moden兩種，三格[0,1,2]
+                for i in range(len(self.mode)-1):  #moden兩種，三格[0,1,2]
                     way_to_talk = self.mode[i+1] # 讀進來的模式，第幾句話的講話方法
                     txtpath = './素材/NPCText/' + self.name + str(i) + '.txt'
                     if way_to_talk == 1:
-                        script = txt(txtpath)
-                        script[]
-                        dialog()
                         chosen = 'notyet'
                         button_A = button('A', 'dSelBt_A', 'lSelBt_A', (720, 365))
                         button_B = button('B', 'dSelBt_B', 'lSelBt_A', (840, 365))
@@ -181,7 +185,7 @@ class NPC(pygame.sprite.Sprite):
 
                         # 選不到對的或還沒選
                         while chosen != 'A':
-                            if chosen = 'B':
+                            if chosen == 'B':
                                 replypath = './素材/NPCText/' + self.name + B + '.txt'
                                 dialog(replypath, self.name, self.imgpath)
                                 dialog(txtpath, self.name, self.imgpath)
@@ -200,7 +204,36 @@ class NPC(pygame.sprite.Sprite):
 
             else:  # 罐頭台詞
                txtpath = './素材/NPCText/' + self.name + 0 + '.txt'
-               dialog_NPC(self.name, self.image, txtpath)    
+               dialog_NPC(self.name, self.image, txtpath) 
 
 
 '''3 指派object'''
+NPC_clerk = NPC('店員', (150,150), 1, (2,1,3))
+
+'''
+NPC_JK = NPC('屁孩', place, 2, mode)
+NPC_student = NPC('學生', place, 3, mode)
+NPC_elder = NPC('老人', place, 4, mode)
+NPC_e = NPC('e', place, 3, mode)
+NPC_shortfarmer = NPC('學生', place, 3, mode)
+'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

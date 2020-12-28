@@ -5,17 +5,12 @@ from map import *
 
 # 更正程式工作位置
 working_path = os.path.dirname(__file__)
-working_path="/Users/yichinhuang/desktop/PBC_Final/PBC_Final/Coding"
 os.chdir(working_path)
 
-start_guan_path_l = './素材/start_game/管管腳踏車（去背）_左.png'
-start_guan_path_r = './素材/start_game/管管腳踏車（去背）_右.png'
-
-background = pygame.image.load('../視覺設計/地圖全圖_完稿_全.jpg').convert_alpha()
-background = pygame.transform.smoothscale(background, (2700, 4500))
-
-# 上、下、左、右
-map_x, map_y = 0, 0
+guan_path_l = '../視覺設計/管管騎ubike（左_方形）.png'
+guan_path_r = '../視覺設計/管管騎ubike（右_方形）.png'
+guan_path_u = '../視覺設計/管管騎ubike（背_方形）.png'
+guan_path_d = '../視覺設計/管管騎ubike（正_方形）.png'
 
 class Game:
     def __init__(self):
@@ -33,6 +28,8 @@ class Game:
         self.all_sprites = pygame.sprite.Group()
         self.clock = pygame.time.Clock()
         pygame.key.set_repeat(500, 100)
+        self.background = pygame.image.load('../視覺設計/地圖全圖_完稿_全.jpg').convert_alpha()
+        self.background = pygame.transform.smoothscale(self.background, (2700, 4500))
 
     def load(self):
         # all the paths
@@ -58,8 +55,8 @@ class Game:
         self.start_img = pygame.image.load(self.start_img_path).convert_alpha()
         self.start_img = pygame.transform.smoothscale(self.start_img, screen_size)
 
-        self.GUAN_start = pygame.image.load(start_guan_path_l).convert_alpha()
-        self.GUAN_start = pygame.transform.smoothscale(self.GUAN_start, (414,234))
+        self.GUAN_start = pygame.image.load(guan_path_l).convert_alpha()
+        self.GUAN_start = pygame.transform.smoothscale(self.GUAN_start, (220,220))
 
         self.light_button = pygame.image.load(self.light_button_path)
         self.dark_button = pygame.image.load(self.dark_button_path)
@@ -91,18 +88,19 @@ class Game:
 
     def new(self):
         # start a new game
-        self.guan = GUAN(self, 108, 9)
+        self.guan = GUAN(self, 88, 168)
         self.walls = pygame.sprite.Group()
         self.all_sprites.add(self.guan)
-        bg = bg_class(self)
-        #self.screen.blit(bg, (0,0))
+        self.bg = bg_class(self)
         self.load()
         self.show_start_game()
         opening.opening()
+        self.wall_list = []
         for row, tiles in enumerate(self.map.data):
             for col, tile in enumerate(tiles):
                 if tile == '1':
-                    Wall(self, col, row)
+                    w = Wall(self, col, row)
+                    self.wall_list.append(w)
         self.camera = Camera(self.map.width, self.map.height)
         self.music_stop()
         self.run()
@@ -161,7 +159,6 @@ class Game:
         # Timer
         self.start = pygame.time.get_ticks()
         self.playing = True
-        self.screen.blit(background, (0,0))
         while self.playing:
             self.dt = self.clock.tick(60) / 1000
             self.timer = pygame.time.get_ticks()
@@ -169,11 +166,15 @@ class Game:
             self.draw_grid()
             self.events()
             # self.all_sprites.draw(self.screen)
-            for sprite in self.all_sprites:
-                self.screen.blit(sprite.image, self.camera.apply(sprite))
-            self.update()
+            # for sprite in self.all_sprites:
+                # self.screen.blit(sprite.image, self.camera.apply(sprite))
+            self.screen.blit(self.bg.image, self.camera.apply(self.bg))
+            self.screen.blit(self.guan.image, self.camera.apply(self.guan))
+            for w in self.wall_list:
+                self.screen.blit(w.image, self.camera.apply(w))
             # if self.fail == True:
                 # self.gameover()
+            self.update()
         self.music_stop()
 
     def events(self):
@@ -200,16 +201,16 @@ class Game:
     def draw_grid(self):
         # draw the grids on the map
         for x in range(0, WIDTH, TILESIZE):
-            pygame.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
+            pygame.draw.line(self.screen, WHITE, (x, 0), (x, HEIGHT))
         for y in range(0, HEIGHT, TILESIZE):
-            pygame.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
+            pygame.draw.line(self.screen, WHITE, (0, y), (WIDTH, y))
 
     def show_start_game(self):
         # the game starting screen
         self.load()
         self.playing = True
         self.screen.blit(self.start_img,(0,0))
-        self.screen.blit(self.GUAN_start, (250, 300))
+        self.screen.blit(self.GUAN_start, (345, 310))
         self.screen.blit(self.start_button, (start_button_x, start_button_y))
         self.menu_music = pygame.mixer.music.load(self.menu_music_path)
         pygame.mixer.music.play(-1)
@@ -257,29 +258,37 @@ class GUAN(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
-        # self.GUAN_l = pygame.image.load(start_guan_path_l).convert_alpha()
-        # self.GUAN_l = pygame.transform.smoothscale(self.GUAN_l, (60,60))
-        # self.GUAN_r = pygame.image.load(start_guan_path_r).convert_alpha()
-        # self.GUAN_r = pygame.transform.smoothscale(self.GUAN_r, (60,60))
-        self.image = pygame.Surface((TILESIZE, TILESIZE))
+
+        self.GUAN_l = pygame.image.load(guan_path_l).convert_alpha()
+        self.GUAN_l = pygame.transform.smoothscale(self.GUAN_l, (60,60))
+        self.GUAN_r = pygame.image.load(guan_path_r).convert_alpha()
+        self.GUAN_r = pygame.transform.smoothscale(self.GUAN_r, (60,60))
+        self.GUAN_u = pygame.image.load(guan_path_u).convert_alpha()
+        self.GUAN_u = pygame.transform.smoothscale(self.GUAN_u, (60,60))
+        self.GUAN_d = pygame.image.load(guan_path_d).convert_alpha()
+        self.GUAN_d = pygame.transform.smoothscale(self.GUAN_d, (60,60))
+
+        self.image = self.GUAN_r
         self.rect = self.image.get_rect()
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-        self.speedx = 0
-        self.speedy = 0
 
     def get_keys(self):
         self.vx, self.vy = 0, 0
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
             self.vx = -sprite_speed
+            self.image = self.GUAN_l
         if keys[pygame.K_RIGHT]:
             self.vx = sprite_speed
+            self.image = self.GUAN_r
         if keys[pygame.K_UP]:
             self.vy = -sprite_speed
+            self.image = self.GUAN_u
         if keys[pygame.K_DOWN]:
             self.vy = sprite_speed
+            self.image = self.GUAN_d
         if self.vx != 0 and self.vy != 0:
             self.vx *= 0.707
             self.vy *= 0.707
@@ -320,7 +329,7 @@ class Wall(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pygame.Surface((TILESIZE, TILESIZE))
-        self.image.set_alpha(100)
+        self.image.set_alpha(0)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y
@@ -333,8 +342,7 @@ class bg_class(pygame.sprite.Sprite):
         self.groups = game.all_sprites
         pygame.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = background
-        #self.image.set_alpha(0)
+        self.image = self.game.background
         self.rect = self.image.get_rect()
         
 
