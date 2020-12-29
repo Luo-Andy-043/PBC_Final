@@ -527,7 +527,7 @@ class Game:
         self.NPC_student = NPC(self, '學生', 3, [2,1])
         self.NPC_elder = NPC(self, '老人', 4, [2,1])
         self.NPC_e = NPC( self, '函數', 5, [3,2,1])
-        self.NPC_shortfarmer = NPC(self, '北北', 6, [2,1])
+        self.NPC_shortfarmer = NPC(self, '北北', 6, [2])
         
 
         # Timer
