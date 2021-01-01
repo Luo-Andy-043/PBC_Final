@@ -227,6 +227,7 @@ class NPC(pygame.sprite.Sprite):
 
 
 '''3｜管中閔'''
+place_list = [0, 0]
 class GUAN(pygame.sprite.Sprite):
     '''角色 Sprite'''
     def __init__(self, game, x, y):
@@ -269,6 +270,8 @@ class GUAN(pygame.sprite.Sprite):
         self.collide_with_walls('x')
         self.rect.y = self.y
         self.collide_with_walls('y')
+        place_list[0] = self.rect.x * 0.12
+        place_list[1] = self.rect.y * 0.12
 
     def collide_with_walls(self, d):
         if d == 'x':
@@ -353,6 +356,7 @@ class Game:
         self.reminder_times_up_path = './素材/reminder/times_up.png'
         self.gameover_path = '../視覺設計/game_over.png'
         self.close_game_path = '../視覺設計/congrats.png'
+        self.easy_map_path = '../視覺設計/簡易地圖.jpg'
 
         # load images/music
         self.start_img = img(self.start_img_path, screen_size)
@@ -366,6 +370,7 @@ class Game:
         self.reminder_10 = img(self.reminder_10_path, (513, 143))
         self.reminder_times_up = img(self.reminder_times_up_path, (513, 143))
         self.GUAN_start = img(guan_path_l, (220,220))
+        self.easy_map = img(self.easy_map_path, (324, 540))
 
         self.gameover_img = pygame.image.load(self.gameover_path).convert_alpha()
         self.gameover_img = pygame.transform.smoothscale(self.gameover_img, self.screen.get_size())
@@ -486,6 +491,7 @@ class Game:
             self.timer = pygame.time.get_ticks()
             self.watcher()
             self.events()
+            self.show_easy_map()
             # self.all_sprites.draw(self.screen)
             # for sprite in self.all_sprites:
                 # self.screen.blit(sprite.image, self.camera.apply(sprite))
@@ -585,6 +591,14 @@ class Game:
             self.events()
             if self.L_click:
                 pygame.quit()
+
+    def show_easy_map(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_m]:
+            self.screen.blit(self.easy_map, (300, 0))
+            pygame.draw.circle(self.screen, [255,0,0], [300 + place_list[0], place_list[1]], 5, 0)
+            pygame.display.update()
+            pygame.time.delay(150)
 
 
 '''6｜執行'''
