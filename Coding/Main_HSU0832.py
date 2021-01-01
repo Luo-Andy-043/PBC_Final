@@ -25,47 +25,8 @@ def txt(text_path):
         text_file = text.readlines()
     return text_file
 
-
-# 按鈕函數：羅
-class button(pygame.sprite.Sprite):
-    # lbt:light_button
-    # dbt:dark_button
-    def __init__(self, game, dbt_path, lbt_path, place, size=(110, 160)):
-        # 照片
-        self.dbt_path = dbt_path
-        self.lbt_path = lbt_path
-        self.dbt = img(self.dbt_path, size)
-        self.lbt = img(self.lbt_path, size)
-        # 尺寸、位置
-        self.size = size
-        self.place = place
-        # 使用函數放出圖片
-        self.game = game
-
-    def show(self):
-        #顯示按鈕（按鈕要放在迴圈裡）
-        self.normalbt = self.dbt
-        self.game.screen.blit(self.normalbt, self.place)
-        # 游標在按鈕上時變色
-        self.choose = False
-        self.mouse = pygame.mouse.get_pos()
-        self.hover = self.place[0] <= self.mouse[0] <= self.place[0]+self.size[0] and \
-                     self.place[1] <= self.mouse[1] <= self.place[1]+self.size[1]
-
-        if self.hover:
-            self.normalbt = self.lbt
-        else:
-            self.normalbt = self.dbt
-        self.game.screen.blit(self.normalbt, self.place)
-        pygame.display.update()
-
-        if self.hover and self.game.L_click:
-            self.choose = True
-        return self.choose
-
-
 # 按鈕函數：許
-class buttonHSU(pygame.sprite.Sprite):
+class button(pygame.sprite.Sprite):
     # lbt:light_button
     # dbt:dark_button
     def __init__(self, game, dbt_path, lbt_path, place, size=(110, 160)):
@@ -77,7 +38,6 @@ class buttonHSU(pygame.sprite.Sprite):
         self.size = size        
         self.place = place
         # 使用函數放出圖片
-        print(self.dbt_path)
         self.dbt = img(self.dbt_path, size)
         self.lbt = img(self.lbt_path, size)
 
@@ -199,8 +159,7 @@ class NPC(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.touch = False
         self.cooler = 45
-        # game.screen.blit(self.image, CLERK_Place)
-        # pygame.display.update()
+
 
     # 觸發
     def encounter(self):
@@ -209,24 +168,19 @@ class NPC(pygame.sprite.Sprite):
         self.touch = False 
         if (abs(NPCcamera_place[self.indicator][0] - GUANcamera_place[0]) < 40 and \
             abs(NPCcamera_place[self.indicator][1] - GUANcamera_place[1]) < 40):
-            print(self.name, '媽我在這裡')
             self.touch = True
         
         if self.touch:
             if self.cooler==0:
-                print(schedule, self.index)
-                print(self.name)
                 pygame.display.update()
                 if schedule == self.index:
                     for i in range(len(self.mode)):  # model三種，四格[2,1,3] len=3 i = 0,1,2
                         way_to_talk = self.mode[i]   # 讀進來的模式，第幾句話的講話方法
                         txtpath = './素材/NPCText/' + self.name + str(i+1) + '.txt'
-                        print('i=', i, 'way=', way_to_talk)
                         if way_to_talk == 1:
-                            print('i=', i, 'way=', way_to_talk, 'now1')
 
-                            button_A = buttonHSU(self.game, 'dSelBt_A', 'lSelBt_A', (720, 365))
-                            button_B = buttonHSU(self.game, 'dSelBt_B', 'lSelBt_B', (840, 365))
+                            button_A = button(self.game, 'dSelBt_A', 'lSelBt_A', (720, 365))
+                            button_B = button(self.game, 'dSelBt_B', 'lSelBt_B', (840, 365))
                             choose_A, choose_B = False, False
                             dialog(self.game, txtpath, self.name, self.imgpath)
 
@@ -236,13 +190,11 @@ class NPC(pygame.sprite.Sprite):
                                 choose_B = button_B.show()
                                 pygame.display.update()
                                 if choose_B:
-                                    print('i=', i, 'way=', way_to_talk, 'nowwrong')
                                     replypath = './素材/NPCText/' + self.name + 'B' + '.txt'
                                     dialog(self.game, replypath, self.name, self.imgpath)
                                     dialog(self.game, txtpath, self.name, self.imgpath)
                                     choose_B = False
                             # 對了
-                            print('i=', i, 'way=', way_to_talk, 'nowright')
                             replypath = './素材/NPCText/' + self.name + 'A' + '.txt'
                             dialog(self.game, replypath, self.name, self.imgpath)
                             yrpass()
@@ -253,14 +205,12 @@ class NPC(pygame.sprite.Sprite):
 
                         # 第二種講話模式
                         if way_to_talk == 2:  # NPC說一段話
-                            print('i=', i, 'way=', way_to_talk, 'now2')
                             dialog(self.game, txtpath, self.name, self.imgpath)
                             pygame.display.update()
                             self.cooler = 45
 
                         # 第三種講話模式
                         if way_to_talk == 3:  # 管管說一段話
-                            print('i=', i, 'way=', way_to_talk, 'now3')
                             dialog(self.game, txtpath)
                             pygame.display.update()
                             self.cooler = 45
@@ -390,8 +340,6 @@ class Game:
     def load(self):
         # all the paths
         self.start_img_path = './素材/start_game/遊戲開始.png'
-        self.light_button_path = './素材/button/button_light.png'
-        self.dark_button_path = './素材/button/button_dark.png'
         self.menu_music_path = './素材/music/menu_music.wav'
         self.game_music_path = './素材/music/game_music.mp3'
         self.reminder_6_path = './素材/reminder/reminder_6.png'
@@ -418,8 +366,6 @@ class Game:
         self.reminder_10 = img(self.reminder_10_path, (513, 143))
         self.reminder_times_up = img(self.reminder_times_up_path, (513, 143))
         self.GUAN_start = img(guan_path_l, (220,220))
-        self.light_button = img(self.light_button_path, (start_button_length, start_button_height))
-        self.dark_button = img(self.dark_button_path, (start_button_length, start_button_height))
 
         self.gameover_img = pygame.image.load(self.gameover_path).convert_alpha()
         self.gameover_img = pygame.transform.smoothscale(self.gameover_img, self.screen.get_size())
@@ -431,7 +377,7 @@ class Game:
     def show_start_game(self):
         # the game starting screen
         self.load()
-        start_button = button(self, self.dark_button_path, self.light_button_path, (550, 270), (159, 92))
+        start_button = button(self, 'button_dark', 'button_light', (550, 270), (159, 92))
         self.playing = True
         self.screen.blit(self.start_img,(0,0))
         self.screen.blit(self.GUAN_start, (345, 310))
@@ -613,8 +559,6 @@ class Game:
             if keys[pygame.K_s]:
                 self.games.sun_by_the_lake()
                 self.close_game()
-            
-
 
     def music_stop(self):
         pygame.mixer.music.stop()

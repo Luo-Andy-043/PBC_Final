@@ -144,20 +144,18 @@ class little_game:
         said = False
         run = True
         # 載入圖片
-        rulepic = pygame.image.load('./素材/煎蛋/煎蛋規則.png')
+        rulepic = pygame.image.load('./素材/煎蛋/煎蛋規則.png').convert_alpha()
         rulepic = pygame.transform.smoothscale(rulepic, (960, 540))
-        kitchen = pygame.image.load('./素材/煎蛋/背景.png')
+        kitchen = pygame.image.load('./素材/煎蛋/背景.png').convert_alpha()
         kitchen = pygame.transform.smoothscale(kitchen, (960, 540))
-        egg = pygame.image.load('./素材/煎蛋/生蛋.png')
-        raw_egg = pygame.image.load('./素材/煎蛋/生荷包蛋.png')
-        ok_egg = pygame.image.load('./素材/煎蛋/熟荷包蛋.png')
-        bite1 = pygame.image.load('./素材/煎蛋/咬1.png')
+        egg = pygame.image.load('./素材/煎蛋/生蛋.png').convert_alpha()
+        raw_egg = pygame.image.load('./素材/煎蛋/生荷包蛋.png').convert_alpha()
+        ok_egg = pygame.image.load('./素材/煎蛋/熟荷包蛋.png').convert_alpha()
+        bite1 = pygame.image.load('./素材/煎蛋/咬1.png').convert_alpha()
         bite1 = pygame.transform.smoothscale(bite1, (135,100))
-        bite2 = pygame.image.load('./素材/煎蛋/咬2.png')
+        bite2 = pygame.image.load('./素材/煎蛋/咬2.png').convert_alpha()
         bite2 = pygame.transform.smoothscale(bite2, (135,100))
-        win = pygame.image.load('./素材/考卷/win.png')
-        pic = pygame.image.load('./素材/考卷/體育館提示.jpg')
-        pic = pygame.transform.smoothscale(pic, (960,540))
+        win = pygame.image.load('./素材/考卷/win.png').convert_alpha()
 
         # 載入音效
         swallow = pygame.mixer.Sound('./素材/煎蛋/吞.mp3')
@@ -193,8 +191,6 @@ class little_game:
                         pygame.display.update()
                         pygame.time.delay(1500)
                         said = True
-                    self.screen.blit(pic, (0,0))
-                    pygame.display.update()
                     
 
             for event in pygame.event.get():
@@ -241,11 +237,11 @@ class little_game:
                 cook += 1
 
             # 煮一段時間之後生蛋就會變熟蛋
-            if raw_egg_appear and cook <= 70:
+            if raw_egg_appear and cook <= 140:
                 raw_egg = pygame.transform.smoothscale(raw_egg, (135, 100))
                 self.screen.blit(raw_egg, (170,320))
                 fry.play()
-            elif raw_egg_appear and cook > 70:
+            elif raw_egg_appear and cook > 140:
                 ok_egg_appear = True
                 okegg_pos = 240,370
                 fry.stop()
@@ -295,6 +291,8 @@ class little_game:
 
         waiting = True
         index = 0
+        self.screen.blit(switcher[index], (0,0))
+        pygame.display.update()
         while waiting:
             for e in pygame.event.get():
                 if e.type == pygame.MOUSEBUTTONDOWN:
@@ -305,7 +303,7 @@ class little_game:
                         else:
                             self.screen.blit(switcher[index], (0,0))
                             pygame.display.update()
-                    
+
         return 'win'
 
     def guess_song(self):
@@ -706,7 +704,6 @@ class little_game:
                     pygame.display.update()
                     pygame.time.delay(1500)
             pygame.display.update()
-        return win
 
     def byebyebell(self):
 
@@ -762,20 +759,20 @@ class little_game:
     def hitmath(self):
         # 載入圖片
 
-        rule = pygame.image.load('./素材/e^x/指數規則.png')
+        rule = pygame.image.load('./素材/e^x/指數規則.png').convert_alpha()
         rule = pygame.transform.smoothscale(rule, (960,540))
-        bg = pygame.image.load('./素材/指數/背景.png')
+        bg = pygame.image.load('./素材/指數/背景.png').convert_alpha()
         bg = pygame.transform.smoothscale(bg, (960,540))
-        myhead = pygame.image.load('./素材/指數/guanguan.png')
-        myhead = pygame.transform.smoothscale(myhead, (172,200))
-        e = pygame.image.load('./素材/e^x/e^x（去背）.png')
-        e = pygame.transform.smoothscale(e, (360,200))
-        xone = pygame.image.load('./素材/e^x/x+1.png')
-        xone = pygame.transform.smoothscale(xone, (360,200))
-        one = pygame.image.load('./素材/e^x/1.png')
-        one = pygame.transform.smoothscale(one, (151,200))
-        fire = pygame.image.load('./素材/e^x/火.png')
-        fire = pygame.transform.smoothscale(fire, (151,200))
+        myhead = pygame.image.load('./素材/指數/guanguan.png').convert_alpha()
+        myhead = pygame.transform.scale(myhead, (172,200))
+        e = pygame.image.load('./素材/e^x/e^x（去背）.png').convert_alpha()
+        e = pygame.transform.scale(e, (360,200))
+        xone = pygame.image.load('./素材/e^x/x+1.png').convert_alpha()
+        xone = pygame.transform.scale(xone, (360,200))
+        one = pygame.image.load('./素材/e^x/1.png').convert_alpha()
+        one = pygame.transform.scale(one, (151,200))
+        fire = pygame.image.load('./素材/e^x/火.png').convert_alpha()
+        fire = pygame.transform.scale(fire, (151,200))
 
         # 載入字型
         fontobj = pygame.font.Font('./素材/fonts/NotoSansCJKtc-hinted/NotoSansCJKtc-Black.otf', 30)
@@ -810,8 +807,32 @@ class little_game:
         finish = False
         run = True
         while run:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:
+                        if part1:
+                            part1 = False
+                            part2 = True
+                        if stage1:
+                            if option4:
+                                success1 = True
+                            elif option2 or option3 or option1:
+                                fail = True
+                        if stage2:
+                            if option1:
+                                success2 = True
+                            elif option2 or option3 or option4:
+                                fail = True
+                        if stage3:
+                            if option1:
+                                success3 = True
+                            elif option2 or option3 or option4:
+                                fail = True
 
             pygame.display.update()
+
             if part1:
                 self.screen.blit(rule, (0,0))
             if part2:
@@ -822,11 +843,11 @@ class little_game:
                 # first.play()
                 self.screen.blit(say, linepos)
                 pygame.display.update()
-                pygame.time.delay(4000)
+                pygame.time.delay(500)
                 self.screen.blit(e, (500,25))
                 self.screen.blit(say, linepos)
                 pygame.display.update()
-                pygame.time.delay(2000)
+                pygame.time.delay(500)
                 self.screen.blit(e, (500,25))
                 tada.play()
                 pygame.time.delay(200)
@@ -873,30 +894,6 @@ class little_game:
                 self.screen.blit(option3wd, (513,453))
                 self.screen.blit(option4wd, (752,453))
 
-            position = pygame.mouse.get_pos()
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    run = False
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        if part1:
-                            part1 = False
-                            part2 = True
-                        if stage1:
-                            if option4:
-                                success1 = True
-                            elif option2 or option3 or option1:
-                                fail = True
-                        if stage2:
-                            if option1:
-                                success2 = True
-                            elif option2 or option3 or option4:
-                                fail = True
-                        if stage3:
-                            if option1:
-                                success3 = True
-                            elif option2 or option3 or option4:
-                                fail = True
             if fail:
                 line = fontobj.render('似乎沒什麼用...', True, black, (225,230,170))
                 self.screen.blit(line, linepos)
@@ -974,6 +971,7 @@ class little_game:
                 run = False
                 pygame.event.clear()
 
+            position = pygame.mouse.get_pos()
             if 447 <= position[1] <= 513:
                 if 31 <= position[0] <= 251:
                     option1 = True
@@ -991,24 +989,24 @@ class little_game:
                     option4 = True
                 else:
                     option4 = False
-            
+
             pygame.display.update()
         return 'win'
 
     def old_talk(self):
-        sentence0 = pygame.image.load('./素材/老人的話/words1.png')
+        sentence0 = pygame.image.load('./素材/老人的話/words1.png').convert_alpha()
         sentence0 = pygame.transform.smoothscale(sentence0, (960,540))
-        sentence1 = pygame.image.load('./素材/老人的話/words1.png')
+        sentence1 = pygame.image.load('./素材/老人的話/words1.png').convert_alpha()
         sentence1 = pygame.transform.smoothscale(sentence1, (960,540))
-        sentence2 = pygame.image.load('./素材/老人的話/words2.png')
+        sentence2 = pygame.image.load('./素材/老人的話/words2.png').convert_alpha()
         sentence2 = pygame.transform.smoothscale(sentence2, (960,540))
-        sentence3 = pygame.image.load('./素材/老人的話/words3.png')
+        sentence3 = pygame.image.load('./素材/老人的話/words3.png').convert_alpha()
         sentence3 = pygame.transform.smoothscale(sentence3, (960,540))
-        sentence4 = pygame.image.load('./素材/老人的話/words4.png')
+        sentence4 = pygame.image.load('./素材/老人的話/words4.png').convert_alpha()
         sentence4 = pygame.transform.smoothscale(sentence4, (960,540))
-        sentence5 = pygame.image.load('./素材/老人的話/words5.png')
+        sentence5 = pygame.image.load('./素材/老人的話/words5.png').convert_alpha()
         sentence5 = pygame.transform.smoothscale(sentence5, (960,540))
-        hint = pygame.image.load('./素材/猜歌/提示.png')
+        hint = pygame.image.load('./素材/猜歌/提示.png').convert_alpha()
         hint = pygame.transform.smoothscale(hint, (960,540))
         alist = [sentence0, sentence1, sentence2, sentence3, sentence4, sentence5, hint]
         
@@ -1030,13 +1028,15 @@ class little_game:
                     run = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
-                        if i < 6:
+                        if i <= 5:
                             i += 1
                         else:
                             run = False
         return 'win'
 
     def sun_by_the_lake(self):
+
+        pygame.init()
 
         # The PATHSSSSS!
         bg_path = "./素材/曬太陽/北北曬太陽.PNG"
@@ -1073,13 +1073,14 @@ class little_game:
         show_button = False
         stage1 = True
         stage2 = False
-
+        start = pygame.time.get_ticks() / 1000
         while run:
 
 
             pygame.time.Clock().tick(100) # 快速迴圈
 
             time_elapsed = pygame.time.get_ticks() / 1000
+            time_past = time_elapsed - start
             mousedown = False
 
             for event in pygame.event.get():
@@ -1105,7 +1106,7 @@ class little_game:
             mouse_position = pygame.mouse.get_pos()
 
 
-            if time_elapsed > 10 and stage1 and not show_button:
+            if time_past > 10 and stage1 and not show_button:
                 show_button = True
                 button_img = button_dark
                 self.screen.blit(button_img, BUTTON_COORDS) # 待補座標
@@ -1113,15 +1114,14 @@ class little_game:
 
             if mousedown and button.collidepoint(mouse_position) and stage1:
                 self.byebyebell()
-                run = False
 
-            elif time_elapsed > 15 and not stage2:
+            elif time_past > 15 and not stage2:
                 stage1 = False
                 stage2 = True
                 self.screen.blit(sun_background, (0,0))
 
 
-            elif time_elapsed > 16 and stage2:
+            elif time_past > 16 and stage2:
                 duck_pos = (duck_pos[0] + 1, duck_pos[1])
                 button = pygame.Rect(duck_pos[0], duck_pos[1], 300, 240)
                 self.screen.blit(sun_background, (0,0))
@@ -1134,29 +1134,3 @@ class little_game:
                     run = False
 
             pygame.display.update()
-
-
-
-
-# if __name__ == '__main__':
-
-
-    # # 修正程式作業位置
-    # #working_path = os.path.dirname(__file__)
-    # #os.chdir(working_path)
-
-    # # 啟動pygame
-    # pygame.init()
-
-    # # 建立視窗
-    # screen = pygame.display.set_mode((960,540))
-    # pygame.display.set_caption('Game')
-    # screen.fill((255,255,255))
-    # play = little_game(screen)
-    # play.sun_by_the_lake()
-    # pygame.quit()
-
-
-# play = little_game()
-# play.mock_test()
-# pygame.quit()
