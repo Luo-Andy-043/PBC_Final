@@ -25,7 +25,7 @@ def txt(text_path):
         text_file = text.readlines()
     return text_file
 
-# 按鈕函數：許
+# 按鈕函數
 class button(pygame.sprite.Sprite):
     # lbt:light_button
     # dbt:dark_button
@@ -227,12 +227,12 @@ class NPC(pygame.sprite.Sprite):
 
 
 '''3｜管中閔'''
-place_list = [0, 0]
 class GUAN(pygame.sprite.Sprite):
     '''角色 Sprite'''
     def __init__(self, game, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
+        self.place_list = [0, 0]
         self.GUAN_l = img(guan_path_l, (60,60))
         self.GUAN_r = img(guan_path_r, (60,60))
         self.GUAN_u = img(guan_path_u, (60,60))
@@ -270,8 +270,8 @@ class GUAN(pygame.sprite.Sprite):
         self.collide_with_walls('x')
         self.rect.y = self.y
         self.collide_with_walls('y')
-        place_list[0] = self.rect.x * 0.12
-        place_list[1] = self.rect.y * 0.12
+        self.place_list[0] = self.rect.x * 0.12
+        self.place_list[1] = self.rect.y * 0.12
 
     def collide_with_walls(self, d):
         if d == 'x':
@@ -377,7 +377,6 @@ class Game:
         self.close_game_img = pygame.image.load(self.close_game_path).convert_alpha()
         self.close_game_img = pygame.transform.smoothscale(self.close_game_img, self.screen.get_size())
 
-
     # 遊戲起始畫面
     def show_start_game(self):
         # the game starting screen
@@ -465,7 +464,6 @@ class Game:
             pygame.time.delay(100)
             self.game_over()
 
-
     # 遊戲運作
     def run(self):
         # Game Loop
@@ -491,7 +489,7 @@ class Game:
             self.timer = pygame.time.get_ticks()
             self.watcher()
             self.events()
-            self.show_easy_map()
+            self.show_easy_map(self.guan)
             # self.all_sprites.draw(self.screen)
             # for sprite in self.all_sprites:
                 # self.screen.blit(sprite.image, self.camera.apply(sprite))
@@ -592,11 +590,11 @@ class Game:
             if self.L_click:
                 pygame.quit()
 
-    def show_easy_map(self):
+    def show_easy_map(self, player):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_m]:
             self.screen.blit(self.easy_map, (300, 0))
-            pygame.draw.circle(self.screen, [255,0,0], [300 + place_list[0], place_list[1]], 5, 0)
+            pygame.draw.circle(self.screen, [255,0,0], [300 + player.place_list[0], player.place_list[1]], 5, 0)
             pygame.display.update()
             pygame.time.delay(150)
 
