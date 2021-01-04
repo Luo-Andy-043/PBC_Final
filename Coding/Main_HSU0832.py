@@ -35,7 +35,7 @@ class button(pygame.sprite.Sprite):
         self.dbt_path = './素材/button/' + dbt_path + '.png'
         self.lbt_path = './素材/button/' + lbt_path + '.png'
         # 尺寸、位置
-        self.size = size        
+        self.size = size
         self.place = place
         # 使用函數放出圖片
         self.dbt = img(self.dbt_path, size)
@@ -66,7 +66,7 @@ class button(pygame.sprite.Sprite):
 # 紀錄破關進度
 schedule = 1
 def yrpass():
-    global schedule 
+    global schedule
     schedule += 1
 
 
@@ -154,7 +154,7 @@ class NPC(pygame.sprite.Sprite):
         self.mode = mode      # 說話模式，是個list
         self.size = size      # 圖片大小
         # self.place = place
-        self.imgpath = './素材/NPCPic/' + self.name + '.png' #圖片路徑       
+        self.imgpath = './素材/NPCPic/' + self.name + '.png' #圖片路徑
         self.image = img(self.imgpath, size)  # 用函數載圖片
         self.rect = self.image.get_rect()
         self.touch = False
@@ -165,11 +165,11 @@ class NPC(pygame.sprite.Sprite):
     def encounter(self):
         global schedule
         # 碰撞了 而且 找對人
-        self.touch = False 
+        self.touch = False
         if (abs(NPCcamera_place[self.indicator][0] - GUANcamera_place[0]) < 40 and \
             abs(NPCcamera_place[self.indicator][1] - GUANcamera_place[1]) < 40):
             self.touch = True
-        
+
         if self.touch:
             if self.cooler==0:
                 pygame.display.update()
@@ -201,7 +201,7 @@ class NPC(pygame.sprite.Sprite):
                             pygame.time.delay(1500)
                             self.cooler = 60
                             self.game.update()
-                            
+
 
                         # 第二種講話模式
                         if way_to_talk == 2:  # NPC說一段話
@@ -218,7 +218,7 @@ class NPC(pygame.sprite.Sprite):
                 # 罐頭台詞
                 else:
                     txtpath = './素材/NPCText/' + self.name + '0' + '.txt'
-                    dialog(self.game, txtpath, self.name, self.imgpath) 
+                    dialog(self.game, txtpath, self.name, self.imgpath)
                     pygame.display.update()
                     self.cooler = 45
             else:
@@ -380,7 +380,6 @@ class Game:
     # 遊戲起始畫面
     def show_start_game(self):
         # the game starting screen
-        self.load()
         start_button = button(self, 'button_dark', 'button_light', (550, 270), (159, 92))
         self.playing = True
         self.screen.blit(self.start_img,(0,0))
@@ -422,7 +421,7 @@ class Game:
                     self.wall_list.append(w)
         self.music_stop()
         self.run()
-    
+
     # 時間監控程式
     def watcher(self):
         self.time_past = (self.timer - self.start) / 1000
@@ -469,7 +468,7 @@ class Game:
         # Game Loop
         self.game_music = pygame.mixer.music.load(self.game_music_path)
         pygame.mixer.music.play(-1)
-        
+
         # NPC定義
         self.NPC_CLERK = NPC(self, '店員', 1, mode=[2,1,3])
         self.NPC_JK = NPC(self, '屁孩', 2, [3,2,3,2,1])
@@ -477,13 +476,13 @@ class Game:
         self.NPC_elder = NPC(self, '老人', 4, [2,1])
         self.NPC_e = NPC( self, '函數', 5, [3,2,1])
         self.NPC_shortfarmer = NPC(self, '北北', 6, [2])
-        
+
 
         # Timer
         self.start = pygame.time.get_ticks()
         self.playing = True
-        
-        
+
+
         while self.playing:
             self.dt = self.clock.tick(60) / 1000
             self.timer = pygame.time.get_ticks()
@@ -493,14 +492,14 @@ class Game:
             # self.all_sprites.draw(self.screen)
             # for sprite in self.all_sprites:
                 # self.screen.blit(sprite.image, self.camera.apply(sprite))
-            
-            
+
+
             # 物件呈現：牆與地圖
             self.screen.blit(self.bg.image, self.camera.apply(self.bg))
             for w in self.wall_list:
-                self.screen.blit(w.image, self.camera.apply(w))            
+                self.screen.blit(w.image, self.camera.apply(w))
 
-                        
+
             #物件呈現：ＮＰＣ
             NPCcamera_place[0] = (self.camera.apply(self.NPC_CLERK)[0]+1820, self.camera.apply(self.NPC_CLERK)[1]+3020)
             NPCcamera_place[1] = (self.camera.apply(self.NPC_JK)[0]+2020, self.camera.apply(self.NPC_JK)[1]+2960)
@@ -512,7 +511,7 @@ class Game:
             GUANcamera_place[1] = self.camera.apply(self.guan)[1]
 
             self.screen.blit(self.NPC_CLERK.image,NPCcamera_place[0])
-            self.screen.blit(self.NPC_JK.image, NPCcamera_place[1])            
+            self.screen.blit(self.NPC_JK.image, NPCcamera_place[1])
             self.screen.blit(self.NPC_student.image,  NPCcamera_place[2])
             self.screen.blit(self.NPC_elder.image, NPCcamera_place[3])
             self.screen.blit(self.NPC_e.image, NPCcamera_place[4])
@@ -522,7 +521,7 @@ class Game:
             # 物件呈現：管
             self.screen.blit(self.guan.image, self.camera.apply(self.guan))
 
-        
+
             # NPC偵測
             self.NPC_CLERK.encounter()
             self.NPC_JK.encounter()
@@ -532,7 +531,7 @@ class Game:
             self.NPC_shortfarmer.encounter()
 
             self.update()
-            
+
 
         self.music_stop()
 
@@ -573,7 +572,7 @@ class Game:
         pygame.display.update()
         self.all_sprites.update()
         self.camera.update(self.guan)
-   
+
     def gameover(self):
         self.screen.blit(self.gameover_img, (0,0))
         pygame.display.update()
